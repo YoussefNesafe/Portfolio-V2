@@ -1,3 +1,7 @@
+import Banner from "@/components/Banner";
+import EmailSection from "@/components/MainLayout/EmailSection";
+import MainSection from "@/components/MainLayout/MainSection";
+import SocialMediaSection from "@/components/MainLayout/SocialMediaSection";
 import Navbar from "@/components/Navbar";
 import Head from "next/head";
 
@@ -10,8 +14,15 @@ export default function Home() {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/logo.png" />
 			</Head>
-			<main className="w-full h-screen font-bodyFont bg-bodyColor text-textLight overflow-x-hidden overflow-y-scroll">
+			<main className="w-full h-screen overflow-x-hidden overflow-y-scroll font-bodyFont bg-bodyColor text-textLight">
 				<Navbar />
+				<div className="w-full h-[88vh] xl:flex items-center gap-20 justify-between">
+					<SocialMediaSection />
+					<MainSection>
+						<Banner />
+					</MainSection>
+					<EmailSection />
+				</div>
 			</main>
 		</>
 	);
