@@ -9,6 +9,10 @@ export const SKILLS = [
 	"Vuex",
 ];
 export const ABOUT_CONTENT = {
+	titleSection: {
+		number: "01",
+		title: "About",
+	},
 	paragraph1: `Hello! My name is Youssef Nesafe and I enjoy creating things that live on the
 	internet. My interest in web development started back in 2018 when I create first
 	test page.`,

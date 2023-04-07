@@ -4,13 +4,18 @@ import Image from "next/image";
 import { AiFillThunderbolt } from "react-icons/ai";
 import myImage from "../../public/assets/my_image.jpg";
 const About = () => {
-	const { paragraph1, paragraph2, paragraph3 } = ABOUT_CONTENT;
+	const {
+		paragraph1,
+		paragraph2,
+		paragraph3,
+		titleSection: { number, title },
+	} = ABOUT_CONTENT;
 	return (
 		<section
 			id="about"
 			className="flex flex-col gap-8 py-10 mx-auto max-w-containerSmall lgl:py-32"
 		>
-			<SectionTitle number={"01"} title={"About"} />
+			<SectionTitle number={number} title={title} />
 			<div className="flex flex-col gap-16 lgl:flex-row">
 				<div className="flex flex-col w-full gap-4 text-base font-medium lgl:w-2/3 text-textDark">
 					<p>{paragraph1}</p>
