@@ -32,7 +32,7 @@ const About = () => {
 						))}
 					</ul>
 				</div>
-				<div className="relative w-full lgl:w-1/3 h-90 group">
+				<div className="relative w-full lgl:w-1/3 h-80 group">
 					<div className="absolute w-full rounded-lg h-80 -left-6 -top-6 ">
 						<div className="relative z-20 flex sm:max-w-[300px] xl:max-w-[1000px] h-full pl-6 lgl:pl-0">
 							<Image className="object-cover h-full rounded-lg " src={myImage} alt="" />
