@@ -1,3 +1,4 @@
+import About from "@/components/About";
 import Banner from "@/components/Banner";
 import EmailSection from "@/components/MainLayout/EmailSection";
 import MainSection from "@/components/MainLayout/MainSection";
@@ -20,6 +21,7 @@ export default function Home() {
 					<SocialMediaSection />
 					<MainSection>
 						<Banner />
+						<About />
 					</MainSection>
 					<EmailSection />
 				</div>
