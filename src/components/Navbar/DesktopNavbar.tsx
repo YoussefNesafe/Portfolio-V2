@@ -1,5 +1,5 @@
 import { fillNumberWithZeros } from "@/utils";
-import { NAVBAR_CONTENT } from "./navbarContent";
+import { NAVBAR_CONTENT } from "../../ContentData/navbarContent";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
