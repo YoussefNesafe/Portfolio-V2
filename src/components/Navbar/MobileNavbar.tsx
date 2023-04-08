@@ -46,7 +46,10 @@ const MobileNavbar = () => {
 						className="w-[80%] h-full overflow-y-scroll scrollbarHide bg-[#112240] flex flex-col items-center px-4 py-10 relative"
 					>
 						<MdOutlineClose
-							onClick={() => setShowMenu((prev) => !prev)}
+							onClick={(e) => {
+								e.stopPropagation();
+								setShowMenu((prev) => !prev);
+							}}
 							className="absolute text-3xl cursor-pointer text-textGreen hover:text-red-500 top-4 right-4"
 						/>
 						<div className="flex flex-col items-center gap-7">
