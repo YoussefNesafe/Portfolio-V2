@@ -7,6 +7,8 @@ export const SKILLS = [
 	"Vue",
 	"Vuetify",
 	"Vuex",
+	"SQL",
+	"React Native",
 ];
 export const ABOUT_CONTENT = {
 	titleSection: {

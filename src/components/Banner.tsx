@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BANNER_CONTENT } from "@/ContentData/bannerContent";
+import { SOCIAL_MEDIA_LINKS } from "@/ContentData/MainLayoutContent";
 function Banner() {
 	const { hiMsg, myName, myWork, description, learnMore, checkOut } = BANNER_CONTENT || {};
 	return (
@@ -43,6 +44,7 @@ function Banner() {
 				animate={{ y: 0, opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.9 }}
 				className="text-sm tracking-wide duration-300 border rounded-md w-52 h-14 font-titleFont border-textGreen text-textGreen hover:bg-hoverColor"
+				onClick={() => window.open("https://github.com/YoussefNesafe", "_balnk")}
 			>
 				{checkOut}
 			</motion.button>

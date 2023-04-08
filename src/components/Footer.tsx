@@ -1,5 +1,5 @@
 import React from "react";
-import { SOCIAL_MEDIA_LINKS } from "./MainLayout/MainLayoutContent";
+import { SOCIAL_MEDIA_LINKS } from "../ContentData/MainLayoutContent";
 
 const Footer = () => {
 	return (

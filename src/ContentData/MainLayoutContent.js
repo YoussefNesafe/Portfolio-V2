@@ -2,19 +2,23 @@ import { TbBrandGithub } from "react-icons/tb";
 import { SlSocialLinkedin, SlSocialFacebook, SlSocialInstagram } from "react-icons/sl";
 export const SOCIAL_MEDIA_LINKS = [
 	{
-		url: "#GitHub",
+		key: "github",
+		url: "https://github.com/YoussefNesafe",
 		icon: <TbBrandGithub />,
 	},
 	{
-		url: "#LinkedIn",
+		key: "linkedin",
+		url: "https://www.linkedin.com/in/youssef-nesafe/",
 		icon: <SlSocialLinkedin />,
 	},
 	{
-		url: "#Instagram",
+		key: "instagram",
+		url: "https://www.instagram.com/youssef.a.nesafe/",
 		icon: <SlSocialInstagram />,
 	},
 	{
-		url: "#Facebook",
+		key: "facebook",
+		url: "https://www.facebook.com/youssef.nesafi",
 		icon: <SlSocialFacebook />,
 	},
 ];

@@ -1,4 +1,4 @@
-import { SOCIAL_MEDIA_LINKS } from "./MainLayoutContent";
+import { SOCIAL_MEDIA_LINKS } from "../../ContentData/MainLayoutContent";
 import { motion } from "framer-motion";
 const SocialMediaSection = () => {
 	return (

@@ -8,7 +8,7 @@ const EmailSection = () => {
 			className="fixed bottom-0 right-0 hidden w-32 h-full xl:inline-flex"
 		>
 			<div className="flex flex-col items-center justify-end w-full h-full gap-6 text-textLight">
-				<a href="#email">
+				<a href="mailto:ynessafe@gmail.com">
 					<p className="text-sm tracking-wide rotate-90 w-72 text-textGreen">
 						ynessafe@gmail.com
 					</p>
