@@ -6,6 +6,7 @@ import SocialMediaSection from "@/components/MainLayout/SocialMediaSection";
 import Navbar from "@/components/Navbar";
 import Experience from "@/components/Experience";
 import Head from "next/head";
+import Projects from "@/components/Projects";
 
 export default function Home() {
 	return (
@@ -24,6 +25,7 @@ export default function Home() {
 						<Banner />
 						<About />
 						<Experience />
+						<Projects />
 					</MainSection>
 					<EmailSection />
 				</div>
