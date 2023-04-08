@@ -4,6 +4,7 @@ import EmailSection from "@/components/MainLayout/EmailSection";
 import MainSection from "@/components/MainLayout/MainSection";
 import SocialMediaSection from "@/components/MainLayout/SocialMediaSection";
 import Navbar from "@/components/Navbar";
+import Experience from "@/components/Experience";
 import Head from "next/head";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
 					<MainSection>
 						<Banner />
 						<About />
+						<Experience />
 					</MainSection>
 					<EmailSection />
 				</div>
