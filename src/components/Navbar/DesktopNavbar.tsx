@@ -1,7 +1,7 @@
 import { fillNumberWithZeros } from "@/utils";
 import { NAVBAR_CONTENT } from "../../ContentData/navbarContent";
 import { motion } from "framer-motion";
-import React, { useRef } from "react";
+import React from "react";
 import Link from "next/link";
 
 const DesktopNavbar = () => {
