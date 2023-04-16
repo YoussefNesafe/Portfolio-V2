@@ -9,6 +9,7 @@ import Head from "next/head";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ParticlesBG from "@/components/Particles";
 
 export default function Home() {
 	return (
@@ -21,7 +22,8 @@ export default function Home() {
 			</Head>
 			<main className="w-full h-screen overflow-x-hidden overflow-y-scroll font-bodyFont bg-bodyColor text-textLight scrollbar scrollbar-track-textDark/20 scrollbar-thumb-textDark/60">
 				<Navbar />
-				<div className="w-full h-[88vh] xl:flex items-center gap-20 justify-between">
+				<ParticlesBG />
+				<div className="w-full h-[88vh] xl:flex items-center gap-20 justify-between relative z-1">
 					<SocialMediaSection />
 					<MainSection>
 						<Banner />
