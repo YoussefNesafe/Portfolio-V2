@@ -12,7 +12,7 @@ const SocialMediaSection = () => {
 				<div className="flex flex-col gap-4">
 					{SOCIAL_MEDIA_LINKS.map((link) => (
 						<a href={link?.url} target="_blank" key={link.url}>
-							<span className="inline-flex items-center justify-center w-10 h-10 text-xl transition-all duration-300 rounded-full cursor-pointer bg-hoverColor hover:text-textGreen hover:-translate-y-2">
+							<span className="inline-flex items-center justify-center w-10 h-10 text-xl transition-all duration-300 rounded-full cursor-pointer dark:text-textDark/50 bg-hoverColor dark:bg-textDark/10 hover:text-textGreen hover:dark:text-textDark hover:-translate-y-2">
 								{link.icon}
 							</span>
 						</a>

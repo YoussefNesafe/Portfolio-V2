@@ -12,7 +12,7 @@ function Banner() {
 				initial={{ y: 10, opacity: 0 }}
 				animate={{ y: 0, opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.6 }}
-				className="text-lg tracking-wide font-titleFont text-textGreen"
+				className="text-lg tracking-wide font-titleFont text-textGreen dark:text-textDark"
 			>
 				{hiMsg}
 			</motion.h3>
@@ -33,8 +33,8 @@ function Banner() {
 			>
 				{description}
 				<a href="#Portfolio" target="_blank">
-					<span className="relative inline-flex overflow-x-hidden cursor-pointer text-textGreen h-7 group">
-						<span className="absolute w-full h-[1px] bg-textGreen left-0 bottom-1 -translate-x-[110%] group-hover:translate-x-0 transition-transform duration-500"></span>
+					<span className="relative inline-flex overflow-x-hidden cursor-pointer text-textGreen dark:text-textDark h-7 group">
+						<span className="absolute w-full h-[1px] bg-textGreen dark:bg-textDark left-0 bottom-1 -translate-x-[110%] group-hover:translate-x-0 transition-transform duration-500"></span>
 						{learnMore}
 					</span>
 				</a>
@@ -43,7 +43,7 @@ function Banner() {
 				initial={{ y: 10, opacity: 0 }}
 				animate={{ y: 0, opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.9 }}
-				className="text-sm tracking-wide duration-300 border rounded-md w-52 h-14 font-titleFont border-textGreen text-textGreen hover:bg-hoverColor"
+				className="text-sm tracking-wide duration-300 border rounded-md w-52 h-14 font-titleFont border-textGreen dark:border-textDark text-textGreen dark:text-textDark hover:bg-hoverColor hover:dark:bg-textLight"
 				onClick={() => window.open("https://github.com/YoussefNesafe", "_balnk")}
 			>
 				{checkOut}

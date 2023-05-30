@@ -13,13 +13,13 @@ const Contact = () => {
 			id="contact"
 			className="flex flex-col items-center justify-center gap-4 py-10 mx-auto max-w-contentContainer xl:py-32"
 		>
-			<p className="flex items-center text-lg font-semibold tracking-wide font-titleFont text-textGreen">
+			<p className="flex items-center text-lg font-semibold tracking-wide font-titleFont text-textGreen dark:text-textDark">
 				{number}. {title}
 			</p>
 			<h2 className="text-5xl font-semibold font-titleFont">{mainTitle}</h2>
 			<p className="max-w-[600px] text-center text-textDark">{describtion}</p>
 			<a href="mailto:ynessafe@gmail.com">
-				<button className="w-40 mt-6 text-sm tracking-wider duration-300 border rounded-md h-14 border-textGreen font-titleFont text-textGreen hover:bg-hoverColor">
+				<button className="w-40 mt-6 text-sm tracking-wider duration-300 border rounded-md h-14 border-textGreen dark:border-textDark font-titleFont text-textGreen dark:text-textDark hover:bg-hoverColor hover:dark:bg-textLight">
 					{sayHiBtn}
 				</button>
 			</a>

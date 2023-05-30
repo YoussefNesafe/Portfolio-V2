@@ -11,7 +11,7 @@ const Projects = () => {
 			className="flex flex-col gap-8 py-10 mx-auto max-w-containerSmall lgl:py-32"
 		>
 			<SectionTitle number={number} title={title} />
-			<h1 className="py-8 text-4xl text-center rounded-lg text-textGreen bg-hoverColor">
+			<h1 className="py-8 text-4xl text-center rounded-lg text-textGreen dark:text-textDark bg-hoverColor dark:bg-textLight">
 				{soon}
 			</h1>
 		</section>

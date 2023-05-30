@@ -18,7 +18,7 @@ const Experience = () => {
 							key={`exp-${index}`}
 							className={` ${
 								activeTabIndex === index
-									? "bg-[#8892b0] rounded-md text-textGreen"
+									? "bg-[#8892b0] rounded-md text-textGreen dark:text-textDark"
 									: " text-textDark"
 							}   bg-transparent hover:bg-[#112240] py-3 text-sm  cursor-pointer duration-300 px-8 font-medium`}
 							onClick={() => setActiveTabIndex(index)}
@@ -33,7 +33,7 @@ const Experience = () => {
 							key={`exp-${index}`}
 							className={` ${
 								activeTabIndex === index
-									? "border-l-textGreen text-textGreen"
+									? "border-l-textGreen text-textGreen dark:text-textDark dark:border-l-textDark"
 									: "border-l-hoverColor text-textDark"
 							}   border-l-2 bg-transparent hover:bg-[#112240] py-3 text-sm  cursor-pointer duration-300 px-8 font-medium`}
 							onClick={() => setActiveTabIndex(index)}

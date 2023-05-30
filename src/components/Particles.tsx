@@ -1,9 +1,12 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import type { Container, Engine } from "tsparticles-engine";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import { useTheme } from "next-themes";
 
 const ParticlesBG = () => {
+	const { theme } = useTheme();
+	const iconsColor = theme === "light" ? "#64ffda" : "#0A192f";
 	const particlesInit = useCallback(async (engine: Engine) => {
 		console.log(engine);
 
@@ -21,11 +24,6 @@ const ParticlesBG = () => {
 			init={particlesInit}
 			loaded={particlesLoaded}
 			options={{
-				background: {
-					color: {
-						value: "#0A192f",
-					},
-				},
 				interactivity: {
 					events: {
 						onClick: {
@@ -47,7 +45,7 @@ const ParticlesBG = () => {
 				fpsLimit: 10,
 				particles: {
 					color: {
-						value: "#64ffda",
+						value: iconsColor,
 					},
 
 					collisions: {

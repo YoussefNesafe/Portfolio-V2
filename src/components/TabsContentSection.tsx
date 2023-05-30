@@ -22,7 +22,11 @@ const TabsContentSection: FC<Iprops> = ({ tabData }) => {
 		>
 			<h3 className="flex gap-1 text-xl font-medium font-titleFont">
 				{workTitle}{" "}
-				<a href={companyURL} target="_blank" className="tracking-wide text-textGreen">
+				<a
+					href={companyURL}
+					target="_blank"
+					className="tracking-wide text-textGreen dark:text-textDark"
+				>
 					@{title}
 				</a>
 			</h3>
@@ -33,7 +37,7 @@ const TabsContentSection: FC<Iprops> = ({ tabData }) => {
 			<ul className="flex flex-col gap-3 mt-6">
 				{content.map((item, index) => (
 					<li key={`content-${index}`} className="flex gap-2 text-base text-textDark">
-						<span className="mt-1 text-textGreen">
+						<span className="mt-1 text-textGreen dark:text-textDark">
 							<TiArrowForward />
 						</span>
 						{item}

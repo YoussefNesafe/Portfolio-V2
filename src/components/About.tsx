@@ -24,7 +24,7 @@ const About = () => {
 					<ul className="max-w-[450px] text-sm font-titleFont grid grid-cols-2 gap-2 mt-6">
 						{SKILLS.map((skill, index) => (
 							<li key={index} className="flex items-center gap-2">
-								<span className="text-textGreen">
+								<span className="text-textGreen dark:text-textDark">
 									<AiFillThunderbolt />
 								</span>{" "}
 								{skill}
@@ -36,10 +36,10 @@ const About = () => {
 					<div className="absolute w-full rounded-lg h-80 -left-6 -top-6 ">
 						<div className="relative z-20 flex sm:max-w-[300px] xl:max-w-[1000px] h-full pl-6 lgl:pl-0">
 							<Image className="object-cover h-full rounded-lg " src={myImage} alt="" />
-							<div className="absolute top-0 left-0 hidden w-full duration-300 rounded-md lgl:inline-block h-80 bg-textGreen/20 group-hover:bg-transparent"></div>
+							<div className="absolute top-0 left-0 hidden w-full duration-300 rounded-md lgl:inline-block h-80 bg-textGreen/20 group-hover:bg-transparent dark:bg-textDark/40"></div>
 						</div>
 					</div>
-					<div className="hidden w-full transition-transform duration-300 border-2 rounded-md lgl:inline-flex h-80 border-textGreen group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
+					<div className="hidden w-full transition-transform duration-300 border-2 rounded-md lgl:inline-flex h-80 border-textGreen dark:border-textDark group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
 				</div>
 			</div>
 		</section>

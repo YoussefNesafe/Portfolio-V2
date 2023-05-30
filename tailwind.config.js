@@ -8,6 +8,7 @@ module.exports = {
 		// Or if using `src` directory:
 		"./src/**/*.{js,ts,jsx,tsx}",
 	],
+	darkMode: "class",
 	theme: {
 		maxWidth: {
 			container: "1440px",
@@ -35,6 +36,7 @@ module.exports = {
 			},
 			colors: {
 				bodyColor: "#0A192f",
+				bodyColorDark: "#E0E2EE",
 				textGreen: "#64ffda",
 				textLight: "#ccd6f6",
 				textDark: "#8892b0",
