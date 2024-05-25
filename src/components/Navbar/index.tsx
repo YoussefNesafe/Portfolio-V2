@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import logo from "/public/logo.png";
+import logo from "/public/logo-bgW.svg";
 import ToggleThemeButton from "../ToggleThemeButton";
 
 import { motion } from "framer-motion";
@@ -18,7 +18,7 @@ const Navbar = () => {
 					className="flex items-center gap-5"
 				>
 					<Image className="w-14" src={logo} alt="Logo" />
-					<ToggleThemeButton />
+					{/* <ToggleThemeButton /> */}
 				</motion.div>
 				<DesktopNavbar />
 				<MobileNavbar />
