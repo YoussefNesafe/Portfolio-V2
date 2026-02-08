@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)",
+      "WebFetch(domain:www.multibankgroup.com)",
+      "WebFetch(domain:trade.multibankfx.com)",
+      "WebFetch(domain:trade.mb.io)",
+      "WebFetch(domain:mb.io)",
+      "WebFetch(domain:trade.mex.ae)",
+      "Bash(dir:*)",
+      "Bash(npx next build:*)"
+    ]
+  }
+}

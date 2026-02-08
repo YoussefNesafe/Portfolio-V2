@@ -1,0 +1,250 @@
+{
+  "layout": {
+    "header": {
+      "logo": "YN",
+      "nav": [
+        { "label": "Home", "href": "#hero" },
+        { "label": "About", "href": "#about" },
+        { "label": "Experience", "href": "#experience" },
+        { "label": "Projects", "href": "#projects" },
+        { "label": "Skills", "href": "#skills" },
+        { "label": "Contact", "href": "#contact" }
+      ]
+    },
+    "footer": {
+      "credit": "Designed & Built by Youssef Nesafe",
+      "socials": [
+        { "type": "LinkedIn", "href": "https://linkedin.com/in/youssef-nesafe", "icon": "FiLinkedin" },
+        { "type": "Email", "href": "mailto:ynessafe@gmail.com", "icon": "FiMail" }
+      ]
+    }
+  },
+  "hero": {
+    "greeting": "> const developer = \"Youssef Nesafe\";",
+    "name": "Youssef Nesafe",
+    "titlePrefix": "Senior",
+    "titleHighlight": "Frontend",
+    "titleSuffix": "Engineer",
+    "tagline": "Building high-performance trading platforms and enterprise applications with 6+ years of React expertise.",
+    "ctaPrimary": { "label": "View My Work", "href": "#experience" },
+    "ctaSecondary": { "label": "Get In Touch", "href": "#contact" },
+    "scrollHint": "Scroll to explore"
+  },
+  "about": {
+    "sectionLabel": "// about me",
+    "title": "About Me",
+    "terminal": {
+      "command": "user@youssef:~$ cat about.txt",
+      "lines": [
+        "Senior Frontend Engineer with 6+ years of experience specializing in building high-performance, scalable web applications.",
+        "Currently crafting real-time crypto and forex trading platforms at MultiBank Group in Dubai, serving 5,000+ concurrent users with 99.9% uptime.",
+        "Passionate about clean code, performance optimization, and creating seamless user experiences. Expert in React ecosystem, TypeScript, and modern frontend architecture."
+      ]
+    },
+    "stats": [
+      { "value": 6, "suffix": "+", "label": "Years Experience" },
+      { "value": 5000, "suffix": "+", "label": "Concurrent Users" },
+      { "value": 99.9, "suffix": "%", "label": "Uptime Achieved" },
+      { "value": 50, "suffix": "%", "label": "API Reduction" }
+    ]
+  },
+  "experience": {
+    "sectionLabel": "// experience",
+    "title": "Work Experience",
+    "items": [
+      {
+        "company": "MultiBank Group",
+        "role": "Senior Frontend Developer",
+        "period": "Jul 2022 - Present",
+        "location": "Dubai, UAE",
+        "description": "Global financial derivatives broker",
+        "achievements": [
+          "Architected two mission-critical trading platforms (crypto and forex) serving 5,000+ concurrent users with 99.9% uptime, processing 10,000+ daily trades with sub-second response times.",
+          "Implemented modern frontend stack (GraphQL, React Query, Zustand) that reduced API calls by 50% and improved page load times from 2.5s to 1.5s\u2014driving 25% increase in user engagement.",
+          "Built real-time trading dashboards with live market data visualization, TradingView chart integration, and complex order management handling 50+ global states across 100+ components.",
+          "Established comprehensive testing strategy achieving 90%+ code coverage using Jest and React Testing Library, reducing production bugs by 45% through CI/CD automation.",
+          "Integrated WebSocket connections for real-time price feeds and order book updates, ensuring traders receive sub-100ms data latency during peak market volatility."
+        ],
+        "tech": ["React", "TypeScript", "GraphQL", "React Query", "Zustand", "WebSocket", "Jest"]
+      },
+      {
+        "company": "Nestech",
+        "role": "Senior Frontend Developer",
+        "period": "Aug 2021 - Jul 2022",
+        "location": "Syria",
+        "description": "Enterprise software consultancy",
+        "achievements": [
+          "Led development of enterprise automation system integrating HR, payroll, and financial operations for 100+ users\u2014reducing manual processing time by 70% and delivering $50K+ annual cost savings.",
+          "Delivered 10+ production applications using mobile-first responsive design, achieving 95%+ mobile compatibility and reducing bounce rate by 40%.",
+          "Mentored 4 junior developers on Vue.js best practices and coding standards, improving team velocity by 25% and reducing code review iterations by 30%."
+        ],
+        "tech": ["Vue.js", "Vuex", "Quasar", "REST APIs"]
+      },
+      {
+        "company": "Nestech",
+        "role": "Frontend Developer",
+        "period": "Dec 2019 - Aug 2021",
+        "location": "Syria",
+        "description": "Enterprise software consultancy",
+        "achievements": [
+          "Developed high-performance applications using Quasar framework and Vue.js in Agile environment, collaborating with backend team on database design and system architecture.",
+          "Owned end-to-end delivery of pixel-perfect UI implementations, consistently meeting sprint commitments and quality standards."
+        ],
+        "tech": ["Vue.js", "Quasar", "REST APIs"]
+      },
+      {
+        "company": "Codlex",
+        "role": "Frontend Developer",
+        "period": "Apr 2018 - Nov 2019",
+        "location": "Syria",
+        "description": "Web development agency",
+        "achievements": [
+          "Transformed UI/UX designs into responsive, cross-browser compatible web applications using HTML5, CSS3, JavaScript, and jQuery.",
+          "Modernized legacy codebases with contemporary technologies, improving user satisfaction scores by 30%."
+        ],
+        "tech": ["HTML5", "CSS3", "JavaScript", "jQuery"]
+      }
+    ]
+  },
+  "projects": {
+    "sectionLabel": "// projects",
+    "title": "Featured Projects",
+    "items": [
+      {
+        "id": "multibankgroup",
+        "title": "MultibankGroup.com",
+        "type": "Corporate Website",
+        "description": "Redesigned and built the global corporate website for MultiBank Group, a leading financial derivatives broker. Features dynamic content management, multi-language support, and optimized performance across all devices.",
+        "image": "/images/projects/multibankgroup.png",
+        "url": "https://multibankgroup.com",
+        "highlights": [
+          "Achieved 95+ Lighthouse performance score with optimized SSR and image loading",
+          "Implemented dynamic multi-language content system serving 10+ regions",
+          "Built responsive layouts delivering consistent experience across all breakpoints"
+        ],
+        "tech": ["Next.js", "TypeScript", "Tailwind CSS", "GraphQL", "React Query"]
+      },
+      {
+        "id": "mex-trading",
+        "title": "MEX Trading Platform",
+        "type": "Trading Platform",
+        "description": "Architected and developed a real-time forex trading platform serving 5,000+ concurrent users. Features live market data, advanced charting with TradingView integration, and complex order management.",
+        "image": "/images/projects/mex-trading.png",
+        "url": "https://mex.multibank.com",
+        "highlights": [
+          "Handles 10,000+ daily trades with sub-second response times and 99.9% uptime",
+          "Real-time WebSocket price feeds with sub-100ms latency during peak volatility",
+          "Manages 50+ global states across 100+ components with zero-conflict architecture"
+        ],
+        "tech": ["React", "TypeScript", "GraphQL", "WebSocket", "Zustand", "React Query"]
+      },
+      {
+        "id": "mbio-exchange",
+        "title": "MB.io Exchange",
+        "type": "Crypto Exchange",
+        "description": "Built a full-featured cryptocurrency exchange platform with real-time order books, advanced trading pairs, and secure wallet integration. Supports spot trading with live market depth visualization.",
+        "image": "/images/projects/mbio-exchange.png",
+        "url": "https://mb.io/exchange",
+        "highlights": [
+          "Real-time order book and trade history with WebSocket-driven live updates",
+          "Advanced charting and trading interface with multiple order types",
+          "Optimized rendering for high-frequency data updates without frame drops"
+        ],
+        "tech": ["React", "TypeScript", "GraphQL", "WebSocket", "Zustand", "Apollo Client"]
+      },
+      {
+        "id": "mbio-landing",
+        "title": "MB.io",
+        "type": "Marketing Website",
+        "description": "Designed and developed the marketing website for MB.io crypto platform. Features smooth scroll animations, interactive UI elements, and conversion-optimized landing pages.",
+        "image": "/images/projects/mbio-landing.png",
+        "url": "https://mb.io",
+        "highlights": [
+          "Smooth scroll-driven animations and interactive elements boosting engagement",
+          "Conversion-optimized layouts with A/B tested CTAs and user flows",
+          "Perfect mobile experience with gesture-friendly interactions"
+        ],
+        "tech": ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"]
+      }
+    ]
+  },
+  "skills": {
+    "sectionLabel": "// skills",
+    "title": "Tech Stack",
+    "categories": [
+      {
+        "name": "Frontend",
+        "skills": [
+          { "name": "React", "icon": "SiReact", "color": "#61DAFB" },
+          { "name": "Next.js", "icon": "SiNextdotjs", "color": "#FFFFFF" },
+          { "name": "Vue.js", "icon": "SiVuedotjs", "color": "#4FC08D" },
+          { "name": "TypeScript", "icon": "SiTypescript", "color": "#3178C6" },
+          { "name": "JavaScript", "icon": "SiJavascript", "color": "#F7DF1E" }
+        ]
+      },
+      {
+        "name": "State & Data",
+        "skills": [
+          { "name": "GraphQL", "icon": "SiGraphql", "color": "#E10098" },
+          { "name": "Apollo Client", "icon": "SiApollographql", "color": "#311C87" },
+          { "name": "React Query", "icon": "SiReactquery", "color": "#FF4154" },
+          { "name": "Zustand", "icon": "SiReact", "color": "#61DAFB" },
+          { "name": "Redux", "icon": "SiRedux", "color": "#764ABC" },
+          { "name": "REST APIs", "icon": "SiOpenapiinitiative", "color": "#6BA539" },
+          { "name": "WebSocket", "icon": "SiSocketdotio", "color": "#010101" }
+        ]
+      },
+      {
+        "name": "Styling & UI",
+        "skills": [
+          { "name": "Tailwind CSS", "icon": "SiTailwindcss", "color": "#06B6D4" },
+          { "name": "Material-UI", "icon": "SiMui", "color": "#007FFF" },
+          { "name": "Quasar", "icon": "SiQuasar", "color": "#1976D2" },
+          { "name": "Vuetify", "icon": "SiVuetify", "color": "#1867C0" },
+          { "name": "SASS/SCSS", "icon": "SiSass", "color": "#CC6699" }
+        ]
+      },
+      {
+        "name": "Testing",
+        "skills": [
+          { "name": "Jest", "icon": "SiJest", "color": "#C21325" },
+          { "name": "Cypress", "icon": "SiCypress", "color": "#69D3A7" },
+          { "name": "Testing Library", "icon": "SiTestinglibrary", "color": "#E33332" }
+        ]
+      },
+      {
+        "name": "DevOps & Tools",
+        "skills": [
+          { "name": "Git", "icon": "SiGit", "color": "#F05032" },
+          { "name": "Docker", "icon": "SiDocker", "color": "#2496ED" },
+          { "name": "GitHub Actions", "icon": "SiGithubactions", "color": "#2088FF" },
+          { "name": "Webpack", "icon": "SiWebpack", "color": "#8DD6F9" },
+          { "name": "Vite", "icon": "SiVite", "color": "#646CFF" }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "sectionLabel": "// contact",
+    "title": "Get In Touch",
+    "description": "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.",
+    "items": [
+      { "type": "Email", "value": "ynessafe@gmail.com", "href": "mailto:ynessafe@gmail.com", "icon": "FiMail" },
+      { "type": "Phone", "value": "+971 50 190 5033", "href": "tel:+971501905033", "icon": "FiPhone" },
+      { "type": "Location", "value": "Dubai, UAE", "href": "#", "icon": "FiMapPin" },
+      { "type": "LinkedIn", "value": "linkedin.com/in/youssef-nesafe", "href": "https://linkedin.com/in/youssef-nesafe", "icon": "FiLinkedin" }
+    ],
+    "terminal": {
+      "command": "const contact = {",
+      "lines": [
+        "  email: \"ynessafe@gmail.com\",",
+        "  phone: \"+971 50 190 5033\",",
+        "  location: \"Dubai, UAE\",",
+        "  availability: \"Open to opportunities\"",
+        "};"
+      ]
+    },
+    "ctaLabel": "Send Email",
+    "ctaHref": "mailto:ynessafe@gmail.com"
+  }
+}
