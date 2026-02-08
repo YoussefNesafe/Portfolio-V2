@@ -14,8 +14,16 @@
     "footer": {
       "credit": "Designed & Built by Youssef Nesafe",
       "socials": [
-        { "type": "LinkedIn", "href": "https://linkedin.com/in/youssef-nesafe", "icon": "FiLinkedin" },
-        { "type": "Email", "href": "mailto:ynessafe@gmail.com", "icon": "FiMail" }
+        {
+          "type": "LinkedIn",
+          "href": "https://linkedin.com/in/youssef-nesafe",
+          "icon": "FiLinkedin"
+        },
+        {
+          "type": "Email",
+          "href": "mailto:ynessafe@gmail.com",
+          "icon": "FiMail"
+        }
       ]
     }
   },
@@ -65,7 +73,15 @@
           "Established comprehensive testing strategy achieving 90%+ code coverage using Jest and React Testing Library, reducing production bugs by 45% through CI/CD automation.",
           "Integrated WebSocket connections for real-time price feeds and order book updates, ensuring traders receive sub-100ms data latency during peak market volatility."
         ],
-        "tech": ["React", "TypeScript", "GraphQL", "React Query", "Zustand", "WebSocket", "Jest"]
+        "tech": [
+          "React",
+          "TypeScript",
+          "GraphQL",
+          "React Query",
+          "Zustand",
+          "WebSocket",
+          "Jest"
+        ]
       },
       {
         "company": "Nestech",
@@ -122,21 +138,34 @@
           "Implemented dynamic multi-language content system serving 10+ regions",
           "Built responsive layouts delivering consistent experience across all breakpoints"
         ],
-        "tech": ["Next.js", "TypeScript", "Tailwind CSS", "GraphQL", "React Query"]
+        "tech": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "GraphQL",
+          "React Query"
+        ]
       },
       {
         "id": "mex-trading",
-        "title": "MEX Trading Platform",
+        "title": "Multibank Trading Platform",
         "type": "Trading Platform",
         "description": "Architected and developed a real-time forex trading platform serving 5,000+ concurrent users. Features live market data, advanced charting with TradingView integration, and complex order management.",
         "image": "/images/projects/mex-trading.png",
-        "url": "https://mex.multibank.com",
+        "url": "https://trade.multibankfx.com",
         "highlights": [
           "Handles 10,000+ daily trades with sub-second response times and 99.9% uptime",
           "Real-time WebSocket price feeds with sub-100ms latency during peak volatility",
           "Manages 50+ global states across 100+ components with zero-conflict architecture"
         ],
-        "tech": ["React", "TypeScript", "GraphQL", "WebSocket", "Zustand", "React Query"]
+        "tech": [
+          "React",
+          "TypeScript",
+          "GraphQL",
+          "WebSocket",
+          "Zustand",
+          "React Query"
+        ]
       },
       {
         "id": "mbio-exchange",
@@ -144,13 +173,20 @@
         "type": "Crypto Exchange",
         "description": "Built a full-featured cryptocurrency exchange platform with real-time order books, advanced trading pairs, and secure wallet integration. Supports spot trading with live market depth visualization.",
         "image": "/images/projects/mbio-exchange.png",
-        "url": "https://mb.io/exchange",
+        "url": "https://trade.mb.io",
         "highlights": [
           "Real-time order book and trade history with WebSocket-driven live updates",
           "Advanced charting and trading interface with multiple order types",
           "Optimized rendering for high-frequency data updates without frame drops"
         ],
-        "tech": ["React", "TypeScript", "GraphQL", "WebSocket", "Zustand", "Apollo Client"]
+        "tech": [
+          "React",
+          "TypeScript",
+          "GraphQL",
+          "WebSocket",
+          "Zustand",
+          "Apollo Client"
+        ]
       },
       {
         "id": "mbio-landing",
@@ -186,18 +222,30 @@
         "name": "State & Data",
         "skills": [
           { "name": "GraphQL", "icon": "SiGraphql", "color": "#E10098" },
-          { "name": "Apollo Client", "icon": "SiApollographql", "color": "#311C87" },
+          {
+            "name": "Apollo Client",
+            "icon": "SiApollographql",
+            "color": "#311C87"
+          },
           { "name": "React Query", "icon": "SiReactquery", "color": "#FF4154" },
           { "name": "Zustand", "icon": "SiReact", "color": "#61DAFB" },
           { "name": "Redux", "icon": "SiRedux", "color": "#764ABC" },
-          { "name": "REST APIs", "icon": "SiOpenapiinitiative", "color": "#6BA539" },
+          {
+            "name": "REST APIs",
+            "icon": "SiOpenapiinitiative",
+            "color": "#6BA539"
+          },
           { "name": "WebSocket", "icon": "SiSocketdotio", "color": "#010101" }
         ]
       },
       {
         "name": "Styling & UI",
         "skills": [
-          { "name": "Tailwind CSS", "icon": "SiTailwindcss", "color": "#06B6D4" },
+          {
+            "name": "Tailwind CSS",
+            "icon": "SiTailwindcss",
+            "color": "#06B6D4"
+          },
           { "name": "Material-UI", "icon": "SiMui", "color": "#007FFF" },
           { "name": "Quasar", "icon": "SiQuasar", "color": "#1976D2" },
           { "name": "Vuetify", "icon": "SiVuetify", "color": "#1867C0" },
@@ -209,7 +257,11 @@
         "skills": [
           { "name": "Jest", "icon": "SiJest", "color": "#C21325" },
           { "name": "Cypress", "icon": "SiCypress", "color": "#69D3A7" },
-          { "name": "Testing Library", "icon": "SiTestinglibrary", "color": "#E33332" }
+          {
+            "name": "Testing Library",
+            "icon": "SiTestinglibrary",
+            "color": "#E33332"
+          }
         ]
       },
       {
@@ -217,7 +269,11 @@
         "skills": [
           { "name": "Git", "icon": "SiGit", "color": "#F05032" },
           { "name": "Docker", "icon": "SiDocker", "color": "#2496ED" },
-          { "name": "GitHub Actions", "icon": "SiGithubactions", "color": "#2088FF" },
+          {
+            "name": "GitHub Actions",
+            "icon": "SiGithubactions",
+            "color": "#2088FF"
+          },
           { "name": "Webpack", "icon": "SiWebpack", "color": "#8DD6F9" },
           { "name": "Vite", "icon": "SiVite", "color": "#646CFF" }
         ]
@@ -229,10 +285,30 @@
     "title": "Get In Touch",
     "description": "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.",
     "items": [
-      { "type": "Email", "value": "ynessafe@gmail.com", "href": "mailto:ynessafe@gmail.com", "icon": "FiMail" },
-      { "type": "Phone", "value": "+971 50 190 5033", "href": "tel:+971501905033", "icon": "FiPhone" },
-      { "type": "Location", "value": "Dubai, UAE", "href": "#", "icon": "FiMapPin" },
-      { "type": "LinkedIn", "value": "linkedin.com/in/youssef-nesafe", "href": "https://linkedin.com/in/youssef-nesafe", "icon": "FiLinkedin" }
+      {
+        "type": "Email",
+        "value": "ynessafe@gmail.com",
+        "href": "mailto:ynessafe@gmail.com",
+        "icon": "FiMail"
+      },
+      {
+        "type": "Phone",
+        "value": "+971 50 190 5033",
+        "href": "tel:+971501905033",
+        "icon": "FiPhone"
+      },
+      {
+        "type": "Location",
+        "value": "Dubai, UAE",
+        "href": "#",
+        "icon": "FiMapPin"
+      },
+      {
+        "type": "LinkedIn",
+        "value": "linkedin.com/in/youssef-nesafe",
+        "href": "https://linkedin.com/in/youssef-nesafe",
+        "icon": "FiLinkedin"
+      }
     ],
     "terminal": {
       "command": "const contact = {",

@@ -24,7 +24,7 @@ export default function ExperienceSection(props: IExperienceSection) {
 
       <div ref={containerRef} className="relative">
         {/* Glowing timeline line (desktop only) */}
-        <div className="hidden desktop:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[0.052vw]">
+        <div className="hidden desktop:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[0.104vw] z-10">
           <motion.div
             className="h-full w-full bg-gradient-to-b from-accent-cyan via-accent-purple to-accent-cyan/20 origin-top"
             style={{ scaleY }}

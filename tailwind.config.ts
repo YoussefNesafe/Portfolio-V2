@@ -42,6 +42,8 @@ const config: Config = {
       animation: {
         "blink-cursor": "blink-cursor 1s step-end infinite",
         float: "float 6s ease-in-out infinite",
+        "float-slow": "float 8s ease-in-out infinite",
+        "float-slower": "float 10s ease-in-out infinite",
         "gradient-shift": "gradient-shift 3s ease infinite",
       },
     },
