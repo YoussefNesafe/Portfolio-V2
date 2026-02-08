@@ -12,6 +12,7 @@ import type { IHeroSection } from "@/app/models/Hero";
 import AnimatedText from "@/app/components/ui/AnimatedText";
 import GridBackground from "@/app/components/ui/GridBackground";
 import GradientBlob from "@/app/components/ui/GradientBlob";
+import SectionDecorations from "@/app/components/ui/FloatingElements";
 
 export default function HeroSection(props: IHeroSection) {
   const [typewriterDone, setTypewriterDone] = useState(false);
@@ -25,12 +26,13 @@ export default function HeroSection(props: IHeroSection) {
       <GridBackground />
       <GradientBlob
         color="cyan"
-        className="-top-[20vw] -right-[20vw] tablet:-top-[10vw] tablet:-right-[10vw] desktop:-top-[5.208vw] desktop:-right-[5.208vw]"
+        className="-top-[20vw] -right-[20vw] tablet:-top-[10vw] tablet:-right-[10vw] desktop:-top-[5.208vw] desktop:-right-[5.208vw] animate-wave-glow"
       />
       <GradientBlob
         color="purple"
-        className="-bottom-[20vw] -left-[20vw] tablet:-bottom-[10vw] tablet:-left-[10vw] desktop:-bottom-[5.208vw] desktop:-left-[5.208vw]"
+        className="-bottom-[20vw] -left-[20vw] tablet:-bottom-[10vw] tablet:-left-[10vw] desktop:-bottom-[5.208vw] desktop:-left-[5.208vw] animate-wave-glow"
       />
+      <SectionDecorations variant="hero" />
 
       {/* Content */}
       <motion.div

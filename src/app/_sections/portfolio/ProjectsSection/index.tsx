@@ -28,7 +28,7 @@ function ProjectCard({ item, index }: { item: ProjectItem; index: number }) {
           sizes="(max-width: 800px) 100vw, 50vw"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-secondary via-bg-secondary/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-bg-secondary via-bg-secondary/40 to-transparent" />
         {/* Type badge */}
         <span className="absolute top-[2.667vw] left-[2.667vw] tablet:top-[1.25vw] tablet:left-[1.25vw] desktop:top-[0.521vw] desktop:left-[0.521vw] font-mono text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] text-accent-emerald bg-accent-emerald/10 border border-accent-emerald/20 rounded-[1.333vw] tablet:rounded-[0.625vw] desktop:rounded-[0.26vw] px-[2.667vw] py-[0.8vw] tablet:px-[1.25vw] tablet:py-[0.375vw] desktop:px-[0.521vw] desktop:py-[0.156vw]">
           {item.type}

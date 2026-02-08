@@ -70,7 +70,7 @@ export default function AboutSection(props: IAboutSection) {
     <Section id="about">
       <SectionHeading label={props.sectionLabel} title={props.title} />
 
-      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw]">
+      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center">
         {/* Terminal */}
         <motion.div
           initial="hidden"
@@ -84,7 +84,10 @@ export default function AboutSection(props: IAboutSection) {
               {props.terminal.command}
             </p>
             {props.terminal.lines.map((line, i) => (
-              <p key={i} className="text-foreground mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw] last:mb-0">
+              <p
+                key={i}
+                className="text-foreground mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw] last:mb-0"
+              >
                 {line}
               </p>
             ))}
@@ -98,7 +101,7 @@ export default function AboutSection(props: IAboutSection) {
           whileInView="visible"
           viewport={defaultViewport}
           variants={staggerContainer}
-          className="desktop:w-[45%] grid grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw]"
+          className="desktop:w-[45%] grid grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw] h-fit"
         >
           {props.stats.map((stat) => (
             <motion.div key={stat.label} variants={fadeUp}>

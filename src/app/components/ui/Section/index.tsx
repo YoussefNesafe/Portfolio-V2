@@ -2,6 +2,7 @@
 
 import { cn } from "@/app/utils/cn";
 import { HTMLAttributes } from "react";
+import SectionDecorations from "@/app/components/ui/FloatingElements";
 
 interface SectionProps extends HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
@@ -17,10 +18,11 @@ export default function Section({
   return (
     <section
       id={id}
-      className={cn("section-pt section-pb", className)}
+      className={cn("relative section-pt section-pb", className)}
       {...props}
     >
       {children}
+      {id ? <SectionDecorations variant={id as any} /> : null}
     </section>
   );
 }

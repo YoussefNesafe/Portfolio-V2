@@ -44,14 +44,14 @@ export default function ContactSection(props: IContactSection) {
         {props.description}
       </motion.p>
 
-      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw]">
+      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center">
         {/* Contact cards */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={defaultViewport}
           variants={staggerContainer}
-          className="desktop:w-[50%] grid grid-cols-1 tablet:grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw]"
+          className="desktop:w-[50%] grid grid-cols-1 tablet:grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw] h-fit"
         >
           {props.items.map((item) => {
             const Icon = iconMap[item.icon];
@@ -61,7 +61,11 @@ export default function ContactSection(props: IContactSection) {
                   <a
                     href={item.href}
                     target={item.href.startsWith("http") ? "_blank" : undefined}
-                    rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    rel={
+                      item.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
                     className="flex items-start gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw] group"
                   >
                     <div className="p-[2.667vw] tablet:p-[1.25vw] desktop:p-[0.521vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] bg-accent-cyan/10 text-accent-cyan group-hover:bg-accent-cyan/20 transition-colors shrink-0">
@@ -103,13 +107,6 @@ export default function ContactSection(props: IContactSection) {
               </p>
             ))}
           </Terminal>
-
-          <a
-            href={props.ctaHref}
-            className="btn-gradient inline-block mt-[5.333vw] tablet:mt-[2.5vw] desktop:mt-[1.042vw] text-white font-medium text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] px-[8.533vw] py-[3.2vw] tablet:px-[4vw] tablet:py-[1.5vw] desktop:px-[1.667vw] desktop:py-[0.625vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] w-full text-center"
-          >
-            {props.ctaLabel}
-          </a>
         </motion.div>
       </div>
     </Section>

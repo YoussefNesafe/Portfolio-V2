@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Youssef Nesafe | Senior Frontend Engineer",
   description:
-    "Senior Frontend Engineer with 6+ years of experience building high-performance trading platforms and enterprise applications. Expert in React, TypeScript, and modern frontend architecture.",
+    "Full-stack Software Engineer with 6+ years of experience building scalable, high-performance applications. Passionate about clean code, modern architectures, and delivering innovative solutions.",
   keywords: [
     "Frontend Engineer",
     "React Developer",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Youssef Nesafe | Senior Frontend Engineer",
     description:
-      "Building high-performance trading platforms and enterprise applications with 6+ years of React expertise.",
+      "Crafting scalable, high-performance applications with 6+ years of experience in full-stack development and modern web solutions.",
     type: "website",
   },
 };
@@ -40,9 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable}`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
     </html>

@@ -14,10 +14,10 @@ export default function GradientBlob({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute rounded-full blur-[100px] opacity-20",
-        "w-[80vw] h-[80vw] tablet:w-[40vw] tablet:h-[40vw] desktop:w-[20.833vw] desktop:h-[20.833vw]",
-        color === "cyan" ? "bg-accent-cyan" : "bg-accent-purple",
-        className
+        "pointer-events-none absolute rounded-full blur-[26.7vw] tablet:blur-[12.5vw] desktop:blur-[10vw] opacity-10",
+        "w-[80vw] h-[80vw] tablet:w-[40vw] tablet:h-[40vw] desktop:w-[18vw] desktop:h-[18vw]",
+        color === "cyan" ? "bg-accent-cyan/40" : "bg-accent-purple/40",
+        className,
       )}
     />
   );
