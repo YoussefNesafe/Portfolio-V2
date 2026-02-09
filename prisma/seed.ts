@@ -7,11 +7,11 @@ async function main() {
   try {
     // Create an author
     const author = await db.author.upsert({
-      where: { email: "author@example.com" },
+      where: { email: "ynessafe@gmail.com" },
       update: {},
       create: {
-        email: "author@example.com",
-        name: "Your Name",
+        email: "ynessafe@gmail.com",
+        name: "Youssef Nesafe",
         avatar: null,
       },
     });
