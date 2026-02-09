@@ -1,8 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { cn } from "@/app/utils/cn";
-import { fadeUp } from "@/app/lib/animations";
 
 interface GlowCardProps {
   children: React.ReactNode;
@@ -16,8 +12,7 @@ export default function GlowCard({
   glowColor = "cyan",
 }: GlowCardProps) {
   return (
-    <motion.div
-      variants={fadeUp}
+    <div
       className={cn(
         "rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw]",
         "border border-border-subtle bg-bg-secondary",
@@ -30,6 +25,6 @@ export default function GlowCard({
       )}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

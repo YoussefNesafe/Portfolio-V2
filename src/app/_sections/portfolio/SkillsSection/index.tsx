@@ -30,9 +30,6 @@ export default function SkillsSection(props: ISkillsSection) {
             </h4>
             <motion.div
               variants={fastStaggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={defaultViewport}
               className="flex flex-wrap gap-[2.667vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]"
             >
               {category.skills.map((skill) => (
