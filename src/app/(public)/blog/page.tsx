@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour
 
 import { db } from "@/app/lib/db";
 import BlogCard from "./components/BlogCard";
@@ -169,6 +169,7 @@ export default async function BlogPage({
               coverImage={post.coverImage || undefined}
               category={post.categories[0]}
               publishedAt={post.publishedAt || undefined}
+              searchQuery={params.search}
             />
           ))}
         </div>

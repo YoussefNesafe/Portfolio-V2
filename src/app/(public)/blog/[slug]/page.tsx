@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400; // Revalidate every 24 hours
 
 import { notFound } from "next/navigation";
 import { db } from "@/app/lib/db";

@@ -16,6 +16,24 @@ interface BlogCardProps {
     slug: string;
   };
   publishedAt?: Date;
+  searchQuery?: string;
+}
+
+function highlightText(text: string, query?: string) {
+  if (!query || !query.trim()) return text;
+
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+
+  return parts.map((part, i) =>
+    part.toLowerCase() === query.toLowerCase() ? (
+      <mark key={i} className="bg-accent-cyan/30 text-accent-cyan rounded-sm px-[0.5vw] tablet:px-[0.25vw] desktop:px-[0.1vw]">
+        {part}
+      </mark>
+    ) : (
+      part
+    ),
+  );
 }
 
 export default function BlogCard({
@@ -25,6 +43,7 @@ export default function BlogCard({
   coverImage,
   category,
   publishedAt,
+  searchQuery,
 }: BlogCardProps) {
   const formattedDate = publishedAt
     ? new Date(publishedAt).toLocaleDateString("en-US", {
@@ -62,11 +81,11 @@ export default function BlogCard({
             )}
 
             <h3 className="text-heading text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] font-bold mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw] group-hover:text-accent-cyan transition-colors duration-300 line-clamp-2">
-              {title}
+              {highlightText(title, searchQuery)}
             </h3>
 
             <p className="text-muted text-[2.933vw] tablet:text-[1.4vw] desktop:text-[0.583vw] mb-[4vw] tablet:mb-[2vw] desktop:mb-[0.833vw] line-clamp-3">
-              {description}
+              {highlightText(description, searchQuery)}
             </p>
 
             {formattedDate && (

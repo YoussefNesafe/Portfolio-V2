@@ -8,7 +8,8 @@ import type { IHeader } from "@/app/models/Layout";
 
 export default function Header({ logo, nav }: IHeader) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const sectionIds = nav.map((item) => item.href.replace("#", ""));
+  const anchorItems = nav.filter((item) => item.href.startsWith("#"));
+  const sectionIds = anchorItems.map((item) => item.href.replace("#", ""));
   const activeId = useScrollSpy(sectionIds);
 
   return (
@@ -25,8 +26,9 @@ export default function Header({ logo, nav }: IHeader) {
         {/* Desktop nav */}
         <nav className="hidden tablet:flex items-center gap-[3.2vw] desktop:gap-[1.667vw]">
           {nav.map((item) => {
+            const isPageLink = !item.href.startsWith("#");
             const id = item.href.replace("#", "");
-            const isActive = activeId === id;
+            const isActive = !isPageLink && activeId === id;
             return (
               <a
                 key={item.href}
@@ -81,21 +83,25 @@ export default function Header({ logo, nav }: IHeader) {
             className="tablet:hidden overflow-hidden bg-bg-secondary border-t border-border-subtle"
           >
             <div className="flex flex-col py-[2.667vw]">
-              {nav.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "px-[4.267vw] py-[3.2vw] text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] transition-colors",
-                    activeId === item.href.replace("#", "")
-                      ? "text-accent-cyan bg-accent-cyan/5"
-                      : "text-text-muted hover:text-foreground"
-                  )}
-                >
-                  {item.label}
-                </a>
-              ))}
+              {nav.map((item) => {
+                const isPageLink = !item.href.startsWith("#");
+                const isActive = !isPageLink && activeId === item.href.replace("#", "");
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "px-[4.267vw] py-[3.2vw] text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] transition-colors",
+                      isActive
+                        ? "text-accent-cyan bg-accent-cyan/5"
+                        : "text-text-muted hover:text-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </div>
           </motion.nav>
         )}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
 import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
 import { validateSession } from "@/app/lib/auth";
@@ -128,6 +129,8 @@ export async function PUT(
       },
     });
 
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${updatedPost.slug}`);
     return NextResponse.json(updatedPost, { status: 200 });
   } catch (error) {
     console.error("[PUT /api/blog/[id]]", error);
@@ -169,6 +172,8 @@ export async function DELETE(
       where: { id },
     });
 
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${post.slug}`);
     return NextResponse.json(
       { message: "Post deleted successfully" },
       { status: 200 },
