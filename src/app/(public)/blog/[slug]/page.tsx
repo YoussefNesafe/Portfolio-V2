@@ -1,5 +1,7 @@
 export const revalidate = 86400; // Revalidate every 24 hours
 
+import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/app/lib/db";
 
@@ -88,11 +90,13 @@ export default async function BlogPostPage({
         </div>
 
         {post.coverImage && (
-          <div className="mb-[6.667vw] tablet:mb-[3.333vw] desktop:mb-[1.389vw] rounded-lg overflow-hidden bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10 h-[40vw] tablet:h-[25vw] desktop:h-[10vw]">
-            <img
+          <div className="relative mb-[6.667vw] tablet:mb-[3.333vw] desktop:mb-[1.389vw] rounded-lg overflow-hidden bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10 h-[40vw] tablet:h-[25vw] desktop:h-[10vw]">
+            <Image
               src={post.coverImage}
               alt={post.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 480px) 90vw, (max-width: 1024px) 80vw, 50vw"
             />
           </div>
         )}
@@ -123,25 +127,25 @@ export default async function BlogPostPage({
       {post.tags.length > 0 && (
         <div className="flex flex-wrap gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw] pt-[6.667vw] tablet:pt-[3.333vw] desktop:pt-[1.389vw] border-t border-subtle">
           {post.tags.map((tag) => (
-            <a
+            <Link
               key={tag.id}
               href={`/blog?tag=${tag.id}`}
               className="inline-block px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] bg-accent-purple/10 text-accent-purple rounded hover:bg-accent-purple/20 transition-colors text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]"
             >
               #{tag.name}
-            </a>
+            </Link>
           ))}
         </div>
       )}
 
       {/* Back Link */}
       <div className="mt-[8vw] tablet:mt-[4vw] desktop:mt-[1.667vw]">
-        <a
+        <Link
           href="/blog"
           className="inline-block text-accent-cyan hover:text-accent-cyan/80 transition-colors text-[2.933vw] tablet:text-[1.4vw] desktop:text-[0.583vw]"
         >
           ← Back to blog
-        </a>
+        </Link>
       </div>
     </article>
   );

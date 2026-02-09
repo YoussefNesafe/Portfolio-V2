@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { FiLinkedin, FiMail, FiChevronDown } from "react-icons/fi";
 import {
   fadeUp,
@@ -97,18 +98,18 @@ export default function HeroSection(props: IHeroSection) {
             typewriterDone ? "opacity-100" : "opacity-0"
           }`}
         >
-          <a
+          <Link
             href={props.ctaPrimary.href}
             className="btn-gradient text-white font-medium text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] px-[6.4vw] py-[3.2vw] tablet:px-[3vw] tablet:py-[1.5vw] desktop:px-[1.25vw] desktop:py-[0.625vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] text-center"
           >
             {props.ctaPrimary.label}
-          </a>
-          <a
+          </Link>
+          <Link
             href={props.ctaSecondary.href}
             className="border border-accent-cyan text-accent-cyan hover:bg-accent-cyan/10 font-medium text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] px-[6.4vw] py-[3.2vw] tablet:px-[3vw] tablet:py-[1.5vw] desktop:px-[1.25vw] desktop:py-[0.625vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] transition-colors text-center"
           >
             {props.ctaSecondary.label}
-          </a>
+          </Link>
         </motion.div>
 
         {/* Social links */}
@@ -118,7 +119,7 @@ export default function HeroSection(props: IHeroSection) {
             typewriterDone ? "opacity-100" : "opacity-0"
           }`}
         >
-          <a
+          <Link
             href="https://linkedin.com/in/youssef-nesafe"
             target="_blank"
             rel="noopener noreferrer"
@@ -126,7 +127,7 @@ export default function HeroSection(props: IHeroSection) {
             aria-label="LinkedIn"
           >
             <FiLinkedin className="w-[5.333vw] h-[5.333vw] tablet:w-[2.5vw] tablet:h-[2.5vw] desktop:w-[1.042vw] desktop:h-[1.042vw]" />
-          </a>
+          </Link>
           <a
             href="mailto:ynessafe@gmail.com"
             className="text-text-muted hover:text-accent-cyan transition-colors"

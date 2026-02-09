@@ -1,5 +1,6 @@
 export const revalidate = 3600; // Revalidate every hour
 
+import Link from "next/link";
 import { db } from "@/app/lib/db";
 import BlogCard from "./components/BlogCard";
 import SearchBar from "./components/SearchBar";
@@ -110,7 +111,7 @@ export default async function BlogPage({
         {/* Category Filters */}
         {categories.length > 0 && (
           <div className="flex flex-wrap gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
-            <a
+            <Link
               href="/blog"
               className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
                 !params.category
@@ -119,9 +120,9 @@ export default async function BlogPage({
               }`}
             >
               All
-            </a>
+            </Link>
             {categories.map((cat) => (
-              <a
+              <Link
                 key={cat.id}
                 href={buildQueryString({ category: cat.id })}
                 className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
@@ -131,7 +132,7 @@ export default async function BlogPage({
                 }`}
               >
                 {cat.name} ({cat._count.posts})
-              </a>
+              </Link>
             ))}
           </div>
         )}
@@ -140,7 +141,7 @@ export default async function BlogPage({
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
             {tags.map((tag) => (
-              <a
+              <Link
                 key={tag.id}
                 href={buildQueryString({ tag: tag.id })}
                 className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
@@ -150,7 +151,7 @@ export default async function BlogPage({
                 }`}
               >
                 #{tag.name} ({tag._count.posts})
-              </a>
+              </Link>
             ))}
           </div>
         )}
@@ -185,12 +186,12 @@ export default async function BlogPage({
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw] py-[8vw] tablet:py-[4vw] desktop:py-[1.667vw]">
           {page > 1 && (
-            <a
+            <Link
               href={buildQueryString({ page: String(page - 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
               Previous
-            </a>
+            </Link>
           )}
 
           <span className="text-text-muted text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]">
@@ -198,12 +199,12 @@ export default async function BlogPage({
           </span>
 
           {page < totalPages && (
-            <a
+            <Link
               href={buildQueryString({ page: String(page + 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
               Next
-            </a>
+            </Link>
           )}
         </div>
       )}

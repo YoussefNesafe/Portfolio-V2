@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { fadeUp, defaultViewport } from "@/app/lib/animations";
 import type { IProjectsSection } from "@/app/models/Projects";
@@ -71,7 +72,7 @@ function ProjectCard({ item, index }: { item: ProjectItem; index: number }) {
         </div>
 
         {/* Visit Site link */}
-        <a
+        <Link
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
@@ -91,7 +92,7 @@ function ProjectCard({ item, index }: { item: ProjectItem; index: number }) {
               d="M7 17L17 7M17 7H7M17 7v10"
             />
           </svg>
-        </a>
+        </Link>
       </div>
     </motion.div>
   );

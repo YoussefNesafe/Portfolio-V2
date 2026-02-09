@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FiLinkedin, FiMail } from "react-icons/fi";
 import type { IFooter } from "@/app/models/Layout";
 import type { IconType } from "react-icons";
@@ -21,18 +22,29 @@ export default function Footer({ credit, socials }: IFooter) {
         <div className="flex items-center gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw]">
           {socials.map((social) => {
             const Icon = iconMap[social.icon];
-            return (
-              <a
+            const iconEl = Icon && (
+              <Icon className="w-[4.267vw] h-[4.267vw] tablet:w-[2vw] tablet:h-[2vw] desktop:w-[0.833vw] desktop:h-[0.833vw]" />
+            );
+            const className = "text-text-muted hover:text-accent-cyan transition-colors";
+            return social.href.startsWith("http") ? (
+              <Link
                 key={social.type}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-muted hover:text-accent-cyan transition-colors"
+                className={className}
                 aria-label={social.type}
               >
-                {Icon && (
-                  <Icon className="w-[4.267vw] h-[4.267vw] tablet:w-[2vw] tablet:h-[2vw] desktop:w-[0.833vw] desktop:h-[0.833vw]" />
-                )}
+                {iconEl}
+              </Link>
+            ) : (
+              <a
+                key={social.type}
+                href={social.href}
+                className={className}
+                aria-label={social.type}
+              >
+                {iconEl}
               </a>
             );
           })}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/app/lib/animations";
 
@@ -64,11 +65,13 @@ export default function BlogCard({
       <Link href={`/blog/${slug}`}>
         <div className="group relative h-full rounded-lg border border-subtle bg-background/50 hover:bg-background/80 overflow-hidden transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-lg hover:shadow-accent-cyan/20 cursor-pointer">
           {coverImage && (
-            <div className="w-full h-[30vw] tablet:h-[15vw] desktop:h-[6vw] bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
-              <img
+            <div className="relative w-full h-[30vw] tablet:h-[15vw] desktop:h-[6vw] bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
+              <Image
                 src={coverImage}
                 alt={title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-300"
+                sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             </div>
           )}

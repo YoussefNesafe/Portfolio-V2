@@ -64,6 +64,7 @@ Blog list supports pagination (9/page), search (case-insensitive via PostgreSQL)
 
 ## Critical Constraints
 
+- Use `next/link` (`Link`) instead of `<a>` for all navigational links. Use `next/image` (`Image`) instead of `<img>`. Exception: `mailto:` and `tel:` hrefs must use plain `<a>` since Link doesn't support non-HTTP protocols.
 - `searchParams` is a Promise in Next.js 16 — must be awaited
 - Server components cannot have event handlers — extract interactive parts to `"use client"` components
 - Edge Runtime (middleware) cannot import Node.js `crypto`

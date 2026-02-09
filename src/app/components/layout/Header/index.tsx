@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/app/utils/cn";
 import { useScrollSpy } from "@/app/hooks/useScrollSpy";
@@ -32,19 +33,19 @@ export default function Header({ logo, nav }: IHeader) {
     <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-background/80 border-b border-border-subtle">
       <div className="section-container !flex-row items-center justify-between py-[3.2vw] tablet:py-[1.5vw] desktop:py-[0.625vw]">
         {/* Logo */}
-        <a
+        <Link
           href={isHome ? "#hero" : "/"}
           className="text-[5.333vw] tablet:text-[2.5vw] desktop:text-[1.042vw] font-mono font-bold text-accent-cyan"
         >
           {logo}
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden tablet:flex items-center gap-[3.2vw] desktop:gap-[1.667vw]">
           {nav.map((item) => {
             const isActive = getIsActive(item);
             return (
-              <a
+              <Link
                 key={item.href}
                 href={getHref(item.href)}
                 className={cn(
@@ -60,7 +61,7 @@ export default function Header({ logo, nav }: IHeader) {
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
         </nav>
@@ -100,7 +101,7 @@ export default function Header({ logo, nav }: IHeader) {
               {nav.map((item) => {
                 const isActive = getIsActive(item);
                 return (
-                  <a
+                  <Link
                     key={item.href}
                     href={getHref(item.href)}
                     onClick={() => setMobileOpen(false)}
@@ -112,7 +113,7 @@ export default function Header({ logo, nav }: IHeader) {
                     )}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 );
               })}
             </div>
