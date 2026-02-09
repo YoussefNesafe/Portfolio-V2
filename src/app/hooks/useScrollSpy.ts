@@ -17,7 +17,8 @@ export function useScrollSpy(sectionIds: string[], offset = 100) {
         }
       }
 
-      setActiveId(sectionIds[0] || "");
+      const firstExists = sectionIds[0] && document.getElementById(sectionIds[0]);
+      setActiveId(firstExists ? sectionIds[0] : "");
     };
 
     handleScroll();

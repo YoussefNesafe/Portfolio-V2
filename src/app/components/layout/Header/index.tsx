@@ -2,22 +2,38 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { cn } from "@/app/utils/cn";
 import { useScrollSpy } from "@/app/hooks/useScrollSpy";
 import type { IHeader } from "@/app/models/Layout";
 
 export default function Header({ logo, nav }: IHeader) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const anchorItems = nav.filter((item) => item.href.startsWith("#"));
   const sectionIds = anchorItems.map((item) => item.href.replace("#", ""));
   const activeId = useScrollSpy(sectionIds);
+
+  function getHref(href: string) {
+    // Anchor links need to be prefixed with / when not on homepage
+    if (href.startsWith("#") && !isHome) return `/${href}`;
+    return href;
+  }
+
+  function getIsActive(item: { href: string }) {
+    const isPageLink = !item.href.startsWith("#");
+    if (isPageLink) return pathname.startsWith(item.href);
+    if (!isHome) return false;
+    return activeId === item.href.replace("#", "");
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-background/80 border-b border-border-subtle">
       <div className="section-container !flex-row items-center justify-between py-[3.2vw] tablet:py-[1.5vw] desktop:py-[0.625vw]">
         {/* Logo */}
         <a
-          href="#hero"
+          href={isHome ? "#hero" : "/"}
           className="text-[5.333vw] tablet:text-[2.5vw] desktop:text-[1.042vw] font-mono font-bold text-accent-cyan"
         >
           {logo}
@@ -26,13 +42,11 @@ export default function Header({ logo, nav }: IHeader) {
         {/* Desktop nav */}
         <nav className="hidden tablet:flex items-center gap-[3.2vw] desktop:gap-[1.667vw]">
           {nav.map((item) => {
-            const isPageLink = !item.href.startsWith("#");
-            const id = item.href.replace("#", "");
-            const isActive = !isPageLink && activeId === id;
+            const isActive = getIsActive(item);
             return (
               <a
                 key={item.href}
-                href={item.href}
+                href={getHref(item.href)}
                 className={cn(
                   "relative text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] transition-colors duration-200",
                   isActive ? "text-accent-cyan" : "text-text-muted hover:text-foreground"
@@ -84,12 +98,11 @@ export default function Header({ logo, nav }: IHeader) {
           >
             <div className="flex flex-col py-[2.667vw]">
               {nav.map((item) => {
-                const isPageLink = !item.href.startsWith("#");
-                const isActive = !isPageLink && activeId === item.href.replace("#", "");
+                const isActive = getIsActive(item);
                 return (
                   <a
                     key={item.href}
-                    href={item.href}
+                    href={getHref(item.href)}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "px-[4.267vw] py-[3.2vw] text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] transition-colors",
