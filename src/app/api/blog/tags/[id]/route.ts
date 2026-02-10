@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
-import { validateSession } from "@/app/lib/auth";
+import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
 
 interface Params {
   id: string;
@@ -14,13 +14,16 @@ export async function PUT(
 ) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
+
+    const jsonError = requireJson(request);
+    if (jsonError) return jsonError;
 
     const { id } = await params;
     const body = await request.json();
@@ -61,6 +64,12 @@ export async function PUT(
 
     return NextResponse.json(updatedTag, { status: 200 });
   } catch (error) {
+    if (isPrismaUniqueError(error)) {
+      return NextResponse.json(
+        { error: "Name already exists" },
+        { status: 400 },
+      );
+    }
     console.error("[PUT /api/blog/tags/[id]]", error);
     return NextResponse.json(
       { error: "Failed to update tag" },
@@ -76,8 +85,8 @@ export async function DELETE(
 ) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }

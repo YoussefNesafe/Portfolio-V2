@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
-import { validateSession } from "@/app/lib/auth";
+import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
 
 // GET /api/blog/categories - List all categories
 export async function GET(request: NextRequest) {
@@ -16,10 +16,9 @@ export async function GET(request: NextRequest) {
     });
 
     // Map to include post count in response
-    const categoriesWithCount = categories.map((cat) => ({
-      ...cat,
-      postCount: cat._count.posts,
-      _count: undefined,
+    const categoriesWithCount = categories.map(({ _count, ...rest }) => ({
+      ...rest,
+      postCount: _count.posts,
     }));
 
     return NextResponse.json(categoriesWithCount, { status: 200 });
@@ -36,13 +35,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
+
+    const jsonError = requireJson(request);
+    if (jsonError) return jsonError;
 
     const body = await request.json();
     const { name, description, slug: customSlug } = body;
@@ -78,6 +80,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(category, { status: 201 });
   } catch (error) {
+    if (isPrismaUniqueError(error)) {
+      return NextResponse.json(
+        { error: "Name already exists" },
+        { status: 400 },
+      );
+    }
     console.error("[POST /api/blog/categories]", error);
     return NextResponse.json(
       { error: "Failed to create category" },

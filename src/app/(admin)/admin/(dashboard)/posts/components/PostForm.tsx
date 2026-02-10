@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { slugify } from "@/app/utils/slugify";
 
 interface Category {
   id: string;
@@ -65,19 +66,11 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
     fetchMeta();
   }, []);
 
-  const generateSlug = (title: string) =>
-    title
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-
   const handleTitleChange = (title: string) => {
     setForm((prev) => ({
       ...prev,
       title,
-      slug: !isEdit || !prev.slug ? generateSlug(title) : prev.slug,
+      slug: !isEdit || !prev.slug ? slugify(title) : prev.slug,
     }));
   };
 
@@ -107,7 +100,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
           excerpt: form.excerpt || undefined,
           coverImage: form.coverImage || undefined,
           published: form.published,
-          publishedAt: form.published ? new Date().toISOString() : null,
+          publishedAt: isEdit
+            ? (form.published && !initialData?.published ? new Date().toISOString() : undefined)
+            : (form.published ? new Date().toISOString() : null),
           categoryIds: form.categoryIds.length > 0 ? form.categoryIds : undefined,
           tagIds: form.tagIds.length > 0 ? form.tagIds : undefined,
         }),
@@ -173,8 +168,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Title */}
       <div>
-        <label className={labelClass}>Title *</label>
+        <label htmlFor="post-title" className={labelClass}>Title *</label>
         <input
+          id="post-title"
           type="text"
           value={form.title}
           onChange={(e) => handleTitleChange(e.target.value)}
@@ -186,8 +182,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Slug */}
       <div>
-        <label className={labelClass}>Slug</label>
+        <label htmlFor="post-slug" className={labelClass}>Slug</label>
         <input
+          id="post-slug"
           type="text"
           value={form.slug}
           onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))}
@@ -198,8 +195,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Description */}
       <div>
-        <label className={labelClass}>Description *</label>
+        <label htmlFor="post-description" className={labelClass}>Description *</label>
         <textarea
+          id="post-description"
           value={form.description}
           onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
           placeholder="Brief description of the post"
@@ -214,8 +212,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Content */}
       <div>
-        <label className={labelClass}>Content * (HTML supported)</label>
+        <label htmlFor="post-content" className={labelClass}>Content * (HTML supported)</label>
         <textarea
+          id="post-content"
           value={form.content}
           onChange={(e) => setForm((p) => ({ ...p, content: e.target.value }))}
           placeholder="Write your post content here... HTML tags are supported."
@@ -226,8 +225,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Excerpt */}
       <div>
-        <label className={labelClass}>Excerpt (optional)</label>
+        <label htmlFor="post-excerpt" className={labelClass}>Excerpt (optional)</label>
         <textarea
+          id="post-excerpt"
           value={form.excerpt}
           onChange={(e) => setForm((p) => ({ ...p, excerpt: e.target.value }))}
           placeholder="Short excerpt for previews"
@@ -238,8 +238,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
 
       {/* Cover Image */}
       <div>
-        <label className={labelClass}>Cover Image URL (optional)</label>
+        <label htmlFor="post-coverImage" className={labelClass}>Cover Image URL (optional)</label>
         <input
+          id="post-coverImage"
           type="url"
           value={form.coverImage}
           onChange={(e) => setForm((p) => ({ ...p, coverImage: e.target.value }))}

@@ -34,6 +34,9 @@ export async function generateUniqueSlug(
   let counter = 1;
 
   while (await checkFn(slug)) {
+    if (counter > 100) {
+      throw new Error("Cannot generate unique slug");
+    }
     slug = `${baseSlug}-${counter}`;
     counter++;
   }

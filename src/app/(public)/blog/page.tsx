@@ -24,7 +24,8 @@ export default async function BlogPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const page = parseInt(params.page || "1", 10);
+  let page = parseInt(params.page || "1", 10);
+  if (isNaN(page) || page < 1) page = 1;
   const limit = 9;
   const skip = (page - 1) * limit;
 

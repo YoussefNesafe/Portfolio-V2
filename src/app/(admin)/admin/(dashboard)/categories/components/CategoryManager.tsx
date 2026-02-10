@@ -82,9 +82,15 @@ export default function CategoryManager({
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this category? Posts will not be deleted.")) return;
     setLoading(true);
+    setError("");
     try {
-      await fetch(`/api/blog/categories/${id}`, { method: "DELETE" });
-      router.refresh();
+      const res = await fetch(`/api/blog/categories/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to delete category");
+      }
     } finally {
       setLoading(false);
     }

@@ -14,6 +14,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    if (query.trim().length > 200) {
+      return NextResponse.json(
+        { error: "Search query too long (max 200 characters)" },
+        { status: 400 },
+      );
+    }
+
     const posts = await db.post.findMany({
       where: {
         published: true,

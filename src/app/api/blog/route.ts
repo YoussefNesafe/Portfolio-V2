@@ -1,23 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
+import { Prisma } from "@prisma/client";
 import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
-import { validateSession } from "@/app/lib/auth";
+import { requireAuth, requireJson } from "@/app/lib/api-utils";
 
 // GET /api/blog - List posts with pagination, filtering, and search
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get("page") || "1", 10);
+    let page = parseInt(searchParams.get("page") || "1", 10);
+    if (isNaN(page) || page < 1) page = 1;
     const limit = Math.min(parseInt(searchParams.get("limit") || "9", 10), 50); // Max 50 per page
     const searchQuery = searchParams.get("search");
     const categoryId = searchParams.get("category");
     const tagId = searchParams.get("tag");
 
+    if (searchQuery && searchQuery.length > 200) {
+      return NextResponse.json(
+        { error: "Search query too long (max 200 characters)" },
+        { status: 400 },
+      );
+    }
+
     const skip = (page - 1) * limit;
 
     // Build filter conditions
-    const where: any = {
+    const where: Prisma.PostWhereInput = {
       published: true,
     };
 
@@ -86,10 +95,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const jsonError = requireJson(request);
+    if (jsonError) return jsonError;
 
     const body = await request.json();
     const {
@@ -107,6 +119,13 @@ export async function POST(request: NextRequest) {
     if (!title || !description || !content) {
       return NextResponse.json(
         { error: "Missing required fields: title, description, content" },
+        { status: 400 },
+      );
+    }
+
+    if (content.length > 100_000) {
+      return NextResponse.json(
+        { error: "Content too long (max 100,000 characters)" },
         { status: 400 },
       );
     }
@@ -133,7 +152,7 @@ export async function POST(request: NextRequest) {
     const author = await db.author.findFirst();
     if (!author) {
       return NextResponse.json(
-        { error: "No author found. Please seed initial data." },
+        { error: "No author found. Run `npm run db:seed` to create the default author." },
         { status: 400 },
       );
     }

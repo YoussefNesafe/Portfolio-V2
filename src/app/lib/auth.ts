@@ -19,12 +19,21 @@ export async function verifyPassword(
   password: string,
   hash: string,
 ): Promise<boolean> {
-  const { pbkdf2Sync } = await import("crypto");
-  const [salt, hashFromDb] = hash.split(":");
+  const { pbkdf2Sync, timingSafeEqual } = await import("crypto");
+  const parts = hash.split(":");
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
+    return false;
+  }
+  const [salt, hashFromDb] = parts;
   const computedHash = pbkdf2Sync(password, salt, 100000, 64, "sha256").toString(
     "hex"
   );
-  return computedHash === hashFromDb;
+  const hashBuffer = Buffer.from(hashFromDb, "hex");
+  const computedBuffer = Buffer.from(computedHash, "hex");
+  if (hashBuffer.length !== computedBuffer.length) {
+    return false;
+  }
+  return timingSafeEqual(hashBuffer, computedBuffer);
 }
 
 /**
@@ -71,7 +80,7 @@ export async function createSession(
   });
 
   // Clean up expired sessions (fire-and-forget)
-  db.session.deleteMany({ where: { expiresAt: { lt: now } } }).catch(() => {});
+  db.session.deleteMany({ where: { expiresAt: { lt: now } } }).catch((err) => console.error("Session cleanup failed:", err));
 
   return token;
 }

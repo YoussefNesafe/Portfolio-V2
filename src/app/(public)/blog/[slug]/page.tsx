@@ -1,5 +1,6 @@
 export const revalidate = 86400; // Revalidate every 24 hours
 
+import sanitizeHtml from "sanitize-html";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -119,7 +120,7 @@ export default async function BlogPostPage({
       <div className="prose prose-invert max-w-none mb-[8vw] tablet:mb-[4vw] desktop:mb-[1.667vw]">
         <div
           className="text-foreground text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.75vw] leading-relaxed space-y-[4vw] tablet:space-y-[2vw] desktop:space-y-[0.833vw]"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
         />
       </div>
 

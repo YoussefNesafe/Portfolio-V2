@@ -2,9 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { verifyPassword, createSession } from "@/app/lib/auth";
 
+// Rate limiting: 5 attempts per 15 minutes per IP
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 15 * 60 * 1000;
+
+function getRateLimitKey(request: NextRequest): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = loginAttempts.get(key);
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > MAX_ATTEMPTS;
+}
+
 // POST /api/auth/login - Login endpoint
 export async function POST(request: NextRequest) {
   try {
+    const ip = getRateLimitKey(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
@@ -64,7 +92,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set("session", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 24 * 60 * 60, // 24 hours
       path: "/",
     });

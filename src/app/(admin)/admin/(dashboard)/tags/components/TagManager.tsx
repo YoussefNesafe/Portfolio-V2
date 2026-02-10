@@ -79,9 +79,15 @@ export default function TagManager({
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this tag? Posts will not be deleted.")) return;
     setLoading(true);
+    setError("");
     try {
-      await fetch(`/api/blog/tags/${id}`, { method: "DELETE" });
-      router.refresh();
+      const res = await fetch(`/api/blog/tags/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to delete tag");
+      }
     } finally {
       setLoading(false);
     }

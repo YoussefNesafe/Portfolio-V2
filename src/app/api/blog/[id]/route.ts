@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
 import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
-import { validateSession } from "@/app/lib/auth";
+import { requireAuth, requireJson } from "@/app/lib/api-utils";
 
 interface Params {
   id: string;
@@ -46,10 +46,13 @@ export async function PUT(
 ) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const jsonError = requireJson(request);
+    if (jsonError) return jsonError;
 
     const { id } = await params;
     const body = await request.json();
@@ -66,68 +69,74 @@ export async function PUT(
       publishedAt,
     } = body;
 
-    // Check if post exists
-    const existingPost = await db.post.findUnique({
-      where: { id },
-    });
-
-    if (!existingPost) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
-
-    // Generate new slug if title changed
-    let slug = existingPost.slug;
-    if ((title && title !== existingPost.title) || customSlug) {
-      slug = customSlug || slugify(title || existingPost.title);
-
-      // Check if new slug is unique
-      const slugConflict = await db.post.findUnique({
-        where: { slug },
+    const updatedPost = await db.$transaction(async (tx) => {
+      // Check if post exists
+      const existingPost = await tx.post.findUnique({
+        where: { id },
       });
 
-      if (slugConflict && slugConflict.id !== id) {
-        slug = await generateUniqueSlug(
-          slug,
-          existingPost.slug,
-          async (testSlug) => {
-            const post = await db.post.findUnique({
-              where: { slug: testSlug },
-            });
-            return !!post && post.id !== id;
-          },
-        );
+      if (!existingPost) {
+        return null;
       }
-    }
 
-    // Update post
-    const updatedPost = await db.post.update({
-      where: { id },
-      data: {
-        title: title || undefined,
-        slug: slug || undefined,
-        description: description || undefined,
-        content: content || undefined,
-        excerpt: excerpt || undefined,
-        coverImage: coverImage !== undefined ? coverImage : undefined,
-        published: published !== undefined ? published : undefined,
-        publishedAt: publishedAt !== undefined ? publishedAt : undefined,
-        categories: categoryIds
-          ? {
-              set: categoryIds.map((cid: string) => ({ id: cid })),
-            }
-          : undefined,
-        tags: tagIds
-          ? {
-              set: tagIds.map((tid: string) => ({ id: tid })),
-            }
-          : undefined,
-      },
-      include: {
-        author: true,
-        categories: true,
-        tags: true,
-      },
+      // Generate new slug if title changed
+      let slug = existingPost.slug;
+      if ((title && title !== existingPost.title) || customSlug) {
+        slug = customSlug || slugify(title || existingPost.title);
+
+        // Check if new slug is unique
+        const slugConflict = await tx.post.findUnique({
+          where: { slug },
+        });
+
+        if (slugConflict && slugConflict.id !== id) {
+          slug = await generateUniqueSlug(
+            slug,
+            existingPost.slug,
+            async (testSlug) => {
+              const post = await tx.post.findUnique({
+                where: { slug: testSlug },
+              });
+              return !!post && post.id !== id;
+            },
+          );
+        }
+      }
+
+      // Update post
+      return tx.post.update({
+        where: { id },
+        data: {
+          title: title || undefined,
+          slug: slug || undefined,
+          description: description || undefined,
+          content: content || undefined,
+          excerpt: excerpt || undefined,
+          coverImage: coverImage !== undefined ? coverImage : undefined,
+          published: published !== undefined ? published : undefined,
+          publishedAt: publishedAt !== undefined ? publishedAt : undefined,
+          categories: categoryIds
+            ? {
+                set: categoryIds.map((cid: string) => ({ id: cid })),
+              }
+            : undefined,
+          tags: tagIds
+            ? {
+                set: tagIds.map((tid: string) => ({ id: tid })),
+              }
+            : undefined,
+        },
+        include: {
+          author: true,
+          categories: true,
+          tags: true,
+        },
+      });
     });
+
+    if (!updatedPost) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${updatedPost.slug}`);
@@ -148,8 +157,8 @@ export async function DELETE(
 ) {
   try {
     // Check authentication
-    const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !(await validateSession(sessionToken))) {
+    const session = await requireAuth(request);
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
