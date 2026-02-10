@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !validateSession(sessionToken)) {
+    if (!sessionToken || !(await validateSession(sessionToken))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

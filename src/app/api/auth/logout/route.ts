@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
     // Invalidate session
     if (sessionToken) {
-      invalidateSession(sessionToken);
+      await invalidateSession(sessionToken);
     }
 
     // Create response

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate session
-    const session = validateSession(sessionToken);
+    const session = await validateSession(sessionToken);
 
     if (!session) {
       return NextResponse.json({ error: "Session expired" }, { status: 401 });

@@ -1,3 +1,4 @@
+import { db } from "@/app/lib/db";
 
 /**
  * Hash a password using PBKDF2
@@ -34,11 +35,6 @@ export async function generateSessionToken(): Promise<string> {
   return randomBytes(32).toString("hex");
 }
 
-/**
- * Create a session store in memory (could be replaced with Redis or database in production)
- * For now, we'll store sessions in the database
- */
-
 // Session data structure
 export interface SessionData {
   userId: string;
@@ -49,12 +45,8 @@ export interface SessionData {
   expiresAt: Date;
 }
 
-// Store sessions in memory (with expiration)
-// In production, use Redis or database for persistence across server restarts
-const sessionStore = new Map<string, SessionData>();
-
 /**
- * Create a new session
+ * Create a new session (persisted in PostgreSQL)
  */
 export async function createSession(
   userId: string,
@@ -66,14 +58,20 @@ export async function createSession(
   const now = new Date();
   const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
-  sessionStore.set(token, {
-    userId,
-    userName,
-    email,
-    role,
-    createdAt: now,
-    expiresAt,
+  await db.session.create({
+    data: {
+      token,
+      userId,
+      userName,
+      email,
+      role,
+      createdAt: now,
+      expiresAt,
+    },
   });
+
+  // Clean up expired sessions (fire-and-forget)
+  db.session.deleteMany({ where: { expiresAt: { lt: now } } }).catch(() => {});
 
   return token;
 }
@@ -81,8 +79,8 @@ export async function createSession(
 /**
  * Validate a session token
  */
-export function validateSession(token: string): SessionData | null {
-  const session = sessionStore.get(token);
+export async function validateSession(token: string): Promise<SessionData | null> {
+  const session = await db.session.findUnique({ where: { token } });
 
   if (!session) {
     return null;
@@ -90,16 +88,23 @@ export function validateSession(token: string): SessionData | null {
 
   // Check if session has expired
   if (session.expiresAt < new Date()) {
-    sessionStore.delete(token);
+    await db.session.delete({ where: { token } });
     return null;
   }
 
-  return session;
+  return {
+    userId: session.userId,
+    userName: session.userName,
+    email: session.email,
+    role: session.role,
+    createdAt: session.createdAt,
+    expiresAt: session.expiresAt,
+  };
 }
 
 /**
  * Invalidate a session (logout)
  */
-export function invalidateSession(token: string): void {
-  sessionStore.delete(token);
+export async function invalidateSession(token: string): Promise<void> {
+  await db.session.deleteMany({ where: { token } });
 }

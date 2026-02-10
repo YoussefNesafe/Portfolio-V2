@@ -15,7 +15,7 @@ export async function PUT(
   try {
     // Check authentication
     const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !validateSession(sessionToken)) {
+    if (!sessionToken || !(await validateSession(sessionToken))) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -81,7 +81,7 @@ export async function DELETE(
   try {
     // Check authentication
     const sessionToken = request.cookies.get("session")?.value;
-    if (!sessionToken || !validateSession(sessionToken)) {
+    if (!sessionToken || !(await validateSession(sessionToken))) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }

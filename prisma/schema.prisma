@@ -15,12 +15,29 @@ datasource db {
 
 // Admin user for blog management
 model AdminUser {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashed password
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String    // hashed password
   name      String
-  role      String   @default("ADMIN") // ADMIN, EDITOR
-  createdAt DateTime @default(now())
+  role      String    @default("ADMIN") // ADMIN, EDITOR
+  createdAt DateTime  @default(now())
+  sessions  Session[]
+}
+
+// Session for admin authentication (persisted in DB for serverless compatibility)
+model Session {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  userName  String
+  email     String
+  role      String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([expiresAt])
 }
 
 // Author of blog posts (can be same as admin user, but kept separate for flexibility)
