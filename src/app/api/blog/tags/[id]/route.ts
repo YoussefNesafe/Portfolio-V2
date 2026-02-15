@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
 import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
+import { updateTagSchema } from "@/app/lib/schemas";
 
 interface Params {
   id: string;
@@ -27,7 +28,14 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, slug: customSlug } = body;
+    const parsed = updateTagSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
+    const { name, slug: customSlug } = parsed.data;
 
     // Check if tag exists
     const existingTag = await db.tag.findUnique({
@@ -53,6 +61,19 @@ export async function PUT(
     }
 
     const slug = customSlug || (name ? slugify(name) : undefined);
+
+    // Check if new slug would conflict
+    if (slug && slug !== existingTag.slug) {
+      const slugConflict = await db.tag.findUnique({
+        where: { slug },
+      });
+      if (slugConflict) {
+        return NextResponse.json(
+          { error: "A tag with this slug already exists" },
+          { status: 400 },
+        );
+      }
+    }
 
     const updatedTag = await db.tag.update({
       where: { id },

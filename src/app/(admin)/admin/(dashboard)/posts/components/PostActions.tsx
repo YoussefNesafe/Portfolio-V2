@@ -16,6 +16,7 @@ export default function PostActions({ postId, published }: PostActionsProps) {
 
   const handleTogglePublish = async () => {
     setLoading(true);
+    setError("");
     try {
       const res = await fetch(`/api/blog/${postId}`, {
         method: "PUT",
@@ -25,7 +26,14 @@ export default function PostActions({ postId, published }: PostActionsProps) {
           publishedAt: !published ? new Date().toISOString() : undefined,
         }),
       });
-      if (res.ok) router.refresh();
+      if (res.ok) {
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to update post");
+      }
+    } catch {
+      setError("An unexpected error occurred");
     } finally {
       setLoading(false);
     }

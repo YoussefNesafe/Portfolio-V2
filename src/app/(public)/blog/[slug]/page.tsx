@@ -1,6 +1,43 @@
 export const revalidate = 86400; // Revalidate every 24 hours
 
+import { cache } from "react";
 import sanitizeHtml from "sanitize-html";
+
+const getPost = cache(async (slug: string) => {
+  return db.post.findUnique({
+    where: { slug },
+    include: {
+      author: true,
+      categories: true,
+      tags: true,
+    },
+  });
+});
+
+const sanitizeOptions: sanitizeHtml.IOptions = {
+  allowedTags: [
+    "p", "br", "strong", "em", "u", "s", "b", "i",
+    "h1", "h2", "h3", "h4", "h5", "h6",
+    "a", "img",
+    "ul", "ol", "li",
+    "blockquote", "code", "pre",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "hr", "div", "span", "figure", "figcaption",
+    "sub", "sup", "mark",
+  ],
+  allowedAttributes: {
+    a: ["href", "target", "rel"],
+    img: ["src", "alt", "width", "height"],
+    code: ["class"],
+    pre: ["class"],
+    span: ["class"],
+    div: ["class"],
+    td: ["colspan", "rowspan"],
+    th: ["colspan", "rowspan"],
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+};
+
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -17,12 +54,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
 
-  const post = await db.post.findUnique({
-    where: { slug },
-    include: {
-      tags: true,
-    },
-  });
+  const post = await getPost(slug);
 
   if (!post) {
     return {
@@ -51,14 +83,7 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
 
-  const post = await db.post.findUnique({
-    where: { slug },
-    include: {
-      author: true,
-      categories: true,
-      tags: true,
-    },
-  });
+  const post = await getPost(slug);
 
   if (!post || !post.published) {
     notFound();
@@ -73,7 +98,8 @@ export default async function BlogPostPage({
     : null;
 
   // Calculate reading time (rough estimate: 200 words per minute)
-  const wordCount = post.content.split(/\s+/).length;
+  const textContent = post.content.replace(/<[^>]*>/g, "");
+  const wordCount = textContent.split(/\s+/).filter(Boolean).length;
   const readingTime = Math.ceil(wordCount / 200);
 
   return (
@@ -120,7 +146,7 @@ export default async function BlogPostPage({
       <div className="prose prose-invert max-w-none mb-[8vw] tablet:mb-[4vw] desktop:mb-[1.667vw]">
         <div
           className="text-foreground text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.75vw] leading-relaxed space-y-[4vw] tablet:space-y-[2vw] desktop:space-y-[0.833vw]"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content, sanitizeOptions) }}
         />
       </div>
 

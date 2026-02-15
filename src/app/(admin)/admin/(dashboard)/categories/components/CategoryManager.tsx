@@ -114,20 +114,28 @@ export default function CategoryManager({
           {error && (
             <p className="text-red-400 text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]">{error}</p>
           )}
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Category name"
-            className={inputClass}
-          />
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description (optional)"
-            className={inputClass}
-          />
+          <div>
+            <label htmlFor="cat-name" className="sr-only">Category name</label>
+            <input
+              id="cat-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Category name"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="cat-desc" className="sr-only">Description</label>
+            <input
+              id="cat-desc"
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Description (optional)"
+              className={inputClass}
+            />
+          </div>
           <div className="flex gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
             <button
               onClick={editId ? handleUpdate : handleCreate}
@@ -170,8 +178,8 @@ export default function CategoryManager({
                   {cat.name}
                 </p>
                 <p className="text-text-muted text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.458vw]">
-                  /{cat.slug} &middot; {cat.postCount} posts
-                  {cat.description && ` &middot; ${cat.description}`}
+                  /{cat.slug} {"\u00B7"} {cat.postCount} posts
+                  {cat.description && ` \u00B7 ${cat.description}`}
                 </p>
               </div>
               <div className="flex gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">

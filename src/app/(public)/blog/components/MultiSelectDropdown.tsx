@@ -126,6 +126,9 @@ export default function MultiSelectDropdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-label={`${label}: ${selected.length > 0 ? `${selected.length} selected` : "none selected"}`}
         className={cn(
           "flex items-center gap-[1.5vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw] w-full tablet:w-auto",
           "px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[2.8vw] tablet:py-[1.4vw] desktop:py-[0.55vw]",
@@ -212,7 +215,7 @@ export default function MultiSelectDropdown({
             </div>
 
             {/* Options list */}
-            <div className="max-h-[50vw] tablet:max-h-[25vw] desktop:max-h-[13vw] overflow-y-auto no-scrollbar">
+            <div role="listbox" aria-multiselectable="true" aria-label={label} className="max-h-[50vw] tablet:max-h-[25vw] desktop:max-h-[13vw] overflow-y-auto no-scrollbar">
               {filteredOptions.length === 0 ? (
                 <div className="p-[3vw] tablet:p-[1.5vw] desktop:p-[0.625vw] text-center text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
                   No results found
@@ -224,6 +227,8 @@ export default function MultiSelectDropdown({
                     <button
                       key={opt.id}
                       type="button"
+                      role="option"
+                      aria-selected={isSelected}
                       onClick={() => handleToggle(opt.id)}
                       className={cn(
                         "w-full flex items-center gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]",

@@ -1,20 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { verifyPassword, createSession } from "@/app/lib/auth";
+import { loginSchema } from "@/app/lib/schemas";
 
 // Rate limiting: 5 attempts per 15 minutes per IP
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000;
+const MAX_TRACKED_IPS = 10_000;
 
 function getRateLimitKey(request: NextRequest): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip")
+    || "unknown";
+}
+
+function cleanupExpiredEntries() {
+  const now = Date.now();
+  for (const [key, entry] of loginAttempts) {
+    if (now > entry.resetAt) {
+      loginAttempts.delete(key);
+    }
+  }
 }
 
 function isRateLimited(key: string): boolean {
   const now = Date.now();
   const entry = loginAttempts.get(key);
   if (!entry || now > entry.resetAt) {
+    // Prevent unbounded growth
+    if (loginAttempts.size >= MAX_TRACKED_IPS) {
+      cleanupExpiredEntries();
+    }
     loginAttempts.set(key, { count: 1, resetAt: now + WINDOW_MS });
     return false;
   }
@@ -34,15 +51,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { email, password } = body;
-
-    // Validation
-    if (!email || !password) {
+    const parsed = loginSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
         { status: 400 },
       );
     }
+    const { email, password } = parsed.data;
 
     // Find admin user
     const adminUser = await db.adminUser.findUnique({

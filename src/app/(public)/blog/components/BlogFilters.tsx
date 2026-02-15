@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import MultiSelectDropdown from "./MultiSelectDropdown";
 
 interface FilterOption {
@@ -30,9 +30,16 @@ export default function BlogFilters({ categories, tags }: BlogFiltersProps) {
     .split(",")
     .filter(Boolean);
 
+  // Use refs to avoid dependency loops in the debounced search effect
+  const searchParamsRef = useRef(searchParams);
+
+  useEffect(() => {
+    searchParamsRef.current = searchParams;
+  }, [searchParams]);
+
   const pushParams = useCallback(
     (overrides: Record<string, string | null>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
       for (const [key, value] of Object.entries(overrides)) {
         if (value) {
           params.set(key, value);
@@ -43,19 +50,19 @@ export default function BlogFilters({ categories, tags }: BlogFiltersProps) {
       params.set("page", "1");
       router.push(`/blog?${params.toString()}`);
     },
-    [searchParams, router],
+    [router],
   );
 
   // Debounced search
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const current = searchParams.get("search") || "";
+      const current = searchParamsRef.current.get("search") || "";
       if (searchQuery !== current) {
         pushParams({ search: searchQuery || null });
       }
     }, 300);
     return () => clearTimeout(timeout);
-  }, [searchQuery, searchParams, pushParams]);
+  }, [searchQuery, pushParams]);
 
   const handleCategoryChange = useCallback(
     (ids: string[]) => {

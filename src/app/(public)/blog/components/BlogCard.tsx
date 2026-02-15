@@ -11,12 +11,12 @@ interface BlogCardProps {
   title: string;
   description: string;
   coverImage?: string;
-  category?: {
+  categories?: {
     id: string;
     name: string;
     slug: string;
-  };
-  publishedAt?: Date;
+  }[];
+  publishedAt?: Date | string;
   searchQuery?: string;
 }
 
@@ -42,7 +42,7 @@ export default function BlogCard({
   title,
   description,
   coverImage,
-  category,
+  categories,
   publishedAt,
   searchQuery,
 }: BlogCardProps) {
@@ -77,10 +77,14 @@ export default function BlogCard({
           )}
 
           <div className="p-[5.333vw] tablet:p-[2.5vw] desktop:p-[1.042vw]">
-            {category && (
-              <span className="inline-block mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw] px-[2.667vw] tablet:px-[1.333vw] desktop:px-[0.556vw] py-[1.333vw] tablet:py-[0.667vw] desktop:py-[0.278vw] bg-accent-cyan/10 text-accent-cyan rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] font-medium">
-                {category.name}
-              </span>
+            {categories && categories.length > 0 && (
+              <div className="flex flex-wrap gap-[1.333vw] tablet:gap-[0.667vw] desktop:gap-[0.278vw] mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw]">
+                {categories.map((cat) => (
+                  <span key={cat.id} className="inline-block px-[2.667vw] tablet:px-[1.333vw] desktop:px-[0.556vw] py-[1.333vw] tablet:py-[0.667vw] desktop:py-[0.278vw] bg-accent-cyan/10 text-accent-cyan rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] font-medium">
+                    {cat.name}
+                  </span>
+                ))}
+              </div>
             )}
 
             <h3 className="text-heading text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] font-bold mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw] group-hover:text-accent-cyan transition-colors duration-300 line-clamp-2">

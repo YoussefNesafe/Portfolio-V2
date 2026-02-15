@@ -33,11 +33,11 @@ Portfolio sections live in `src/app/_sections/portfolio/` (HeroSection, AboutSec
 
 ### Authentication
 
-Middleware (`middleware.ts`) only checks cookie presence (Edge Runtime — no Node.js `crypto`). Full session validation happens in API routes (Node.js runtime). Sessions are stored in-memory via a Map in `src/app/lib/auth.ts` — not persistent across restarts.
+Middleware (`middleware.ts`) only checks cookie presence (Edge Runtime — no Node.js `crypto`). Full session validation happens in API routes (Node.js runtime). Sessions are stored in PostgreSQL via the `Session` model in Prisma — persistent across restarts.
 
 ### Database
 
-PostgreSQL via Prisma. Schema at `prisma/schema.prisma`. Models: AdminUser, Author, Post, Category, Tag. Prisma client singleton in `src/app/lib/db.ts`. Prisma must stay in `dependencies` (not devDependencies).
+PostgreSQL via Prisma. Schema at `prisma/schema.prisma`. Models: AdminUser, Author, Post, Category, Tag, Session. Prisma client singleton in `src/app/lib/db.ts`. Prisma must stay in `dependencies` (not devDependencies).
 
 ### API Routes
 

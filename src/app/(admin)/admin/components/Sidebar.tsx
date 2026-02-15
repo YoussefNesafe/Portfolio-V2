@@ -25,7 +25,11 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Continue to login page even if logout request fails
+    }
     window.location.href = "/admin/login";
   };
 
@@ -39,6 +43,8 @@ export default function Sidebar() {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label={mobileOpen ? "Close sidebar" : "Open sidebar"}
+        aria-expanded={mobileOpen}
         className="desktop:hidden fixed top-[4vw] left-[4vw] z-50 p-[2vw] bg-bg-secondary border border-border-subtle rounded-lg text-foreground"
       >
         {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -47,6 +53,8 @@ export default function Sidebar() {
       {/* Overlay */}
       {mobileOpen && (
         <div
+          role="presentation"
+          aria-hidden="true"
           className="desktop:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setMobileOpen(false)}
         />

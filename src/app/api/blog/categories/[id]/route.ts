@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
 import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
+import { updateCategorySchema } from "@/app/lib/schemas";
 
 interface Params {
   id: string;
@@ -27,7 +28,14 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, description, slug: customSlug } = body;
+    const parsed = updateCategorySchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
+    const { name, description, slug: customSlug } = parsed.data;
 
     // Check if category exists
     const existingCategory = await db.category.findUnique({
@@ -56,6 +64,19 @@ export async function PUT(
     }
 
     const slug = customSlug || (name ? slugify(name) : undefined);
+
+    // Check if new slug would conflict
+    if (slug && slug !== existingCategory.slug) {
+      const slugConflict = await db.category.findUnique({
+        where: { slug },
+      });
+      if (slugConflict) {
+        return NextResponse.json(
+          { error: "A category with this slug already exists" },
+          { status: 400 },
+        );
+      }
+    }
 
     const updatedCategory = await db.category.update({
       where: { id },

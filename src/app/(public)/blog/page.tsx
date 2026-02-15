@@ -127,7 +127,7 @@ export default async function BlogPage({
               title={post.title}
               description={post.description}
               coverImage={post.coverImage || undefined}
-              category={post.categories[0]}
+              categories={post.categories}
               publishedAt={post.publishedAt || undefined}
               searchQuery={params.search}
             />

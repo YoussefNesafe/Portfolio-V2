@@ -22,7 +22,7 @@ export default function Section({
       {...props}
     >
       {children}
-      {id ? <SectionDecorations variant={id as string} /> : null}
+      {id ? <SectionDecorations variant={id} /> : null}
     </section>
   );
 }

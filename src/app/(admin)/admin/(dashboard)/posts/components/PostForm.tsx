@@ -54,14 +54,35 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
     tagIds: initialData?.tagIds || [],
   });
 
+  // Sync form state when initialData changes (e.g. navigating between edit pages)
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        title: initialData.title || "",
+        slug: initialData.slug || "",
+        description: initialData.description || "",
+        content: initialData.content || "",
+        excerpt: initialData.excerpt || "",
+        coverImage: initialData.coverImage || "",
+        published: initialData.published || false,
+        categoryIds: initialData.categoryIds || [],
+        tagIds: initialData.tagIds || [],
+      });
+    }
+  }, [initialData?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     async function fetchMeta() {
-      const [catRes, tagRes] = await Promise.all([
-        fetch("/api/blog/categories"),
-        fetch("/api/blog/tags"),
-      ]);
-      if (catRes.ok) setCategories(await catRes.json());
-      if (tagRes.ok) setTags(await tagRes.json());
+      try {
+        const [catRes, tagRes] = await Promise.all([
+          fetch("/api/blog/categories"),
+          fetch("/api/blog/tags"),
+        ]);
+        if (catRes.ok) setCategories(await catRes.json());
+        if (tagRes.ok) setTags(await tagRes.json());
+      } catch {
+        // Network error — categories/tags will remain empty
+      }
     }
     fetchMeta();
   }, []);
@@ -305,6 +326,9 @@ export default function PostForm({ initialData, isEdit }: PostFormProps) {
       <div className="flex items-center gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw]">
         <button
           type="button"
+          role="switch"
+          aria-checked={form.published}
+          aria-label={form.published ? "Published" : "Draft"}
           onClick={() => setForm((p) => ({ ...p, published: !p.published }))}
           className={`relative w-[10.667vw] tablet:w-[5vw] desktop:w-[2.083vw] h-[5.333vw] tablet:h-[2.5vw] desktop:h-[1.042vw] rounded-full transition-colors ${
             form.published ? "bg-accent-emerald" : "bg-bg-tertiary"

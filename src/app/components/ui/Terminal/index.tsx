@@ -23,7 +23,7 @@ export default function Terminal({
     >
       {/* Title bar */}
       <div className="flex items-center gap-[2.133vw] tablet:gap-[1vw] desktop:gap-[0.417vw] bg-bg-tertiary px-[4.267vw] py-[2.667vw] tablet:px-[2vw] tablet:py-[1.25vw] desktop:px-[0.833vw] desktop:py-[0.521vw]">
-        <div className="flex gap-[1.6vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw]">
+        <div className="flex gap-[1.6vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw]" aria-hidden="true">
           <div className="w-[2.667vw] h-[2.667vw] tablet:w-[1.25vw] tablet:h-[1.25vw] desktop:w-[0.521vw] desktop:h-[0.521vw] rounded-full bg-[#FF5F57]" />
           <div className="w-[2.667vw] h-[2.667vw] tablet:w-[1.25vw] tablet:h-[1.25vw] desktop:w-[0.521vw] desktop:h-[0.521vw] rounded-full bg-[#FFBD2E]" />
           <div className="w-[2.667vw] h-[2.667vw] tablet:w-[1.25vw] tablet:h-[1.25vw] desktop:w-[0.521vw] desktop:h-[0.521vw] rounded-full bg-[#28CA41]" />

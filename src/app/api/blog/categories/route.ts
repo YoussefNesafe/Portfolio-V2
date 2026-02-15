@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
 import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
+import { createCategorySchema } from "@/app/lib/schemas";
 
 // GET /api/blog/categories - List all categories
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const categories = await db.category.findMany({
       include: {
@@ -47,14 +48,14 @@ export async function POST(request: NextRequest) {
     if (jsonError) return jsonError;
 
     const body = await request.json();
-    const { name, description, slug: customSlug } = body;
-
-    if (!name) {
+    const parsed = createCategorySchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Category name is required" },
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
         { status: 400 },
       );
     }
+    const { name, description, slug: customSlug } = parsed.data;
 
     // Check if category already exists
     const existingCategory = await db.category.findUnique({
@@ -69,6 +70,18 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = customSlug || slugify(name);
+
+    // Check if slug is unique
+    const existingSlug = await db.category.findUnique({
+      where: { slug },
+    });
+
+    if (existingSlug) {
+      return NextResponse.json(
+        { error: "A category with this slug already exists" },
+        { status: 400 },
+      );
+    }
 
     const category = await db.category.create({
       data: {

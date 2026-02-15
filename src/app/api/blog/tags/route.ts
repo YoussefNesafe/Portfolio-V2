@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { slugify } from "@/app/utils/slugify";
 import { requireAuth, requireJson, isPrismaUniqueError } from "@/app/lib/api-utils";
+import { createTagSchema } from "@/app/lib/schemas";
 
 // GET /api/blog/tags - List all tags
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const tags = await db.tag.findMany({
       include: {
@@ -47,14 +48,14 @@ export async function POST(request: NextRequest) {
     if (jsonError) return jsonError;
 
     const body = await request.json();
-    const { name, slug: customSlug } = body;
-
-    if (!name) {
+    const parsed = createTagSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Tag name is required" },
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
         { status: 400 },
       );
     }
+    const { name, slug: customSlug } = parsed.data;
 
     // Check if tag already exists
     const existingTag = await db.tag.findUnique({
@@ -69,6 +70,18 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = customSlug || slugify(name);
+
+    // Check if slug is unique
+    const existingSlug = await db.tag.findUnique({
+      where: { slug },
+    });
+
+    if (existingSlug) {
+      return NextResponse.json(
+        { error: "A tag with this slug already exists" },
+        { status: 400 },
+      );
+    }
 
     const tag = await db.tag.create({
       data: {

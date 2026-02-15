@@ -24,3 +24,12 @@ export function isPrismaUniqueError(error: unknown): boolean {
     error.code === "P2002"
   );
 }
+
+export function errorResponse(message: string | Record<string, unknown>, status: number = 400) {
+  const body = typeof message === "string" ? { error: message } : message;
+  return NextResponse.json(body, { status });
+}
+
+export function successResponse(data: unknown, status: number = 200) {
+  return NextResponse.json(data, { status });
+}

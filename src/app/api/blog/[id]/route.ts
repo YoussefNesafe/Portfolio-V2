@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
 import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
 import { requireAuth, requireJson } from "@/app/lib/api-utils";
+import { updatePostSchema } from "@/app/lib/schemas";
 
 interface Params {
   id: string;
@@ -16,6 +17,9 @@ export async function GET(
   try {
     const { id } = await params;
 
+    // Check if request is from an authenticated admin
+    const session = await requireAuth(request);
+
     const post = await db.post.findUnique({
       where: { id },
       include: {
@@ -26,6 +30,11 @@ export async function GET(
     });
 
     if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    // Only allow access to unpublished posts for authenticated admins
+    if (!post.published && !session) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
@@ -56,6 +65,13 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
+    const parsed = updatePostSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
     const {
       title,
       description,
@@ -67,7 +83,7 @@ export async function PUT(
       excerpt,
       published,
       publishedAt,
-    } = body;
+    } = parsed.data;
 
     const updatedPost = await db.$transaction(async (tx) => {
       // Check if post exists

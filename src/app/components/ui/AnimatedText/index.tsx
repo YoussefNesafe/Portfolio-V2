@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface AnimatedTextProps {
@@ -20,6 +20,11 @@ export default function AnimatedText({
 }: AnimatedTextProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [started, setStarted] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     const startTimer = setTimeout(() => setStarted(true), delay);
@@ -35,12 +40,12 @@ export default function AnimatedText({
       index++;
       if (index >= text.length) {
         clearInterval(interval);
-        onComplete?.();
+        onCompleteRef.current?.();
       }
     }, speed);
 
     return () => clearInterval(interval);
-  }, [started, text, speed, onComplete]);
+  }, [started, text, speed]);
 
   return (
     <motion.span

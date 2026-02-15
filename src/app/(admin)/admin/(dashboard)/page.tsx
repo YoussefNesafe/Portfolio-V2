@@ -18,6 +18,12 @@ export default async function AdminDashboard() {
       }),
     ]);
 
+  const colorMap: Record<string, string> = {
+    "accent-cyan": "text-accent-cyan",
+    "accent-emerald": "text-accent-emerald",
+    "accent-purple": "text-accent-purple",
+  };
+
   const stats = [
     { label: "Total Posts", value: totalPosts, color: "accent-cyan" },
     { label: "Published", value: publishedPosts, color: "accent-emerald" },
@@ -50,7 +56,7 @@ export default async function AdminDashboard() {
             <p className="text-text-muted text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] mb-[1.333vw] tablet:mb-[0.667vw] desktop:mb-[0.278vw]">
               {stat.label}
             </p>
-            <p className={`text-${stat.color} text-[6.4vw] tablet:text-[3vw] desktop:text-[1.25vw] font-bold`}>
+            <p className={`${colorMap[stat.color]} text-[6.4vw] tablet:text-[3vw] desktop:text-[1.25vw] font-bold`}>
               {stat.value}
             </p>
           </div>

@@ -110,13 +110,17 @@ export default function TagManager({
           {error && (
             <p className="text-red-400 text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]">{error}</p>
           )}
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Tag name"
-            className={inputClass}
-          />
+          <div>
+            <label htmlFor="tag-name" className="sr-only">Tag name</label>
+            <input
+              id="tag-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Tag name"
+              className={inputClass}
+            />
+          </div>
           <div className="flex gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
             <button
               onClick={editId ? handleUpdate : handleCreate}

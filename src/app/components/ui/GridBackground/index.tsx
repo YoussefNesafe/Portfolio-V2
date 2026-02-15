@@ -8,7 +8,7 @@ export default function GridBackground() {
         style={{
           backgroundImage:
             "radial-gradient(circle, #06B6D4 1px, transparent 1px)",
-          backgroundSize: "30px 30px",
+          backgroundSize: "4vw 4vw",
         }}
       />
     </div>

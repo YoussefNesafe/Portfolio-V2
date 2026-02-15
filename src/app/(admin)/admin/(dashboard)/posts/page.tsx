@@ -7,6 +7,7 @@ import PostActions from "./components/PostActions";
 export default async function PostsPage() {
   const posts = await db.post.findMany({
     orderBy: { createdAt: "desc" },
+    take: 100,
     include: {
       categories: true,
       tags: true,
