@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/app/utils/cn";
 import { useScrollSpy } from "@/app/hooks/useScrollSpy";
+import Image from "next/image";
 import type { IHeader } from "@/app/models/Layout";
 
 export default function Header({ logo, nav }: IHeader) {
@@ -35,9 +36,16 @@ export default function Header({ logo, nav }: IHeader) {
         {/* Logo */}
         <Link
           href={isHome ? "#hero" : "/"}
-          className="text-[5.333vw] tablet:text-[2.5vw] desktop:text-[1.042vw] font-mono font-bold text-accent-cyan"
+          className="block w-[8vw] tablet:w-[4vw] desktop:w-[1.8vw]"
         >
-          {logo}
+          <Image
+            src="/logo.svg"
+            alt={logo}
+            width={64}
+            height={64}
+            className="w-full h-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
