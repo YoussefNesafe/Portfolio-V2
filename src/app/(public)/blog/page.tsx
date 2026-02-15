@@ -2,8 +2,9 @@ export const revalidate = 3600; // Revalidate every hour
 
 import Link from "next/link";
 import { db } from "@/app/lib/db";
+import { Prisma } from "@prisma/client";
 import BlogCard from "./components/BlogCard";
-import SearchBar from "./components/SearchBar";
+import BlogFilters from "./components/BlogFilters";
 import { Suspense } from "react";
 
 interface SearchParams {
@@ -30,36 +31,30 @@ export default async function BlogPage({
   const skip = (page - 1) * limit;
 
   // Build filter conditions
-  const where: {
-    published: boolean;
-    OR?: { title?: object; description?: object }[];
-    categories?: object;
-    tags?: object;
-  } = {
+  const where: Prisma.PostWhereInput = {
     published: true,
   };
 
   if (params.search) {
     where.OR = [
-      { title: { contains: params.search, mode: "insensitive" as const } },
-      {
-        description: {
-          contains: params.search,
-          mode: "insensitive" as const,
-        },
-      },
+      { title: { contains: params.search, mode: "insensitive" } },
+      { description: { contains: params.search, mode: "insensitive" } },
     ];
   }
 
-  if (params.category) {
+  const categoryIds = params.category
+    ? params.category.split(",").filter(Boolean)
+    : [];
+  if (categoryIds.length > 0) {
     where.categories = {
-      some: { id: params.category },
+      some: { id: { in: categoryIds } },
     };
   }
 
-  if (params.tag) {
+  const tagIds = params.tag ? params.tag.split(",").filter(Boolean) : [];
+  if (tagIds.length > 0) {
     where.tags = {
-      some: { id: params.tag },
+      some: { id: { in: tagIds } },
     };
   }
 
@@ -104,60 +99,23 @@ export default async function BlogPage({
   return (
     <div className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw]">
       {/* Search & Filters */}
-      <div className="space-y-[4vw] tablet:space-y-[2vw] desktop:space-y-[0.833vw]">
-        <Suspense fallback={null}>
-          <SearchBar />
-        </Suspense>
+      <Suspense fallback={null}>
+        <BlogFilters
+          categories={categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+            postCount: c._count.posts,
+          }))}
+          tags={tags.map((t) => ({
+            id: t.id,
+            name: t.name,
+            slug: t.slug,
+            postCount: t._count.posts,
+          }))}
+        />
+      </Suspense>
 
-        {/* Category Filters */}
-        {categories.length > 0 && (
-          <div className="flex flex-wrap gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
-            <Link
-              href="/blog"
-              className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
-                !params.category
-                  ? "bg-accent-cyan/20 text-accent-cyan border-accent-cyan/50"
-                  : "border-border-subtle text-text-muted hover:border-accent-cyan/30"
-              }`}
-            >
-              All
-            </Link>
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={buildQueryString({ category: cat.id })}
-                className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
-                  params.category === cat.id
-                    ? "bg-accent-cyan/20 text-accent-cyan border-accent-cyan/50"
-                    : "border-border-subtle text-text-muted hover:border-accent-cyan/30"
-                }`}
-              >
-                {cat.name} ({cat._count.posts})
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Tag Filters */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
-            {tags.map((tag) => (
-              <Link
-                key={tag.id}
-                href={buildQueryString({ tag: tag.id })}
-                className={`px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] border transition-colors ${
-                  params.tag === tag.id
-                    ? "bg-accent-purple/20 text-accent-purple border-accent-purple/50"
-                    : "border-border-subtle text-text-muted hover:border-accent-purple/30"
-                }`}
-              >
-                #{tag.name} ({tag._count.posts})
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-        
       {/* Posts Grid */}
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-[5.333vw] tablet:gap-[2.5vw] desktop:gap-[1.042vw]">

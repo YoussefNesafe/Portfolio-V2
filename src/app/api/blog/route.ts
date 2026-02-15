@@ -38,15 +38,19 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    if (categoryId) {
+    const categoryIds = categoryId
+      ? categoryId.split(",").filter(Boolean)
+      : [];
+    if (categoryIds.length > 0) {
       where.categories = {
-        some: { id: categoryId },
+        some: { id: { in: categoryIds } },
       };
     }
 
-    if (tagId) {
+    const tagIds = tagId ? tagId.split(",").filter(Boolean) : [];
+    if (tagIds.length > 0) {
       where.tags = {
-        some: { id: tagId },
+        some: { id: { in: tagIds } },
       };
     }
 
