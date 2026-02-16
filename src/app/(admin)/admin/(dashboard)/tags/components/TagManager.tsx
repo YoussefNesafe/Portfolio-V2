@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback } from "react";
+import { inputClass } from "../../../components/shared/admin-styles";
+import { useCrudManager } from "../../../components/shared/useCrudManager";
 
 interface TagItem {
   id: string;
@@ -15,92 +16,30 @@ export default function TagManager({
 }: {
   initialTags: TagItem[];
 }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [error, setError] = useState("");
+  const buildBody = useCallback(
+    (name: string) => ({ name }),
+    [],
+  );
 
-  const resetForm = () => {
-    setName("");
-    setEditId(null);
-    setShowForm(false);
-    setError("");
-  };
-
-  const handleCreate = async () => {
-    if (!name.trim()) {
-      setError("Name is required");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/blog/tags", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Failed to create");
-        return;
-      }
-      resetForm();
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdate = async () => {
-    if (!editId || !name.trim()) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/blog/tags/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Failed to update");
-        return;
-      }
-      resetForm();
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this tag? Posts will not be deleted.")) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/blog/tags/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        router.refresh();
-      } else {
-        const data = await res.json();
-        setError(data.error || "Failed to delete tag");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const startEdit = (tag: TagItem) => {
-    setEditId(tag.id);
-    setName(tag.name);
-    setShowForm(true);
-  };
-
-  const inputClass =
-    "w-full px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] rounded-lg bg-background border border-border-subtle text-foreground placeholder:text-text-muted focus:outline-none focus:border-accent-cyan/50 text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]";
+  const {
+    loading,
+    showForm,
+    setShowForm,
+    editId,
+    name,
+    setName,
+    error,
+    resetForm,
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    startEdit,
+  } = useCrudManager<TagItem>({
+    apiEndpoint: "/api/blog/tags",
+    deleteConfirmMessage: "Delete this tag? Posts will not be deleted.",
+    buildCreateBody: buildBody,
+    buildUpdateBody: buildBody,
+  });
 
   return (
     <div className="space-y-[4vw] tablet:space-y-[2vw] desktop:space-y-[0.833vw]">

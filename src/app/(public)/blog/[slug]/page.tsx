@@ -2,6 +2,12 @@ export const revalidate = 86400; // Revalidate every 24 hours
 
 import { cache } from "react";
 import sanitizeHtml from "sanitize-html";
+import Link from "next/link";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { db } from "@/app/lib/db";
+import { sanitizeOptions } from "./sanitize-config";
+import { calculateReadingTime } from "./reading-time";
 
 const getPost = cache(async (slug: string) => {
   return db.post.findUnique({
@@ -13,35 +19,6 @@ const getPost = cache(async (slug: string) => {
     },
   });
 });
-
-const sanitizeOptions: sanitizeHtml.IOptions = {
-  allowedTags: [
-    "p", "br", "strong", "em", "u", "s", "b", "i",
-    "h1", "h2", "h3", "h4", "h5", "h6",
-    "a", "img",
-    "ul", "ol", "li",
-    "blockquote", "code", "pre",
-    "table", "thead", "tbody", "tr", "th", "td",
-    "hr", "div", "span", "figure", "figcaption",
-    "sub", "sup", "mark",
-  ],
-  allowedAttributes: {
-    a: ["href", "target", "rel"],
-    img: ["src", "alt", "width", "height"],
-    code: ["class"],
-    pre: ["class"],
-    span: ["class"],
-    div: ["class"],
-    td: ["colspan", "rowspan"],
-    th: ["colspan", "rowspan"],
-  },
-  allowedSchemes: ["http", "https", "mailto"],
-};
-
-import Link from "next/link";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { db } from "@/app/lib/db";
 
 interface Params {
   slug: string;
@@ -97,10 +74,7 @@ export default async function BlogPostPage({
       })
     : null;
 
-  // Calculate reading time (rough estimate: 200 words per minute)
-  const textContent = post.content.replace(/<[^>]*>/g, "");
-  const wordCount = textContent.split(/\s+/).filter(Boolean).length;
-  const readingTime = Math.ceil(wordCount / 200);
+  const readingTime = calculateReadingTime(post.content);
 
   return (
     <article className="mx-auto max-w-[90vw] tablet:max-w-[80vw] desktop:max-w-[50vw] py-[10.667vw] tablet:py-[5.333vw] desktop:py-[2.222vw]">

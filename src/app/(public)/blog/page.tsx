@@ -2,10 +2,11 @@ export const revalidate = 3600; // Revalidate every hour
 
 import Link from "next/link";
 import { db } from "@/app/lib/db";
-import { Prisma } from "@prisma/client";
 import BlogCard from "./components/BlogCard";
 import BlogFilters from "./components/BlogFilters";
 import { Suspense } from "react";
+import { buildPostFilter } from "./build-post-filter";
+import { buildQueryString } from "./build-query-string";
 
 interface SearchParams {
   page?: string;
@@ -30,33 +31,7 @@ export default async function BlogPage({
   const limit = 9;
   const skip = (page - 1) * limit;
 
-  // Build filter conditions
-  const where: Prisma.PostWhereInput = {
-    published: true,
-  };
-
-  if (params.search) {
-    where.OR = [
-      { title: { contains: params.search, mode: "insensitive" } },
-      { description: { contains: params.search, mode: "insensitive" } },
-    ];
-  }
-
-  const categoryIds = params.category
-    ? params.category.split(",").filter(Boolean)
-    : [];
-  if (categoryIds.length > 0) {
-    where.categories = {
-      some: { id: { in: categoryIds } },
-    };
-  }
-
-  const tagIds = params.tag ? params.tag.split(",").filter(Boolean) : [];
-  if (tagIds.length > 0) {
-    where.tags = {
-      some: { id: { in: tagIds } },
-    };
-  }
+  const where = buildPostFilter(params);
 
   // Fetch posts and total count
   const [posts, total, categories, tags] = await Promise.all([
@@ -83,18 +58,6 @@ export default async function BlogPage({
   ]);
 
   const totalPages = Math.ceil(total / limit);
-
-  const buildQueryString = (overrides: Record<string, string>) => {
-    const p = new URLSearchParams();
-    if (params.search) p.set("search", params.search);
-    if (params.category) p.set("category", params.category);
-    if (params.tag) p.set("tag", params.tag);
-    for (const [key, value] of Object.entries(overrides)) {
-      p.set(key, value);
-    }
-    if (!overrides.page) p.set("page", "1");
-    return `?${p.toString()}`;
-  };
 
   return (
     <div className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw]">
@@ -146,7 +109,7 @@ export default async function BlogPage({
         <div className="flex justify-center items-center gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw] py-[8vw] tablet:py-[4vw] desktop:py-[1.667vw]">
           {page > 1 && (
             <Link
-              href={buildQueryString({ page: String(page - 1) })}
+              href={buildQueryString(params, { page: String(page - 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
               Previous
@@ -159,7 +122,7 @@ export default async function BlogPage({
 
           {page < totalPages && (
             <Link
-              href={buildQueryString({ page: String(page + 1) })}
+              href={buildQueryString(params, { page: String(page + 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
               Next

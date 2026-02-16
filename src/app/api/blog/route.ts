@@ -1,24 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
-import { Prisma } from "@prisma/client";
-import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
 import { requireAuth, requireJson } from "@/app/lib/api-utils";
 import { createPostSchema } from "@/app/lib/schemas";
+import { parsePagination, buildPostFilter, resolveNewPostSlug } from "./helpers";
 
 // GET /api/blog - List posts with pagination, filtering, and search
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    let page = parseInt(searchParams.get("page") || "1", 10);
-    if (isNaN(page) || page < 1) page = 1;
-    let limit = parseInt(searchParams.get("limit") || "9", 10);
-    if (isNaN(limit) || limit < 1) limit = 9;
-    limit = Math.min(limit, 50); // Max 50 per page
-    const searchQuery = searchParams.get("search");
-    const categoryId = searchParams.get("category");
-    const tagId = searchParams.get("tag");
 
+    const searchQuery = searchParams.get("search");
     if (searchQuery && searchQuery.length > 200) {
       return NextResponse.json(
         { error: "Search query too long (max 200 characters)" },
@@ -26,41 +18,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(searchParams);
+    const where = buildPostFilter(searchParams);
 
-    // Build filter conditions
-    const where: Prisma.PostWhereInput = {
-      published: true,
-    };
-
-    if (searchQuery) {
-      where.OR = [
-        { title: { contains: searchQuery, mode: "insensitive" } },
-        { description: { contains: searchQuery, mode: "insensitive" } },
-        { content: { contains: searchQuery, mode: "insensitive" } },
-      ];
-    }
-
-    const categoryIds = categoryId
-      ? categoryId.split(",").filter(Boolean)
-      : [];
-    if (categoryIds.length > 0) {
-      where.categories = {
-        some: { id: { in: categoryIds } },
-      };
-    }
-
-    const tagIds = tagId ? tagId.split(",").filter(Boolean) : [];
-    if (tagIds.length > 0) {
-      where.tags = {
-        some: { id: { in: tagIds } },
-      };
-    }
-
-    // Get total count for pagination
     const total = await db.post.count({ where });
 
-    // Fetch posts
     const posts = await db.post.findMany({
       where,
       include: {
@@ -101,7 +63,6 @@ export async function GET(request: NextRequest) {
 // POST /api/blog - Create a new post (admin only)
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
     const session = await requireAuth(request);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -129,24 +90,8 @@ export async function POST(request: NextRequest) {
       excerpt,
     } = parsed.data;
 
-    // Create post inside a transaction to prevent slug race conditions
     const post = await db.$transaction(async (tx) => {
-      // Generate slug
-      let slug = customSlug || slugify(title);
-
-      // Check if slug is unique
-      const existingPost = await tx.post.findUnique({
-        where: { slug },
-      });
-
-      if (existingPost) {
-        slug = await generateUniqueSlug(slug, undefined, async (testSlug) => {
-          const p = await tx.post.findUnique({
-            where: { slug: testSlug },
-          });
-          return !!p;
-        });
-      }
+      const slug = await resolveNewPostSlug(tx, title, customSlug);
 
       // Get author (default author for now)
       // TODO: In Phase 3, get author from authenticated user

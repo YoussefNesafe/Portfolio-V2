@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { inputClass } from "../../../components/shared/admin-styles";
+import { useCrudManager } from "../../../components/shared/useCrudManager";
 
 interface CategoryItem {
   id: string;
@@ -16,95 +17,40 @@ export default function CategoryManager({
 }: {
   initialCategories: CategoryItem[];
 }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
 
-  const resetForm = () => {
-    setName("");
-    setDescription("");
-    setEditId(null);
-    setShowForm(false);
-    setError("");
-  };
+  const onResetForm = useCallback(() => setDescription(""), []);
+  const onStartEdit = useCallback(
+    (item: CategoryItem) => setDescription(item.description || ""),
+    [],
+  );
 
-  const handleCreate = async () => {
-    if (!name.trim()) {
-      setError("Name is required");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/blog/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description: description || undefined }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Failed to create");
-        return;
-      }
-      resetForm();
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
-  };
+  const buildBody = useCallback(
+    (name: string) => ({ name, description: description || undefined }),
+    [description],
+  );
 
-  const handleUpdate = async () => {
-    if (!editId || !name.trim()) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/blog/categories/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description: description || undefined }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Failed to update");
-        return;
-      }
-      resetForm();
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this category? Posts will not be deleted.")) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/blog/categories/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        router.refresh();
-      } else {
-        const data = await res.json();
-        setError(data.error || "Failed to delete category");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const startEdit = (cat: CategoryItem) => {
-    setEditId(cat.id);
-    setName(cat.name);
-    setDescription(cat.description || "");
-    setShowForm(true);
-  };
-
-  const inputClass =
-    "w-full px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] rounded-lg bg-background border border-border-subtle text-foreground placeholder:text-text-muted focus:outline-none focus:border-accent-cyan/50 text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]";
+  const {
+    loading,
+    showForm,
+    setShowForm,
+    editId,
+    name,
+    setName,
+    error,
+    resetForm,
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    startEdit,
+  } = useCrudManager<CategoryItem>({
+    apiEndpoint: "/api/blog/categories",
+    deleteConfirmMessage: "Delete this category? Posts will not be deleted.",
+    buildCreateBody: buildBody,
+    buildUpdateBody: buildBody,
+    onResetForm,
+    onStartEdit,
+  });
 
   return (
     <div className="space-y-[4vw] tablet:space-y-[2vw] desktop:space-y-[0.833vw]">

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
-import { slugify, generateUniqueSlug } from "@/app/utils/slugify";
 import { requireAuth, requireJson } from "@/app/lib/api-utils";
 import { updatePostSchema } from "@/app/lib/schemas";
+import { resolveUpdatedPostSlug } from "../helpers";
 
 interface Params {
   id: string;
@@ -54,7 +54,6 @@ export async function PUT(
   { params }: { params: Promise<Params> },
 ) {
   try {
-    // Check authentication
     const session = await requireAuth(request);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -86,7 +85,6 @@ export async function PUT(
     } = parsed.data;
 
     const updatedPost = await db.$transaction(async (tx) => {
-      // Check if post exists
       const existingPost = await tx.post.findUnique({
         where: { id },
       });
@@ -95,31 +93,8 @@ export async function PUT(
         return null;
       }
 
-      // Generate new slug if title changed
-      let slug = existingPost.slug;
-      if ((title && title !== existingPost.title) || customSlug) {
-        slug = customSlug || slugify(title || existingPost.title);
+      const slug = await resolveUpdatedPostSlug(tx, id, existingPost, title, customSlug);
 
-        // Check if new slug is unique
-        const slugConflict = await tx.post.findUnique({
-          where: { slug },
-        });
-
-        if (slugConflict && slugConflict.id !== id) {
-          slug = await generateUniqueSlug(
-            slug,
-            existingPost.slug,
-            async (testSlug) => {
-              const post = await tx.post.findUnique({
-                where: { slug: testSlug },
-              });
-              return !!post && post.id !== id;
-            },
-          );
-        }
-      }
-
-      // Update post
       return tx.post.update({
         where: { id },
         data: {
@@ -172,7 +147,6 @@ export async function DELETE(
   { params }: { params: Promise<Params> },
 ) {
   try {
-    // Check authentication
     const session = await requireAuth(request);
     if (!session) {
       return NextResponse.json(
@@ -183,7 +157,6 @@ export async function DELETE(
 
     const { id } = await params;
 
-    // Check if post exists
     const post = await db.post.findUnique({
       where: { id },
     });
@@ -192,7 +165,6 @@ export async function DELETE(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Delete post (cascade will handle relations)
     await db.post.delete({
       where: { id },
     });
