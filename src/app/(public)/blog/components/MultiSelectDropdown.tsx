@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronDown, FiX, FiCheck, FiSearch } from "react-icons/fi";
+import { FiChevronDown, FiCheck, FiSearch } from "react-icons/fi";
 import { cn } from "@/app/utils/cn";
 
-interface Option {
+export interface Option {
   id: string;
   label: string;
   count: number;
@@ -74,14 +74,6 @@ export default function MultiSelectDropdown({
     [selected, onChange],
   );
 
-  const handleRemove = useCallback(
-    (id: string, e: React.MouseEvent) => {
-      e.stopPropagation();
-      onChange(selected.filter((s) => s !== id));
-    },
-    [selected, onChange],
-  );
-
   const handleClearAll = useCallback(() => {
     onChange([]);
   }, [onChange]);
@@ -142,30 +134,8 @@ export default function MultiSelectDropdown({
         {selected.length === 0 ? (
           <span>{placeholder || label}</span>
         ) : (
-          <span className="flex items-center gap-[1.5vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw] flex-wrap">
-            {selectedOptions.slice(0, 2).map((opt) => (
-              <span
-                key={opt.id}
-                className={cn(
-                  "inline-flex items-center gap-[1vw] tablet:gap-[0.5vw] desktop:gap-[0.208vw]",
-                  "px-[1.5vw] tablet:px-[0.75vw] desktop:px-[0.313vw] py-[0.5vw] tablet:py-[0.25vw] desktop:py-[0.104vw]",
-                  "rounded border text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]",
-                  colors.chip,
-                )}
-              >
-                {labelPrefix}
-                {opt.label}
-                <FiX
-                  className="w-[2.5vw] h-[2.5vw] tablet:w-[1.2vw] tablet:h-[1.2vw] desktop:w-[0.5vw] desktop:h-[0.5vw] cursor-pointer"
-                  onClick={(e) => handleRemove(opt.id, e)}
-                />
-              </span>
-            ))}
-            {selectedOptions.length > 2 && (
-              <span className="text-text-muted text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]">
-                +{selectedOptions.length - 2} more
-              </span>
-            )}
+          <span className="text-foreground truncate max-w-[40vw] tablet:max-w-[18vw] desktop:max-w-[8vw]">
+            {selectedOptions.map((opt) => `${labelPrefix}${opt.label}`).join(", ")}
           </span>
         )}
         <FiChevronDown
