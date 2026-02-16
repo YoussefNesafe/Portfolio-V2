@@ -1,13 +1,14 @@
 export const dynamic = "force-dynamic";
 
 import { db } from "@/app/lib/db";
+import { ADMIN_POSTS_LIMIT } from "@/app/lib/constants";
 import Link from "next/link";
 import PostActions from "./components/PostActions";
 
 export default async function PostsPage() {
   const posts = await db.post.findMany({
     orderBy: { createdAt: "desc" },
-    take: 100,
+    take: ADMIN_POSTS_LIMIT,
     include: {
       categories: true,
       tags: true,

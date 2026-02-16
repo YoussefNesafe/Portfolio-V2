@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
+import { POST_INCLUDE_FULL } from "../helpers/prisma-includes";
+import { SEARCH_QUERY_MAX_LENGTH, SEARCH_RESULTS_LIMIT } from "@/app/lib/constants";
 
 // GET /api/blog/search - Search posts
 export async function GET(request: NextRequest) {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (query.trim().length > 200) {
+    if (query.trim().length > SEARCH_QUERY_MAX_LENGTH) {
       return NextResponse.json(
         { error: "Search query too long (max 200 characters)" },
         { status: 400 },
@@ -30,13 +32,9 @@ export async function GET(request: NextRequest) {
           { content: { contains: query, mode: "insensitive" } },
         ],
       },
-      include: {
-        author: true,
-        categories: true,
-        tags: true,
-      },
+      include: POST_INCLUDE_FULL,
       orderBy: { publishedAt: "desc" },
-      take: 20, // Limit search results to 20
+      take: SEARCH_RESULTS_LIMIT,
     });
 
     return NextResponse.json(

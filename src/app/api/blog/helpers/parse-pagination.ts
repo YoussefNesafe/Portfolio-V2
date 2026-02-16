@@ -1,5 +1,7 @@
+import { POSTS_PER_PAGE } from "@/app/lib/constants";
+
 const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 9;
+const DEFAULT_LIMIT = POSTS_PER_PAGE;
 const MAX_LIMIT = 50;
 
 interface PaginationParams {

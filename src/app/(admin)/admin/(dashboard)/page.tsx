@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { db } from "@/app/lib/db";
+import { DASHBOARD_RECENT_POSTS } from "@/app/lib/constants";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
@@ -12,7 +13,7 @@ export default async function AdminDashboard() {
       db.category.count(),
       db.tag.count(),
       db.post.findMany({
-        take: 5,
+        take: DASHBOARD_RECENT_POSTS,
         orderBy: { createdAt: "desc" },
         include: { categories: true },
       }),

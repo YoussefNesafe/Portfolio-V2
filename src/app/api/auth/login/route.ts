@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
 import { verifyPassword, createSession } from "@/app/lib/auth";
 import { loginSchema } from "@/app/lib/schemas";
+import { RATE_LIMIT_MAX_ATTEMPTS, RATE_LIMIT_WINDOW_MS, SESSION_DURATION_SECONDS } from "@/app/lib/constants";
 
-// Rate limiting: 5 attempts per 15 minutes per IP
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 15 * 60 * 1000;
 const MAX_TRACKED_IPS = 10_000;
 
 function getRateLimitKey(request: NextRequest): string {
@@ -32,11 +30,11 @@ function isRateLimited(key: string): boolean {
     if (loginAttempts.size >= MAX_TRACKED_IPS) {
       cleanupExpiredEntries();
     }
-    loginAttempts.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    loginAttempts.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
     return false;
   }
   entry.count++;
-  return entry.count > MAX_ATTEMPTS;
+  return entry.count > RATE_LIMIT_MAX_ATTEMPTS;
 }
 
 // POST /api/auth/login - Login endpoint
@@ -109,7 +107,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 24 * 60 * 60, // 24 hours
+      maxAge: SESSION_DURATION_SECONDS,
       path: "/",
     });
 

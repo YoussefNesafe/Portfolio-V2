@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
 import { requireAuth, requireJson } from "@/app/lib/api-utils";
 import { updatePostSchema } from "@/app/lib/schemas";
-import { resolveUpdatedPostSlug } from "../helpers";
+import { resolveUpdatedPostSlug, POST_INCLUDE_FULL } from "../helpers";
 
 interface Params {
   id: string;
@@ -22,11 +22,7 @@ export async function GET(
 
     const post = await db.post.findUnique({
       where: { id },
-      include: {
-        author: true,
-        categories: true,
-        tags: true,
-      },
+      include: POST_INCLUDE_FULL,
     });
 
     if (!post) {

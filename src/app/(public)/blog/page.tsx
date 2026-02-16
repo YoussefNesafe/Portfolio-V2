@@ -5,7 +5,9 @@ import { db } from "@/app/lib/db";
 import BlogCard from "./components/BlogCard";
 import BlogFilters from "./components/BlogFilters";
 import { Suspense } from "react";
-import { buildPostFilter } from "./build-post-filter";
+import { buildPostFilter } from "@/app/lib/build-post-filter";
+import { POSTS_PER_PAGE } from "@/app/lib/constants";
+import { POST_INCLUDE_FULL, HAS_PUBLISHED_POSTS, ENTITY_WITH_PUBLISHED_COUNT } from "@/app/api/blog/helpers/prisma-includes";
 import { buildQueryString } from "./build-query-string";
 
 interface SearchParams {
@@ -28,7 +30,7 @@ export default async function BlogPage({
   const params = await searchParams;
   let page = parseInt(params.page || "1", 10);
   if (isNaN(page) || page < 1) page = 1;
-  const limit = 9;
+  const limit = POSTS_PER_PAGE;
   const skip = (page - 1) * limit;
 
   const where = buildPostFilter(params);
@@ -37,24 +39,20 @@ export default async function BlogPage({
   const [posts, total, categories, tags] = await Promise.all([
     db.post.findMany({
       where,
-      include: {
-        author: true,
-        categories: true,
-        tags: true,
-      },
+      include: POST_INCLUDE_FULL,
       orderBy: { publishedAt: "desc" },
       skip,
       take: limit,
     }),
     db.post.count({ where }),
     db.category.findMany({
-      where: { posts: { some: { published: true } } },
-      include: { _count: { select: { posts: { where: { published: true } } } } },
+      where: HAS_PUBLISHED_POSTS,
+      include: ENTITY_WITH_PUBLISHED_COUNT,
       orderBy: { name: "asc" },
     }),
     db.tag.findMany({
-      where: { posts: { some: { published: true } } },
-      include: { _count: { select: { posts: { where: { published: true } } } } },
+      where: HAS_PUBLISHED_POSTS,
+      include: ENTITY_WITH_PUBLISHED_COUNT,
       orderBy: { name: "asc" },
     }),
   ]);

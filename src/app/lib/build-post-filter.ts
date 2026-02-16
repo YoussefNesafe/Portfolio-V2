@@ -1,21 +1,33 @@
 import { Prisma } from "@prisma/client";
 
-interface FilterParams {
+export interface FilterParams {
   search?: string;
   category?: string;
   tag?: string;
 }
 
-export function buildPostFilter(params: FilterParams): Prisma.PostWhereInput {
+interface FilterOptions {
+  includeContent?: boolean;
+}
+
+export function buildPostFilter(
+  params: FilterParams,
+  options: FilterOptions = {},
+): Prisma.PostWhereInput {
   const where: Prisma.PostWhereInput = {
     published: true,
   };
 
   if (params.search) {
-    where.OR = [
-      { title: { contains: params.search, mode: "insensitive" } },
-      { description: { contains: params.search, mode: "insensitive" } },
+    const searchCondition = { contains: params.search, mode: "insensitive" as const };
+    const orClauses: Prisma.PostWhereInput[] = [
+      { title: searchCondition },
+      { description: searchCondition },
     ];
+    if (options.includeContent) {
+      orClauses.push({ content: searchCondition });
+    }
+    where.OR = orClauses;
   }
 
   const categoryIds = params.category

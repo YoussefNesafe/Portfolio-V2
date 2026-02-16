@@ -25,6 +25,25 @@ export function isPrismaUniqueError(error: unknown): boolean {
   );
 }
 
+type RouteHandler = (
+  request: NextRequest,
+  context?: { params: Promise<{ id: string }> },
+) => Promise<NextResponse>;
+
+export function withAuth(handler: (
+  request: NextRequest,
+  session: Awaited<ReturnType<typeof requireAuth>>,
+  context?: { params: Promise<{ id: string }> },
+) => Promise<NextResponse>): RouteHandler {
+  return async (request, context) => {
+    const session = await requireAuth(request);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return handler(request, session, context);
+  };
+}
+
 export function errorResponse(message: string | Record<string, unknown>, status: number = 400) {
   const body = typeof message === "string" ? { error: message } : message;
   return NextResponse.json(body, { status });

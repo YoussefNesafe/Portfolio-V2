@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/app/lib/db";
 import { requireAuth, requireJson } from "@/app/lib/api-utils";
 import { createPostSchema } from "@/app/lib/schemas";
-import { parsePagination, buildPostFilter, resolveNewPostSlug } from "./helpers";
+import { SEARCH_QUERY_MAX_LENGTH } from "@/app/lib/constants";
+import { parsePagination, buildPostFilter, resolveNewPostSlug, POST_INCLUDE_FULL } from "./helpers";
 
 // GET /api/blog - List posts with pagination, filtering, and search
 export async function GET(request: NextRequest) {
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const searchQuery = searchParams.get("search");
-    if (searchQuery && searchQuery.length > 200) {
+    if (searchQuery && searchQuery.length > SEARCH_QUERY_MAX_LENGTH) {
       return NextResponse.json(
         { error: "Search query too long (max 200 characters)" },
         { status: 400 },
@@ -19,17 +20,20 @@ export async function GET(request: NextRequest) {
     }
 
     const { page, limit, skip } = parsePagination(searchParams);
-    const where = buildPostFilter(searchParams);
+    const where = buildPostFilter(
+      {
+        search: searchParams.get("search") || undefined,
+        category: searchParams.get("category") || undefined,
+        tag: searchParams.get("tag") || undefined,
+      },
+      { includeContent: true },
+    );
 
     const total = await db.post.count({ where });
 
     const posts = await db.post.findMany({
       where,
-      include: {
-        author: true,
-        categories: true,
-        tags: true,
-      },
+      include: POST_INCLUDE_FULL,
       orderBy: { publishedAt: "desc" },
       skip,
       take: limit,

@@ -6,17 +6,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/app/lib/db";
+import { POST_INCLUDE_FULL } from "@/app/api/blog/helpers/prisma-includes";
 import { sanitizeOptions } from "./sanitize-config";
 import { calculateReadingTime } from "./reading-time";
 
 const getPost = cache(async (slug: string) => {
   return db.post.findUnique({
     where: { slug },
-    include: {
-      author: true,
-      categories: true,
-      tags: true,
-    },
+    include: POST_INCLUDE_FULL,
   });
 });
 

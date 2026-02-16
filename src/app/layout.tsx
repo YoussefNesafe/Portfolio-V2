@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://youssefnesafe.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
   title: "Youssef Nesafe | Senior Frontend Engineer",
   description:
     "Full-stack Software Engineer with 6+ years of experience building scalable, high-performance applications. Passionate about clean code, modern architectures, and delivering innovative solutions.",
