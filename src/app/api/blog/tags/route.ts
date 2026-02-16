@@ -8,9 +8,10 @@ import { createTagSchema } from "@/app/lib/schemas";
 export async function GET(_request: NextRequest) {
   try {
     const tags = await db.tag.findMany({
+      where: { posts: { some: { published: true } } },
       include: {
         _count: {
-          select: { posts: true },
+          select: { posts: { where: { published: true } } },
         },
       },
       orderBy: { name: "asc" },

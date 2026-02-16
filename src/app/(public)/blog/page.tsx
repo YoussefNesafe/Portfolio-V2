@@ -48,11 +48,13 @@ export default async function BlogPage({
     }),
     db.post.count({ where }),
     db.category.findMany({
-      include: { _count: { select: { posts: true } } },
+      where: { posts: { some: { published: true } } },
+      include: { _count: { select: { posts: { where: { published: true } } } } },
       orderBy: { name: "asc" },
     }),
     db.tag.findMany({
-      include: { _count: { select: { posts: true } } },
+      where: { posts: { some: { published: true } } },
+      include: { _count: { select: { posts: { where: { published: true } } } } },
       orderBy: { name: "asc" },
     }),
   ]);
