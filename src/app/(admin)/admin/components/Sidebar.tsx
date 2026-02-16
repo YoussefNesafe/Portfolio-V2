@@ -8,6 +8,7 @@ import {
   FiFileText,
   FiFolder,
   FiTag,
+  FiList,
   FiLogOut,
   FiMenu,
   FiX,
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/admin/posts", label: "Posts", icon: FiFileText },
   { href: "/admin/categories", label: "Categories", icon: FiFolder },
   { href: "/admin/tags", label: "Tags", icon: FiTag },
+  { href: "/admin/queue", label: "Queue", icon: FiList },
 ];
 
 export default function Sidebar() {

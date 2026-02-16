@@ -25,15 +25,18 @@ export function isPrismaUniqueError(error: unknown): boolean {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RouteContext = { params: Promise<any> };
+
 type RouteHandler = (
   request: NextRequest,
-  context?: { params: Promise<{ id: string }> },
+  context?: RouteContext,
 ) => Promise<NextResponse>;
 
 export function withAuth(handler: (
   request: NextRequest,
   session: Awaited<ReturnType<typeof requireAuth>>,
-  context?: { params: Promise<{ id: string }> },
+  context?: RouteContext,
 ) => Promise<NextResponse>): RouteHandler {
   return async (request, context) => {
     const session = await requireAuth(request);
