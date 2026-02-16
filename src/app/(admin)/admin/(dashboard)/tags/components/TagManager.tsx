@@ -86,40 +86,42 @@ export default function TagManager({
       )}
 
       {/* List */}
-      <div className="bg-bg-secondary border border-border-subtle rounded-lg overflow-hidden">
+      <div className="bg-bg-secondary border border-border-subtle rounded-lg overflow-hidden divide-y divide-border-subtle">
         {initialTags.length === 0 ? (
           <p className="p-[4vw] tablet:p-[2vw] desktop:p-[0.833vw] text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
             No tags yet.
           </p>
         ) : (
-          <div className="flex flex-wrap gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw] p-[4vw] tablet:p-[2vw] desktop:p-[0.833vw]">
-            {initialTags.map((tag) => (
-              <div
-                key={tag.id}
-                className="flex items-center gap-[1.333vw] tablet:gap-[0.667vw] desktop:gap-[0.278vw] bg-bg-tertiary border border-border-subtle rounded-lg px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[2vw] tablet:py-[1vw] desktop:py-[0.417vw]"
-              >
-                <span className="text-foreground text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
-                  #{tag.name}
-                </span>
-                <span className="text-text-muted text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.417vw]">
-                  ({tag.postCount})
-                </span>
+          initialTags.map((tag) => (
+            <div
+              key={tag.id}
+              className="flex items-center justify-between p-[4vw] tablet:p-[2vw] desktop:p-[0.833vw]"
+            >
+              <div>
+                <p className="text-foreground text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.625vw] font-medium">
+                  {tag.name}
+                </p>
+                <p className="text-text-muted text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.458vw]">
+                  /{tag.slug} {"\u00B7"} {tag.postCount} posts
+                </p>
+              </div>
+              <div className="flex gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw]">
                 <button
                   onClick={() => startEdit(tag)}
-                  className="text-accent-cyan hover:text-accent-cyan/80 text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.417vw] ml-[1.333vw] tablet:ml-[0.667vw] desktop:ml-[0.278vw]"
+                  className="text-accent-cyan hover:text-accent-cyan/80 text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(tag.id)}
                   disabled={loading}
-                  className="text-red-400 hover:text-red-300 text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.417vw] disabled:opacity-50"
+                  className="text-red-400 hover:text-red-300 text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] disabled:opacity-50"
                 >
-                  Del
+                  Delete
                 </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))
         )}
       </div>
     </div>

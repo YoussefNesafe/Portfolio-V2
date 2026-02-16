@@ -8,28 +8,42 @@ allowed-tools: Read, Grep, Glob
 
 # Design System Reference
 
-This project uses a **viewport-width (vw) based responsive styling system** mirroring the Multibank holding-web-app architecture.
+This project uses a **viewport-width (vw) based responsive styling system**.
 
 ## Breakpoints
 
-| Name    | Min-width | Tailwind prefix | Design viewport |
-|---------|-----------|-----------------|-----------------|
-| Mobile  | 0px       | _(none)_        | 375px           |
-| Tablet  | 800px     | `tablet:`       | 800px           |
-| Desktop | 1920px    | `desktop:`      | 1920px          |
+There are two separate concepts:
 
-Defined in `tailwind.config.ts` at project root:
+### Breakpoint Triggers (when Tailwind prefixes activate)
+
+| Name    | Min-width | Tailwind prefix |
+|---------|-----------|-----------------|
+| Mobile  | 0px       | _(none)_        |
+| Tablet  | 481px     | `tablet:`       |
+| Desktop | 1024px    | `desktop:`      |
+
+Defined in `tailwind.config.ts`:
 ```ts
 screens: {
-  tablet: "800px",
-  desktop: "1920px",
+  tablet: "481px",
+  desktop: "1024px",
 }
 ```
+
+### Design Viewports (for vw math)
+
+These are the reference widths used in the vw conversion formula — they represent the target design size at each breakpoint, **not** the breakpoint trigger values:
+
+| Breakpoint | Design viewport |
+|------------|-----------------|
+| Mobile     | 375px           |
+| Tablet     | 800px           |
+| Desktop    | 1920px          |
 
 ## VW Conversion Formula
 
 ```
-vw_value = desired_px / viewport_width * 100
+vw_value = desired_px / design_viewport * 100
 ```
 
 - **Mobile:** `px / 375 * 100`
@@ -83,6 +97,8 @@ className="rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw]"
 className="border-[0.533vw] tablet:border-[0.25vw] desktop:border-[0.104vw]"
 ```
 
+**Text sizing is always done inline** with the three-breakpoint vw pattern shown above. There are no predefined text size utility classes — never use Tailwind's built-in `text-sm`, `text-base`, `text-lg`, etc.
+
 ## Color Palette
 
 Defined in `tailwind.config.ts` → `theme.extend.colors`:
@@ -107,14 +123,6 @@ Defined in `tailwind.config.ts` → `theme.extend.colors`:
 
 Defined in `src/app/styles/tailwind.css`:
 
-### Responsive Text Sizes
-- `.text-12-vw` — 12px equivalent (3.2vw / 1.5vw / 0.625vw)
-- `.text-14-vw` — 14px equivalent (3.733vw / 1.75vw / 0.729vw)
-- `.text-16-vw` — 16px equivalent (4.267vw / 2vw / 0.833vw)
-- `.text-18-vw` — 18px equivalent (4.8vw / 2.25vw / 0.938vw)
-- `.text-20-vw` — 20px equivalent (5.333vw / 2.5vw / 1.042vw)
-- `.text-24-vw` — 24px equivalent (6.4vw / 3vw / 1.25vw)
-
 ### Section Spacing
 - `.section-mt` — margin-top: 16vw / 10vw / 5vw
 - `.section-mb` — margin-bottom: 16vw / 10vw / 5vw
@@ -136,12 +144,12 @@ Defined in `src/app/styles/tailwind.css`:
 
 ## Section Container
 
-All `<section>` and `.section-container` elements automatically get responsive side padding:
+All `<section>` and `.section-container` elements automatically get responsive side padding via **custom media queries** in the base CSS layer. Note: these use raw media queries at 800px and 1920px, which are the design viewports — **not** Tailwind's breakpoint triggers (481px/1024px):
 
-```
-Mobile:  padding: 0 4.267vw   (~16px at 375px)
-Tablet:  padding: 0 5vw       (~40px at 800px)
-Desktop: padding: 0 14.063vw  (~270px at 1920px)
+```css
+/* Base (mobile): */  padding: 0 4.267vw;   /* ~16px at 375px */
+/* @media (800px): */ padding: 0 5vw;       /* ~40px at 800px */
+/* @media (1920px):*/ padding: 0 14.063vw;  /* ~270px at 1920px */
 ```
 
 ## Heading Typography (Base Layer)
@@ -159,7 +167,10 @@ p:  text-[4.267vw]  / tablet:text-[2vw] / desktop:text-[0.833vw]
 Defined in `tailwind.config.ts`:
 - `animate-blink-cursor` — blinking cursor for typewriter effect
 - `animate-float` — 6s floating up/down
+- `animate-float-slow` — 8s floating up/down
+- `animate-float-slower` — 10s floating up/down
 - `animate-gradient-shift` — 3s gradient background animation
+- `animate-wave-glow` — 6s scale + opacity pulse
 
 Framer Motion variants in `src/app/lib/animations.ts`:
 - `fadeUp`, `fadeLeft`, `fadeRight`, `scaleUp`

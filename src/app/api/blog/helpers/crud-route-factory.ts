@@ -8,6 +8,9 @@ import {
   isPrismaUniqueError,
 } from "@/app/lib/api-utils";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type WhereClause = Record<string, any>;
+
 type ModelName = "category" | "tag";
 
 // Prisma doesn't support generic model access, so we use a dynamic accessor.
@@ -32,15 +35,23 @@ export function createListAndCreateHandlers(config: ListCreateConfig) {
   const prismaModel = getModel(model);
   const routeLabel = `/api/blog/${model}s`;
 
-  async function GET(_request: NextRequest) {
+  async function GET(request: NextRequest) {
     try {
+      // Authenticated admins see all items; public visitors only see items with published posts
+      const session = await requireAuth(request);
+      const isAdmin = !!session;
+
+      const where: WhereClause = isAdmin
+        ? {}
+        : { posts: { some: { published: true } } };
+
+      const postCountFilter = isAdmin
+        ? { posts: true as const }
+        : { posts: { where: { published: true } } };
+
       const items = await prismaModel.findMany({
-        where: { posts: { some: { published: true } } },
-        include: {
-          _count: {
-            select: { posts: { where: { published: true } } },
-          },
-        },
+        where,
+        include: { _count: { select: postCountFilter } },
         orderBy: { name: "asc" },
       });
 
