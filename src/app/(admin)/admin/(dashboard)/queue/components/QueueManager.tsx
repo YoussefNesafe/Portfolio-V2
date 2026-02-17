@@ -46,6 +46,7 @@ export default function QueueManager({
   const [bulkMode, setBulkMode] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
 
   const refresh = useCallback(() => router.refresh(), [router]);
 
@@ -148,6 +149,25 @@ export default function QueueManager({
       setError(e instanceof Error ? e.message : "Failed to update");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGenerate = async (id: string) => {
+    setGeneratingId(id);
+    setError("");
+    try {
+      const res = await fetch(`/api/blog/queue/${id}/generate`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Generation failed");
+      }
+      refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Generation failed");
+    } finally {
+      setGeneratingId(null);
     }
   };
 
@@ -306,6 +326,15 @@ export default function QueueManager({
                     </td>
                     <td className="p-[3vw] tablet:p-[1.5vw] desktop:p-[0.625vw]">
                       <div className="flex gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw] justify-end">
+                        {["pending", "failed"].includes(item.status) && (
+                          <button
+                            onClick={() => handleGenerate(item.id)}
+                            disabled={loading || generatingId === item.id}
+                            className="text-accent-emerald hover:text-accent-emerald/80 text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] disabled:opacity-50"
+                          >
+                            {generatingId === item.id ? "Generating..." : "Generate"}
+                          </button>
+                        )}
                         {["pending", "failed"].includes(item.status) && editId !== item.id && (
                           <button
                             onClick={() => {
