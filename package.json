@@ -14,7 +14,6 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.74.0",
     "@prisma/client": "^5.22.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.33.0",
@@ -22,7 +21,6 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0",
-    "resend": "^6.9.2",
     "sanitize-html": "^2.17.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"

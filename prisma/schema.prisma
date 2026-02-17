@@ -66,8 +66,6 @@ model Post {
   author      Author      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categories  Category[]
   tags        Tag[]
-  queueEntry  QueuedPost?
-
   @@index([slug])
   @@index([published])
   @@index([publishedAt(sort: Desc)])
@@ -85,23 +83,6 @@ model Category {
   posts       Post[]
 
   @@index([slug])
-}
-
-// Queued post for automated blog publishing pipeline
-model QueuedPost {
-  id        String   @id @default(cuid())
-  title     String
-  position  Int      // FIFO ordering
-  status    String   @default("pending") // pending | generating | generated | published | failed
-  postId    String?  @unique
-  post      Post?    @relation(fields: [postId], references: [id])
-  errorMsg  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([status])
-  @@index([position])
-  @@index([status, position])
 }
 
 // Blog tag

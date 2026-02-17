@@ -57,18 +57,3 @@ export const updateTagSchema = z.object({
   name: z.string().min(1).optional(),
   slug: slugField,
 });
-
-// --- Queue ---
-export const addQueueTitleSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-});
-
-export const addBulkQueueTitlesSchema = z.object({
-  titles: z.array(z.string().min(1, "Each title must be non-empty")).min(1, "At least one title is required"),
-});
-
-export const updateQueueItemSchema = z.object({
-  title: z.string().min(1).optional(),
-  position: z.number().int().min(0).optional(),
-  status: z.enum(["pending"]).optional(),
-});
