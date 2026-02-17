@@ -110,7 +110,7 @@ Defined in `src/app/styles/tailwind.css`:
 
 ## Prisma Schema
 
-Six models: `AdminUser`, `Session` (auth), `Author`, `Post`, `Category`, `Tag` (blog). Posts have many-to-many relations with categories and tags. Sessions cascade-delete with their AdminUser.
+Five models: `AdminUser`, `Session` (auth), `Author`, `Post`, `Category`, `Tag` (blog). Posts have many-to-many relations with categories and tags. Sessions cascade-delete with their AdminUser.
 
 ## Gotchas
 
