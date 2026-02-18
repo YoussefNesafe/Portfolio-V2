@@ -94,3 +94,36 @@ model Tag {
 
   @@index([slug])
 }
+
+// Brag report category
+model BragCategory {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  color     String?
+  sortOrder Int         @default(0)
+  createdAt DateTime    @default(now())
+  entries   BragEntry[]
+
+  @@index([slug])
+}
+
+// Brag report entry
+model BragEntry {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  impact      String?
+  date        DateTime
+  published   Boolean      @default(false)
+  pinned      Boolean      @default(false)
+  categoryId  String
+  category    BragCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([date(sort: Desc)])
+  @@index([published, date(sort: Desc)])
+  @@index([categoryId])
+  @@index([published, pinned])
+}

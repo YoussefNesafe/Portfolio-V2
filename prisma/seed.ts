@@ -92,6 +92,26 @@ async function main() {
     console.log(
       "✅ Admin user created - Email: admin@example.com, Password: admin123",
     );
+
+    // Create brag categories
+    const bragCategories = [
+      { name: "Projects", slug: "projects", color: "#06B6D4", sortOrder: 0 },
+      { name: "Bug Fixes", slug: "bug-fixes", color: "#EF4444", sortOrder: 1 },
+      { name: "Learning", slug: "learning", color: "#A855F7", sortOrder: 2 },
+      { name: "Collaboration", slug: "collaboration", color: "#F59E0B", sortOrder: 3 },
+      { name: "Design/Architecture", slug: "design-architecture", color: "#10B981", sortOrder: 4 },
+      { name: "DevOps/Infra", slug: "devops-infra", color: "#3B82F6", sortOrder: 5 },
+    ];
+    await Promise.all(
+      bragCategories.map((cat) =>
+        db.bragCategory.upsert({
+          where: { name: cat.name },
+          update: {},
+          create: cat,
+        }),
+      ),
+    );
+    console.log("✅ Brag categories created:", bragCategories.length);
     console.log("   ⚠️  CHANGE THIS PASSWORD IMMEDIATELY IN PRODUCTION!");
 
     // Create a sample blog post
