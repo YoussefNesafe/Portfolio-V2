@@ -76,7 +76,8 @@ export default function ContactSection(props: IContactSection) {
                 </div>
               </>
             );
-            const className = "flex items-start gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw] group";
+            const className =
+              "flex items-start gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw] group";
             return (
               <motion.div key={item.type} variants={fadeLeft}>
                 <GlowCard>

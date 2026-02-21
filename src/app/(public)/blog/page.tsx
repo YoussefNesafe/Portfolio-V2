@@ -7,7 +7,11 @@ import BlogFilters from "./components/BlogFilters";
 import { Suspense } from "react";
 import { buildPostFilter } from "@/app/lib/build-post-filter";
 import { POSTS_PER_PAGE } from "@/app/lib/constants";
-import { POST_INCLUDE_FULL, HAS_PUBLISHED_POSTS, ENTITY_WITH_PUBLISHED_COUNT } from "@/app/api/blog/helpers/prisma-includes";
+import {
+  POST_INCLUDE_FULL,
+  HAS_PUBLISHED_POSTS,
+  ENTITY_WITH_PUBLISHED_COUNT,
+} from "@/app/api/blog/helpers/prisma-includes";
 import { buildQueryString } from "./build-query-string";
 
 interface SearchParams {
@@ -60,8 +64,7 @@ export default async function BlogPage({
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw]">
-      {/* Search & Filters */}
+    <section className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw] pb-[10.68vw] tablet:pb-[10vw] desktop:pb-[6.24vw]">
       <Suspense fallback={null}>
         <BlogFilters
           categories={categories.map((c) => ({
@@ -130,6 +133,6 @@ export default async function BlogPage({
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

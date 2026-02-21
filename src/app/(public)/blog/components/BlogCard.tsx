@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/app/lib/animations";
+import { BsCalendar } from "react-icons/bs";
 
 interface BlogCardProps {
   id: string;
@@ -28,7 +29,10 @@ function highlightText(text: string, query?: string) {
 
   return parts.map((part, i) =>
     part.toLowerCase() === query.toLowerCase() ? (
-      <mark key={i} className="bg-accent-cyan/30 text-accent-cyan rounded-sm px-[0.5vw] tablet:px-[0.25vw] desktop:px-[0.1vw]">
+      <mark
+        key={i}
+        className="bg-accent-cyan/30 text-accent-cyan rounded-sm px-[0.534vw] tablet:px-[0.25vw] desktop:px-[0.104vw]"
+      >
         {part}
       </mark>
     ) : (
@@ -63,9 +67,9 @@ export default function BlogCard({
       transition={{ duration: 0.5 }}
     >
       <Link href={`/blog/${slug}`}>
-        <div className="group relative h-full rounded-lg border border-subtle bg-background/50 hover:bg-background/80 overflow-hidden transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-lg hover:shadow-accent-cyan/20 cursor-pointer">
+        <div className="group relative h-full rounded-lg border border-border-subtle bg-background/50 hover:bg-background/80 overflow-hidden transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-lg hover:shadow-accent-cyan/20 cursor-pointer ">
           {coverImage && (
-            <div className="relative w-full h-[30vw] tablet:h-[15vw] desktop:h-[6vw] bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
+            <div className="relative w-full h-[30.171vw] tablet:h-[15vw] desktop:h-[6.032vw] bg-linear-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
               <Image
                 src={coverImage}
                 alt={title}
@@ -76,29 +80,35 @@ export default function BlogCard({
             </div>
           )}
 
-          <div className="p-[5.333vw] tablet:p-[2.5vw] desktop:p-[1.042vw]">
-            {categories && categories.length > 0 && (
-              <div className="flex flex-wrap gap-[1.333vw] tablet:gap-[0.667vw] desktop:gap-[0.278vw] mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw]">
-                {categories.map((cat) => (
-                  <span key={cat.id} className="inline-block px-[2.667vw] tablet:px-[1.333vw] desktop:px-[0.556vw] py-[1.333vw] tablet:py-[0.667vw] desktop:py-[0.278vw] bg-accent-cyan/10 text-accent-cyan rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] font-medium">
-                    {cat.name}
-                  </span>
-                ))}
-              </div>
-            )}
+          <div className="p-[5.34vw] tablet:p-[2.5vw] desktop:p-[1.092vw] h-full flex flex-col justify-between">
+            <div>
+              {categories && categories.length > 0 && (
+                <div className="flex flex-wrap gap-[1.335vw] tablet:gap-[0.75vw] desktop:gap-[0.312vw] mb-[2.67vw] tablet:mb-[1.375vw] desktop:mb-[0.572vw]">
+                  {categories.map((cat) => (
+                    <span
+                      key={cat.id}
+                      className="inline-block px-[2.67vw] tablet:px-[1.375vw] desktop:px-[0.572vw] py-[1.335vw] tablet:py-[0.75vw] desktop:py-[0.312vw] bg-accent-cyan/10 text-accent-cyan rounded text-[2.67vw] tablet:text-[1.25vw] desktop:text-[0.52vw] font-medium"
+                    >
+                      {cat.name}
+                    </span>
+                  ))}
+                </div>
+              )}
 
-            <h3 className="text-heading text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] font-bold mb-[2.667vw] tablet:mb-[1.333vw] desktop:mb-[0.556vw] group-hover:text-accent-cyan transition-colors duration-300 line-clamp-2">
-              {highlightText(title, searchQuery)}
-            </h3>
+              <h3 className="text-heading text-[4.272vw] tablet:text-[2vw] desktop:text-[0.884vw] font-bold mb-[2.67vw] tablet:mb-[1.375vw] desktop:mb-[0.572vw] group-hover:text-accent-cyan transition-colors duration-300 line-clamp-2">
+                {highlightText(title, searchQuery)}
+              </h3>
 
-            <p className="text-muted text-[2.933vw] tablet:text-[1.4vw] desktop:text-[0.583vw] mb-[4vw] tablet:mb-[2vw] desktop:mb-[0.833vw] line-clamp-3">
-              {highlightText(description, searchQuery)}
-            </p>
+              <p className="text-gray-400 text-[2.937vw] tablet:text-[1.5vw] desktop:text-[0.624vw] mb-[4.005vw] tablet:mb-[2vw] desktop:mb-[0.884vw] line-clamp-3">
+                {highlightText(description, searchQuery)}
+              </p>
+            </div>
 
             {formattedDate && (
-              <p className="text-muted text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.458vw]">
-                {formattedDate}
-              </p>
+              <div className="flex  text-[3.204vw] tablet:text-[1.5vw] desktop:text-[0.624vw] gap-[1.068vw] tablet:gap-[1vw] desktop:gap-[0.416vw] items-center text-gray-700">
+                <BsCalendar />
+                <p>{formattedDate}</p>
+              </div>
             )}
           </div>
         </div>

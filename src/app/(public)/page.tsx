@@ -10,13 +10,13 @@ export default async function Home() {
   const dict = await getDictionary();
 
   return (
-    <main>
+    <>
       <HeroSection {...dict.hero} />
       <AboutSection {...dict.about} />
       <ExperienceSection {...dict.experience} />
       <ProjectsSection {...dict.projects} />
       <SkillsSection {...dict.skills} />
       <ContactSection {...dict.contact} />
-    </main>
+    </>
   );
 }

@@ -11,11 +11,11 @@ export default async function PublicLayout({
   const dict = await getDictionary();
 
   return (
-    <>
+    <main className="overflow-x-hidden">
       <ScrollProgress />
       <Header {...dict.layout.header} />
       {children}
       <Footer {...dict.layout.footer} />
-    </>
+    </main>
   );
 }

@@ -21,9 +21,8 @@ export default function HeroSection(props: IHeroSection) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-x-clip"
     >
-      {/* Background decorations */}
       <GridBackground />
       <GradientBlob
         color="cyan"

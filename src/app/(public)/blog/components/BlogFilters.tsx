@@ -28,9 +28,9 @@ export default function BlogFilters({ categories, tags }: BlogFiltersProps) {
   } = useBlogFilters(categories, tags);
 
   return (
-    <div className="flex flex-col gap-[2.5vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]">
+    <div className="flex flex-col gap-[2.5vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw] ">
       {/* Filter row */}
-      <div className="flex flex-col tablet:flex-row gap-[2.5vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]">
+      <div className="flex flex-col tablet:flex-row  gap-[2.5vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]">
         {/* Search input */}
         <input
           type="text"
