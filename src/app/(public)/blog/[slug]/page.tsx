@@ -45,7 +45,6 @@ export async function generateMetadata({
       description: post.description,
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
-      images: post.coverImage ? [{ url: post.coverImage }] : [],
     },
   };
 }
