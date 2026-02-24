@@ -12,9 +12,9 @@ export interface MultiSelectDropdownProps {
   accentColor: "cyan" | "purple";
   placeholder?: string;
   labelPrefix?: string;
-  clearAllLabel?: string;
-  noResultsLabel?: string;
-  searchPlaceholder?: string;
+  clearAllLabel: string;
+  noResultsLabel: string;
+  searchPlaceholder: string;
 }
 
 export const accentClasses = {
