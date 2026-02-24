@@ -7,5 +7,6 @@ export default defineConfig({
     globals: true,
     environment: "node",
     setupFiles: ["./vitest.setup.mts"],
+    exclude: ["**/node_modules/**", "**/.worktrees/**"],
   },
 });
