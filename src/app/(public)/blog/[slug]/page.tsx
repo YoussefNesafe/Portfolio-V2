@@ -11,11 +11,17 @@ import { sanitizeOptions } from "./sanitize-config";
 import { calculateReadingTime } from "./reading-time";
 
 export async function generateStaticParams() {
-  const posts = await db.post.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
-  return posts.map((p) => ({ slug: p.slug }));
+  try {
+    const posts = await db.post.findMany({
+      where: { published: true },
+      select: { slug: true },
+    });
+    return posts.map((p) => ({ slug: p.slug }));
+  } catch {
+    // DB unreachable at build time (e.g. paused Supabase instance) —
+    // fall back to no pre-built pages; ISR will handle on first request.
+    return [];
+  }
 }
 
 const getPost = cache(async (slug: string) => {
