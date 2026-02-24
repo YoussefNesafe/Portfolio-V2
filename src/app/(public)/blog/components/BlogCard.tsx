@@ -66,7 +66,7 @@ export default function BlogCard({
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
     >
-      <Link href={`/blog/${slug}`}>
+      <Link href={`/blog/${slug}`} className="block">
         <div className="group relative h-full rounded-lg border border-border-subtle bg-background/50 hover:bg-background/80 overflow-hidden transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-lg hover:shadow-accent-cyan/20 cursor-pointer ">
           {coverImage && (
             <div className="relative w-full h-[30.171vw] tablet:h-[15vw] desktop:h-[6.032vw] bg-linear-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
@@ -99,13 +99,13 @@ export default function BlogCard({
                 {highlightText(title, searchQuery)}
               </h3>
 
-              <p className="text-gray-400 text-[2.937vw] tablet:text-[1.5vw] desktop:text-[0.624vw] mb-[4.005vw] tablet:mb-[2vw] desktop:mb-[0.884vw] line-clamp-3">
+              <p className="text-gray-400 text-[2.937vw] tablet:text-[1.5vw] desktop:text-[0.624vw] line-clamp-3">
                 {highlightText(description, searchQuery)}
               </p>
             </div>
 
             {formattedDate && (
-              <div className="flex  text-[3.204vw] tablet:text-[1.5vw] desktop:text-[0.624vw] gap-[1.068vw] tablet:gap-[1vw] desktop:gap-[0.416vw] items-center text-gray-700">
+              <div className="flex  text-[3.204vw] tablet:text-[1.5vw] desktop:text-[0.624vw] gap-[1.068vw] tablet:gap-[1vw] desktop:gap-[0.416vw] items-center text-gray-700 mt-[4.005vw] tablet:mt-[2vw] desktop:mt-[0.884vw]">
                 <BsCalendar />
                 <p>{formattedDate}</p>
               </div>

@@ -156,7 +156,7 @@ export default async function BlogPostPage({
       </article>
 
       {/* Sidebar */}
-      <aside className="mt-[10.667vw] tablet:mt-[8vw] desktop:mt-[2.08vw] bg-red-900 desktop:w-[27vw] desktop:flex-shrink-0 desktop:sticky desktop:top-[3.2vw]">
+      <aside className="mt-[10.667vw] tablet:mt-[8vw] desktop:mt-[2.08vw] desktop:w-[27vw] desktop:flex-shrink-0 desktop:sticky desktop:top-[3.2vw]">
         <Link
           href="/blog"
           className="block mb-[6.667vw] tablet:mb-[4vw] desktop:mb-[1.667vw] text-accent-cyan hover:text-accent-cyan/80 transition-colors text-[2.933vw] tablet:text-[1.4vw] desktop:text-[0.583vw]"
