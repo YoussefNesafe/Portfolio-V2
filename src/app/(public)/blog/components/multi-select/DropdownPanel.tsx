@@ -8,6 +8,7 @@ import type { Option, AccentColors } from "./types";
 
 interface DropdownPanelProps {
   label: string;
+  searchPlaceholder: string;
   labelPrefix: string;
   isOpen: boolean;
   search: string;
@@ -24,6 +25,7 @@ interface DropdownPanelProps {
 
 export function DropdownPanel({
   label,
+  searchPlaceholder,
   labelPrefix,
   isOpen,
   search,
@@ -59,7 +61,7 @@ export function DropdownPanel({
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder={`Search ${label.toLowerCase()}...`}
+                placeholder={searchPlaceholder}
                 value={search}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className={cn(

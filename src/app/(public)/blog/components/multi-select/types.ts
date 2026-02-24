@@ -14,6 +14,7 @@ export interface MultiSelectDropdownProps {
   labelPrefix?: string;
   clearAllLabel?: string;
   noResultsLabel?: string;
+  searchPlaceholder?: string;
 }
 
 export const accentClasses = {

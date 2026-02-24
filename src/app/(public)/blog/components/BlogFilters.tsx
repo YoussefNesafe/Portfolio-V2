@@ -56,6 +56,7 @@ export default function BlogFilters({ categories, tags, labels }: Props) {
             placeholder={labels.categoriesPlaceholder}
             clearAllLabel={labels.clearAll}
             noResultsLabel={labels.noResults}
+            searchPlaceholder={`Search ${labels.categoriesLabel.toLowerCase()}...`}
           />
         )}
 
@@ -71,6 +72,7 @@ export default function BlogFilters({ categories, tags, labels }: Props) {
             labelPrefix="#"
             clearAllLabel={labels.clearAll}
             noResultsLabel={labels.noResults}
+            searchPlaceholder={`Search ${labels.tagsLabel.toLowerCase()}...`}
           />
         )}
       </div>

@@ -18,6 +18,7 @@ export default function MultiSelectDropdown({
   labelPrefix = "",
   clearAllLabel = "Clear all",
   noResultsLabel = "No results found",
+  searchPlaceholder,
 }: MultiSelectDropdownProps) {
   const {
     isOpen,
@@ -61,6 +62,7 @@ export default function MultiSelectDropdown({
         onClearAll={handleClearAll}
         clearAllLabel={clearAllLabel}
         noResultsLabel={noResultsLabel}
+        searchPlaceholder={searchPlaceholder ?? `Search ${label.toLowerCase()}...`}
       />
     </div>
   );
