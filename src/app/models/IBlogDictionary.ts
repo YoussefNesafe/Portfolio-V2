@@ -12,6 +12,8 @@ export interface IBlogFiltersDict {
   clearAll: string;
   noResults: string;
   noPostsFound: string;
+  categoriesSearchPlaceholder: string;
+  tagsSearchPlaceholder: string;
 }
 
 export interface IBlogPaginationDict {

@@ -337,7 +337,9 @@
       "tagsPlaceholder": "All Tags",
       "clearAll": "Clear all",
       "noResults": "No results found",
-      "noPostsFound": "No posts found. Try adjusting your filters."
+      "noPostsFound": "No posts found. Try adjusting your filters.",
+      "categoriesSearchPlaceholder": "Search categories...",
+      "tagsSearchPlaceholder": "Search tags..."
     },
     "pagination": {
       "previous": "Previous",
