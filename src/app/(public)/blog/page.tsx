@@ -1,4 +1,4 @@
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 3600;
 
 import Link from "next/link";
 import { db } from "@/app/lib/db";
@@ -13,6 +13,7 @@ import {
   ENTITY_WITH_PUBLISHED_COUNT,
 } from "@/app/api/blog/helpers/prisma-includes";
 import { buildQueryString } from "./build-query-string";
+import { getDictionary } from "@/get-dictionary";
 
 interface SearchParams {
   page?: string;
@@ -31,7 +32,11 @@ export default async function BlogPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const params = await searchParams;
+  const [params, dict] = await Promise.all([
+    searchParams,
+    getDictionary(),
+  ]);
+
   let page = parseInt(params.page || "1", 10);
   if (isNaN(page) || page < 1) page = 1;
   const limit = POSTS_PER_PAGE;
@@ -39,7 +44,6 @@ export default async function BlogPage({
 
   const where = buildPostFilter(params);
 
-  // Fetch posts and total count
   const [posts, total, categories, tags] = await Promise.all([
     db.post.findMany({
       where,
@@ -62,6 +66,7 @@ export default async function BlogPage({
   ]);
 
   const totalPages = Math.ceil(total / limit);
+  const { filters: f, pagination: p } = dict.blog;
 
   return (
     <section className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw] pb-[10.68vw] tablet:pb-[10vw] desktop:pb-[6.24vw]">
@@ -79,6 +84,7 @@ export default async function BlogPage({
             slug: t.slug,
             postCount: t._count.posts,
           }))}
+          labels={f}
         />
       </Suspense>
 
@@ -102,7 +108,7 @@ export default async function BlogPage({
       ) : (
         <div className="text-center py-[13.333vw] tablet:py-[6.667vw] desktop:py-[2.778vw]">
           <p className="text-text-muted text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.75vw]">
-            No posts found. Try adjusting your filters.
+            {f.noPostsFound}
           </p>
         </div>
       )}
@@ -115,12 +121,12 @@ export default async function BlogPage({
               href={buildQueryString(params, { page: String(page - 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
-              Previous
+              {p.previous}
             </Link>
           )}
 
           <span className="text-text-muted text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]">
-            Page {page} of {totalPages}
+            {p.page} {page} {p.of} {totalPages}
           </span>
 
           {page < totalPages && (
@@ -128,7 +134,7 @@ export default async function BlogPage({
               href={buildQueryString(params, { page: String(page + 1) })}
               className="px-[4vw] tablet:px-[2vw] desktop:px-[0.833vw] py-[2.667vw] tablet:py-[1.333vw] desktop:py-[0.556vw] border border-border-subtle rounded hover:border-accent-cyan/50 hover:bg-background/50 transition-colors text-[2.667vw] tablet:text-[1.3vw] desktop:text-[0.542vw]"
             >
-              Next
+              {p.next}
             </Link>
           )}
         </div>

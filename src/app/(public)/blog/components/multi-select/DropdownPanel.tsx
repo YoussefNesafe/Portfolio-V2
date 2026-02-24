@@ -18,6 +18,8 @@ interface DropdownPanelProps {
   colors: AccentColors;
   onToggle: (id: string) => void;
   onClearAll: () => void;
+  clearAllLabel: string;
+  noResultsLabel: string;
 }
 
 export function DropdownPanel({
@@ -32,6 +34,8 @@ export function DropdownPanel({
   colors,
   onToggle,
   onClearAll,
+  clearAllLabel,
+  noResultsLabel,
 }: DropdownPanelProps) {
   return (
     <AnimatePresence>
@@ -75,7 +79,7 @@ export function DropdownPanel({
           <div role="listbox" aria-multiselectable="true" aria-label={label} className="max-h-[50vw] tablet:max-h-[25vw] desktop:max-h-[13vw] overflow-y-auto no-scrollbar">
             {filteredOptions.length === 0 ? (
               <div className="p-[3vw] tablet:p-[1.5vw] desktop:p-[0.625vw] text-center text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
-                No results found
+                {noResultsLabel}
               </div>
             ) : (
               filteredOptions.map((opt) => {
@@ -138,7 +142,7 @@ export function DropdownPanel({
                   colors.clearText,
                 )}
               >
-                Clear all
+                {clearAllLabel}
               </button>
             </div>
           )}

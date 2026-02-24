@@ -16,6 +16,8 @@ export default function MultiSelectDropdown({
   accentColor,
   placeholder,
   labelPrefix = "",
+  clearAllLabel = "Clear all",
+  noResultsLabel = "No results found",
 }: MultiSelectDropdownProps) {
   const {
     isOpen,
@@ -57,6 +59,8 @@ export default function MultiSelectDropdown({
         colors={colors}
         onToggle={handleToggle}
         onClearAll={handleClearAll}
+        clearAllLabel={clearAllLabel}
+        noResultsLabel={noResultsLabel}
       />
     </div>
   );

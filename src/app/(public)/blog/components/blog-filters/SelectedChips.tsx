@@ -57,6 +57,7 @@ interface SelectedChipsProps {
   handleRemoveCategory: (id: string) => void;
   handleRemoveTag: (id: string) => void;
   handleClearAll: () => void;
+  clearAllLabel: string;
 }
 
 export function SelectedChips({
@@ -66,6 +67,7 @@ export function SelectedChips({
   handleRemoveCategory,
   handleRemoveTag,
   handleClearAll,
+  clearAllLabel,
 }: SelectedChipsProps) {
   return (
     <AnimatePresence>
@@ -96,7 +98,7 @@ export function SelectedChips({
                 onClick={handleClearAll}
                 className="text-[3vw] tablet:text-[1.4vw] desktop:text-[0.583vw] text-text-muted hover:text-foreground transition-colors cursor-pointer ml-[1vw] tablet:ml-[0.5vw] desktop:ml-[0.208vw]"
               >
-                Clear all
+                {clearAllLabel}
               </motion.button>
             )}
           </AnimatePresence>
