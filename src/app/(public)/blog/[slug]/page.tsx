@@ -100,7 +100,9 @@ export default async function BlogPostPage({
           <div className="flex flex-wrap gap-[4vw] tablet:gap-[2vw] desktop:gap-[0.833vw] text-muted text-[2.933vw] tablet:text-[1.4vw] desktop:text-[0.583vw] mb-[6.667vw] tablet:mb-[3.333vw] desktop:mb-[1.389vw]">
             {formattedDate && <span>{formattedDate}</span>}
             {post.author && <span>{post.author.name}</span>}
-            <span>{readingTime} {minRead}</span>
+            <span>
+              {readingTime} {minRead}
+            </span>
           </div>
 
           {post.coverImage && (

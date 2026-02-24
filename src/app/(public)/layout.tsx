@@ -11,7 +11,7 @@ export default async function PublicLayout({
   const dict = await getDictionary();
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-clip">
       <ScrollProgress />
       <Header {...dict.layout.header} />
       {children}
