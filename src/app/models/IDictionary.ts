@@ -5,6 +5,8 @@ import type { IProjectsSection } from "./Projects";
 import type { ISkillsSection } from "./Skills";
 import type { IContactSection } from "./Contact";
 import type { ILayout } from "./Layout";
+import type { IBlogDictionary, IBlogPostDictionary } from "./IBlogDictionary";
+import type { IBragDictionary } from "./IBragDictionary";
 
 export interface IDictionary {
   layout: ILayout;
@@ -14,4 +16,7 @@ export interface IDictionary {
   projects: IProjectsSection;
   skills: ISkillsSection;
   contact: IContactSection;
+  blog: IBlogDictionary;
+  blogPost: IBlogPostDictionary;
+  brag: IBragDictionary;
 }

@@ -323,5 +323,48 @@
     },
     "ctaLabel": "Send Email",
     "ctaHref": "mailto:ynessafe@gmail.com"
+  },
+  "blog": {
+    "header": {
+      "title": "Blog",
+      "subtitle": "Where technology meets curiosity, creativity, and real-world thinking."
+    },
+    "filters": {
+      "searchPlaceholder": "Search posts...",
+      "categoriesLabel": "Categories",
+      "categoriesPlaceholder": "All Categories",
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "All Tags",
+      "clearAll": "Clear all",
+      "noResults": "No results found",
+      "noPostsFound": "No posts found. Try adjusting your filters."
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "Failed to load blog content. Please try again.",
+      "retry": "Try again"
+    }
+  },
+  "blogPost": {
+    "backToBlog": "← Back to blog",
+    "minRead": "min read",
+    "relatedPosts": "Related Posts"
+  },
+  "brag": {
+    "title": "Work Log",
+    "subtitle": "A running log of my daily accomplishments, learnings, and project highlights — inspired by Julia Evans' brag documents.",
+    "noEntries": "No entries yet. Check back soon!",
+    "stats": {
+      "totalEntries": "Total Entries",
+      "thisMonth": "This Month",
+      "weekStreak": "Week Streak",
+      "categories": "Categories"
+    }
   }
 }
