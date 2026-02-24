@@ -7,6 +7,7 @@ import CategoryChart from "./CategoryChart";
 import MonthlyTrendChart from "./MonthlyTrendChart";
 import PinnedHighlights from "./PinnedHighlights";
 import BragTimeline from "./BragTimeline";
+import BragExportButton from "./BragExportButton";
 
 interface BragDashboardProps {
   stats: IBragStats;
@@ -15,6 +16,11 @@ interface BragDashboardProps {
 export default function BragDashboard({ stats }: BragDashboardProps) {
   return (
     <div className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw]">
+      {/* Export row */}
+      <div className="flex justify-end">
+        <BragExportButton />
+      </div>
+
       {/* Stats Row */}
       <BragStatsRow
         totalEntries={stats.totalEntries}
