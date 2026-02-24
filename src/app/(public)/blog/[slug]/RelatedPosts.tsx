@@ -10,7 +10,7 @@ export default function RelatedPosts({ posts, title }: RelatedPostsProps) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="p-0 tablet:p-0 desktop:p-0">
+    <section>
       <h2 className="gradient-text text-[5.333vw] tablet:text-[2.667vw] desktop:text-[1.111vw] font-bold mb-[4vw] tablet:mb-[2vw] desktop:mb-[0.833vw]">
         {title}
       </h2>

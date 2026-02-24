@@ -42,7 +42,7 @@ export async function getRelatedPosts(
         return scoreB - scoreA;
       });
 
-      return candidates.slice(0, limit) as unknown as IBlogPost[];
+      return candidates.slice(0, limit) as IBlogPost[];
     }
   }
 
@@ -54,5 +54,5 @@ export async function getRelatedPosts(
     include: { categories: true, tags: true, author: true },
   });
 
-  return fallback as unknown as IBlogPost[];
+  return fallback as IBlogPost[];
 }
