@@ -2,20 +2,22 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, defaultViewport } from "@/app/lib/animations";
+import type { IBragStatsDictionary } from "@/app/models/IBragDictionary";
 
 interface BragStatsRowProps {
   totalEntries: number;
   entriesThisMonth: number;
   currentStreak: number;
   categoriesActive: number;
+  labels: IBragStatsDictionary;
 }
 
-const stats = [
-  { key: "totalEntries", label: "Total Entries", color: "text-accent-cyan" },
-  { key: "entriesThisMonth", label: "This Month", color: "text-accent-purple" },
-  { key: "currentStreak", label: "Week Streak", color: "text-accent-emerald" },
-  { key: "categoriesActive", label: "Categories", color: "text-accent-cyan" },
-] as const;
+const STAT_KEYS = [
+  { key: "totalEntries" as const, labelKey: "totalEntries" as const, color: "text-accent-cyan" },
+  { key: "entriesThisMonth" as const, labelKey: "thisMonth" as const, color: "text-accent-purple" },
+  { key: "currentStreak" as const, labelKey: "weekStreak" as const, color: "text-accent-emerald" },
+  { key: "categoriesActive" as const, labelKey: "categories" as const, color: "text-accent-cyan" },
+];
 
 export default function BragStatsRow(props: BragStatsRowProps) {
   return (
@@ -26,7 +28,7 @@ export default function BragStatsRow(props: BragStatsRowProps) {
       viewport={defaultViewport}
       className="grid grid-cols-2 desktop:grid-cols-4 gap-[4vw] tablet:gap-[2vw] desktop:gap-[0.833vw]"
     >
-      {stats.map((stat) => (
+      {STAT_KEYS.map((stat) => (
         <motion.div
           key={stat.key}
           variants={fadeUp}
@@ -36,7 +38,7 @@ export default function BragStatsRow(props: BragStatsRowProps) {
             {props[stat.key]}
           </p>
           <p className="text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
-            {stat.label}
+            {props.labels[stat.labelKey]}
           </p>
         </motion.div>
       ))}

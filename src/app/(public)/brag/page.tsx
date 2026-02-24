@@ -2,6 +2,7 @@ export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import { db } from "@/app/lib/db";
+import { getDictionary } from "@/get-dictionary";
 import BragDashboard from "./components/BragDashboard";
 import type { IBragStats } from "@/app/models/Brag";
 
@@ -104,28 +105,28 @@ async function getBragStats(): Promise<IBragStats> {
 }
 
 export default async function BragPage() {
-  const stats = await getBragStats();
+  const [stats, dict] = await Promise.all([getBragStats(), getDictionary()]);
+  const { title, subtitle, noEntries, stats: statsLabels } = dict.brag;
 
   return (
     <div>
       {/* Hero — matches blog page header spacing */}
       <div className="mb-[8vw] tablet:mb-[4vw] desktop:mb-[2vw] text-center space-y-[2.667vw] tablet:space-y-[1.333vw] desktop:space-y-[0.556vw]">
         <h1 className="text-[8vw] tablet:text-[4vw] desktop:text-[1.667vw] font-bold text-text-heading">
-          <span className="gradient-text">Work Log</span>
+          <span className="gradient-text">{title}</span>
         </h1>
         <p className="text-text-muted text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.75vw] max-w-[80vw] tablet:max-w-[50vw] desktop:max-w-[31.25vw] mx-auto">
-          A running log of my daily accomplishments, learnings, and project highlights —
-          inspired by Julia Evans&apos; brag documents.
+          {subtitle}
         </p>
       </div>
 
       {/* Dashboard */}
       {stats.totalEntries > 0 ? (
-        <BragDashboard stats={stats} />
+        <BragDashboard stats={stats} statsLabels={statsLabels} />
       ) : (
         <div className="text-center py-[13.333vw] tablet:py-[6.667vw] desktop:py-[2.778vw]">
           <p className="text-text-muted text-[3.733vw] tablet:text-[1.8vw] desktop:text-[0.75vw]">
-            No entries yet. Check back soon!
+            {noEntries}
           </p>
         </div>
       )}
