@@ -10,6 +10,14 @@ import { POST_INCLUDE_FULL } from "@/app/api/blog/helpers/prisma-includes";
 import { sanitizeOptions } from "./sanitize-config";
 import { calculateReadingTime } from "./reading-time";
 
+export async function generateStaticParams() {
+  const posts = await db.post.findMany({
+    where: { published: true },
+    select: { slug: true },
+  });
+  return posts.map((p) => ({ slug: p.slug }));
+}
+
 const getPost = cache(async (slug: string) => {
   return db.post.findUnique({
     where: { slug },
