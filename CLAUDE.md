@@ -7,7 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev          # Start Next.js dev server
 npm run build        # Generate Prisma client + build for production
+npm start            # Start production server
 npm run lint         # Run ESLint (flat config)
+npm test             # Run all tests (Vitest)
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage  # Run tests with coverage report
 npm run db:seed      # Seed database (admin@example.com / admin123)
 npm run db:studio    # Open Prisma Studio GUI
 npx prisma migrate dev --name <name>  # Create and apply a migration
@@ -32,10 +36,14 @@ src/app/
 │   └── (dashboard)/       # Protected routes with Sidebar layout
 │       ├── posts/         # Post CRUD
 │       ├── categories/    # Category management
-│       └── tags/          # Tag management
+│       ├── tags/          # Tag management
+│       ├── brag/          # Brag entry management
+│       └── brag-categories/  # Brag category management
 ├── _sections/portfolio/   # Homepage sections (Hero, About, Experience, etc.)
+├── components/            # Shared components used across public + admin
 ├── api/auth/              # Login, logout, session check
-└── api/blog/              # Blog CRUD + search
+├── api/blog/              # Blog CRUD + search
+└── api/brag/              # Brag entries, categories, export, stats
 ```
 
 The `(admin)/admin/(dashboard)/` nesting keeps the login page outside the `ProtectedRoute` wrapper while dashboard routes get sidebar + auth protection.
@@ -55,12 +63,15 @@ The `(admin)/admin/(dashboard)/` nesting keeps the login page outside the `Prote
 | API utilities | `src/app/lib/api-utils.ts` — `requireAuth()`, `requireJson()`, `errorResponse()`, `successResponse()` |
 | Zod schemas | `src/app/lib/schemas.ts` — all API input validation |
 | Prisma singleton | `src/app/lib/db.ts` |
+| Constants | `src/app/lib/constants.ts` — pagination limits, session duration, rate limiting |
 | Post filter builder | `src/app/lib/build-post-filter.ts` |
 | Prisma query includes | `src/app/api/blog/helpers/prisma-includes.ts` |
 | CRUD route factory | `src/app/api/blog/helpers/crud-route-factory.ts` — DRY category/tag endpoints |
 | Animations | `src/app/lib/animations.ts` |
 | Dictionary (i18n) | `src/dictionaries/en.json`, loaded via `src/get-dictionary.ts` |
 | TypeScript models | `src/app/models/` |
+| Class merging | `src/app/utils/cn.ts` — clsx + tailwind-merge |
+| Breakpoint classnames | `src/app/utils/getBpClassName.ts` — generates vw classes for all three breakpoints |
 
 ### Patterns
 
@@ -71,6 +82,7 @@ The `(admin)/admin/(dashboard)/` nesting keeps the login page outside the `Prote
 - **Optimistic UI**: Blog filters use React transitions for instant feedback; URL search updates debounced 300ms.
 - **Slug generation**: `src/app/utils/slugify.ts` — `slugify()` and `generateUniqueSlug()` with uniqueness check callback.
 - **Class merging**: `cn()` utility in `src/app/utils/cn.ts` (clsx + tailwind-merge).
+- **Brag system**: Separate domain from blog — `BragEntry` + `BragCategory` Prisma models, own admin routes and API (`/api/brag/*`), with export and stats endpoints.
 
 ## Design System
 
@@ -110,7 +122,7 @@ Defined in `src/app/styles/tailwind.css`:
 
 ## Prisma Schema
 
-Five models: `AdminUser`, `Session` (auth), `Author`, `Post`, `Category`, `Tag` (blog). Posts have many-to-many relations with categories and tags. Sessions cascade-delete with their AdminUser.
+Eight models: `AdminUser`, `Session` (auth); `Author`, `Post`, `Category`, `Tag` (blog); `BragCategory`, `BragEntry` (brag). Posts have many-to-many relations with categories and tags. BragEntry belongs to one BragCategory. Sessions cascade-delete with their AdminUser.
 
 ## Gotchas
 
@@ -119,6 +131,7 @@ Five models: `AdminUser`, `Session` (auth), `Author`, `Post`, `Category`, `Tag` 
 - `@prisma/client` must be in `dependencies`, not `devDependencies`.
 - Prisma `mode: "insensitive"` only works with PostgreSQL provider.
 - `.env` must have a PostgreSQL `DATABASE_URL` (not SQLite) to match the schema provider.
+- `vitest.setup.mts` globally mocks `next/cache` (`revalidatePath`, `revalidateTag`) — no need to mock these per-test, but be aware they are always `vi.fn()` in tests.
 
 ## Environment Variables
 
