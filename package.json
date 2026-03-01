@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "seed": "ts-node -O {\"module\":\"commonjs\"} prisma/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register -O {\"module\":\"commonjs\"} prisma/seed.ts"
   },
   "scripts": {
     "dev": "next dev",

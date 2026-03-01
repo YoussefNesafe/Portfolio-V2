@@ -77,20 +77,20 @@ async function main() {
     ]);
     console.log("✅ Tags created:", tags.length);
 
-    // Create admin user (with default password "admin123")
-    const hashedPassword = await hashPassword("admin123");
+    // Create admin user (password from ADMIN_PASSWORD env var, fallback to "admin123")
+    const hashedPassword = await hashPassword(process.env.ADMIN_PASSWORD ?? "admin123");
     const adminUser = await db.adminUser.upsert({
-      where: { email: "admin@example.com" },
+      where: { email: "ynessafe@gmail.com" },
       update: { password: hashedPassword },
       create: {
-        email: "admin@example.com",
+        email: "ynessafe@gmail.com",
         password: hashedPassword,
         name: "Admin User",
         role: "ADMIN",
       },
     });
     console.log(
-      "✅ Admin user created - Email: admin@example.com, Password: admin123",
+      "✅ Admin user created - Email: ynessafe@gmail.com, Password: admin123",
     );
 
     // Create brag categories
@@ -98,9 +98,24 @@ async function main() {
       { name: "Projects", slug: "projects", color: "#06B6D4", sortOrder: 0 },
       { name: "Bug Fixes", slug: "bug-fixes", color: "#EF4444", sortOrder: 1 },
       { name: "Learning", slug: "learning", color: "#A855F7", sortOrder: 2 },
-      { name: "Collaboration", slug: "collaboration", color: "#F59E0B", sortOrder: 3 },
-      { name: "Design/Architecture", slug: "design-architecture", color: "#10B981", sortOrder: 4 },
-      { name: "DevOps/Infra", slug: "devops-infra", color: "#3B82F6", sortOrder: 5 },
+      {
+        name: "Collaboration",
+        slug: "collaboration",
+        color: "#F59E0B",
+        sortOrder: 3,
+      },
+      {
+        name: "Design/Architecture",
+        slug: "design-architecture",
+        color: "#10B981",
+        sortOrder: 4,
+      },
+      {
+        name: "DevOps/Infra",
+        slug: "devops-infra",
+        color: "#3B82F6",
+        sortOrder: 5,
+      },
     ];
     await Promise.all(
       bragCategories.map((cat) =>
@@ -114,54 +129,9 @@ async function main() {
     console.log("✅ Brag categories created:", bragCategories.length);
     console.log("   ⚠️  CHANGE THIS PASSWORD IMMEDIATELY IN PRODUCTION!");
 
-    // Create a sample blog post
-    const post = await db.post.upsert({
-      where: { slug: "welcome-to-my-blog" },
-      update: {},
-      create: {
-        slug: "welcome-to-my-blog",
-        title: "Welcome to My Blog",
-        description: "This is a sample post to test your blog setup",
-        content: `
-          <h2>Welcome!</h2>
-          <p>This is a sample blog post created during seeding. You can edit or delete it in the admin panel.</p>
-
-          <h3>Features Included:</h3>
-          <ul>
-            <li>Full blog system with database</li>
-            <li>Admin dashboard for managing posts</li>
-            <li>Search and filtering by category/tags</li>
-            <li>Responsive design with Tailwind CSS</li>
-            <li>SEO optimized with dynamic metadata</li>
-          </ul>
-
-          <h3>Next Steps:</h3>
-          <p>Login to the admin panel at <code>/admin</code> with:</p>
-          <ul>
-            <li>Email: admin@example.com</li>
-            <li>Password: admin123</li>
-          </ul>
-
-          <p>Then you can create, edit, and publish your own blog posts!</p>
-        `,
-        excerpt: "This is a sample post to test your blog setup",
-        coverImage: null,
-        published: true,
-        publishedAt: new Date(),
-        authorId: author.id,
-        categories: {
-          connect: [{ id: categories[0].id }],
-        },
-        tags: {
-          connect: [{ id: tags[0].id }, { id: tags[1].id }, { id: tags[2].id }],
-        },
-      },
-    });
-    console.log("✅ Sample post created:", post.title);
-
     console.log("\n✨ Database seeding complete!\n");
     console.log("📝 Test credentials:");
-    console.log("   Email: admin@example.com");
+    console.log("   Email: ynessafe@gmail.com");
     console.log("   Password: admin123");
     console.log("\n🔗 Visit http://localhost:3000/blog to see the sample post");
     console.log("🔗 Visit http://localhost:3000/admin/login to login\n");
