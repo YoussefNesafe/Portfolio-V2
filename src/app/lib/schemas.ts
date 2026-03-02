@@ -73,6 +73,11 @@ export const updateBragCategorySchema = z.object({
   slug: slugField,
 });
 
+// --- View Tracking ---
+export const postViewSchema = z.object({
+  slug: z.string().min(1).max(200),
+});
+
 // --- Brag Entry ---
 export const createBragEntrySchema = z.object({
   title: z.string().min(1, "Title is required"),

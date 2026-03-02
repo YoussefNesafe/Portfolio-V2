@@ -12,6 +12,7 @@ import { calculateReadingTime } from "./reading-time";
 import { getRelatedPosts } from "./related-posts";
 import RelatedPosts from "./RelatedPosts";
 import { getDictionary } from "@/get-dictionary";
+import ViewTracker from "./ViewTracker";
 
 export async function generateStaticParams() {
   try {
@@ -89,6 +90,7 @@ export default async function BlogPostPage({
 
   return (
     <div className="mx-auto desktop:mx-0 desktop:px-[6.24vw] max-w-[90vw] tablet:max-w-[70vw]  py-[10.667vw] tablet:py-[5.333vw] desktop:py-[2.222vw] desktop:flex desktop:gap-[3.333vw] desktop:items-start desktop:justify-between desktop:max-w-full">
+      <ViewTracker slug={slug} />
       {/* Main Article */}
       <article className="desktop:flex-1 desktop:min-w-0">
         {/* Header */}

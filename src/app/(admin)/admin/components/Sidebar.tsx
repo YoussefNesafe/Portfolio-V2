@@ -13,6 +13,7 @@ import {
   FiX,
   FiAward,
   FiGrid,
+  FiBarChart2,
 } from "react-icons/fi";
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/admin/posts", label: "Posts", icon: FiFileText },
   { href: "/admin/categories", label: "Categories", icon: FiFolder },
   { href: "/admin/tags", label: "Tags", icon: FiTag },
+  { href: "/admin/analytics", label: "Analytics", icon: FiBarChart2 },
   { href: "/admin/brag", label: "Brag Entries", icon: FiAward },
   { href: "/admin/brag-categories", label: "Brag Categories", icon: FiGrid },
 ];
