@@ -66,7 +66,7 @@ export default function BlogCard({
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
     >
-      <Link href={`/blog/${slug}`} className="block">
+      <Link href={`/blog/${slug}`} className="block h-full">
         <div className="group relative h-full rounded-lg border border-border-subtle bg-background/50 hover:bg-background/80 overflow-hidden transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-lg hover:shadow-accent-cyan/20 cursor-pointer ">
           {coverImage && (
             <div className="relative w-full h-[30.171vw] tablet:h-[15vw] desktop:h-[6.032vw] bg-linear-to-br from-accent-cyan/10 to-accent-purple/10 overflow-hidden">
