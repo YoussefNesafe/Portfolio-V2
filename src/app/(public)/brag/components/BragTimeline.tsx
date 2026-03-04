@@ -157,6 +157,7 @@ export default function BragTimeline({ categories }: BragTimelineProps) {
         </div>
       ) : (
         <motion.div
+          key={`${year}-${activeCategory ?? "all"}`}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
