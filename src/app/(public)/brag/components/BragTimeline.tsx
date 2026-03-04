@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { fadeUp, staggerContainer, defaultViewport } from "@/app/lib/animations";
 import { FiChevronDown } from "react-icons/fi";
 
 interface BragEntry {
@@ -156,14 +154,7 @@ export default function BragTimeline({ categories }: BragTimelineProps) {
           </p>
         </div>
       ) : (
-        <motion.div
-          key={`${year}-${activeCategory ?? "all"}`}
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={defaultViewport}
-          className="space-y-[2.667vw] tablet:space-y-[1.333vw] desktop:space-y-[0.556vw]"
-        >
+        <div className="space-y-[2.667vw] tablet:space-y-[1.333vw] desktop:space-y-[0.556vw]">
           {Array.from(grouped.entries()).map(([monthKey, monthEntries]) => {
             const isOpen = openMonths.has(monthKey);
             const monthLabel = new Date(monthKey + "-01").toLocaleString("en-US", {
@@ -172,9 +163,8 @@ export default function BragTimeline({ categories }: BragTimelineProps) {
             });
 
             return (
-              <motion.div
+              <div
                 key={monthKey}
-                variants={fadeUp}
                 className="bg-bg-secondary border border-border-subtle rounded-lg overflow-hidden"
               >
                 {/* Accordion header */}
@@ -190,76 +180,65 @@ export default function BragTimeline({ categories }: BragTimelineProps) {
                       ({monthEntries.length} {monthEntries.length === 1 ? "entry" : "entries"})
                     </span>
                   </div>
-                  <motion.span
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-text-muted"
+                  <span
+                    className="text-text-muted transition-transform duration-200"
+                    style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
                   >
                     <FiChevronDown className="w-[4vw] h-[4vw] tablet:w-[2vw] tablet:h-[2vw] desktop:w-[0.833vw] desktop:h-[0.833vw]" />
-                  </motion.span>
+                  </span>
                 </button>
 
                 {/* Accordion body */}
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-border-subtle divide-y divide-border-subtle">
-                        {monthEntries.map((entry) => (
-                          <div
-                            key={entry.id}
-                            className="flex gap-[4vw] tablet:gap-[2vw] desktop:gap-[0.833vw] p-[4vw] tablet:p-[2vw] desktop:p-[0.833vw]"
-                          >
-                            {/* Date column */}
-                            <div className="flex-shrink-0 w-[12vw] tablet:w-[5vw] desktop:w-[2.604vw] text-center">
-                              <p className="text-accent-cyan text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] font-bold leading-none">
-                                {new Date(entry.date).getDate()}
-                              </p>
-                              <p className="text-text-muted text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.458vw] mt-[0.533vw] tablet:mt-[0.25vw] desktop:mt-[0.104vw]">
-                                {new Date(entry.date).toLocaleString("en-US", { weekday: "short" })}
-                              </p>
-                            </div>
+                {isOpen && (
+                  <div className="overflow-hidden border-t border-border-subtle divide-y divide-border-subtle">
+                    {monthEntries.map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="flex gap-[4vw] tablet:gap-[2vw] desktop:gap-[0.833vw] p-[4vw] tablet:p-[2vw] desktop:p-[0.833vw]"
+                      >
+                        {/* Date column */}
+                        <div className="flex-shrink-0 w-[12vw] tablet:w-[5vw] desktop:w-[2.604vw] text-center">
+                          <p className="text-accent-cyan text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] font-bold leading-none">
+                            {new Date(entry.date).getDate()}
+                          </p>
+                          <p className="text-text-muted text-[2.4vw] tablet:text-[1.1vw] desktop:text-[0.458vw] mt-[0.533vw] tablet:mt-[0.25vw] desktop:mt-[0.104vw]">
+                            {new Date(entry.date).toLocaleString("en-US", { weekday: "short" })}
+                          </p>
+                        </div>
 
-                            {/* Content */}
-                            <div className="flex-1 min-w-0 space-y-[1.333vw] tablet:space-y-[0.667vw] desktop:space-y-[0.278vw]">
-                              <div className="flex items-center gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw] flex-wrap">
-                                <h5 className="text-text-heading text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] font-medium">
-                                  {entry.title}
-                                </h5>
-                                <span
-                                  className="px-[2vw] tablet:px-[1vw] desktop:px-[0.417vw] py-[0.533vw] tablet:py-[0.25vw] desktop:py-[0.104vw] rounded-full text-[2.133vw] tablet:text-[1vw] desktop:text-[0.417vw]"
-                                  style={{
-                                    backgroundColor: (entry.category.color || "#06B6D4") + "1A",
-                                    color: entry.category.color || "#06B6D4",
-                                  }}
-                                >
-                                  {entry.category.name}
-                                </span>
-                              </div>
-                              <p className="text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
-                                {entry.description}
-                              </p>
-                              {entry.impact && (
-                                <p className="text-accent-emerald text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] font-medium">
-                                  {entry.impact}
-                                </p>
-                              )}
-                            </div>
+                        {/* Content */}
+                        <div className="flex-1 min-w-0 space-y-[1.333vw] tablet:space-y-[0.667vw] desktop:space-y-[0.278vw]">
+                          <div className="flex items-center gap-[2vw] tablet:gap-[1vw] desktop:gap-[0.417vw] flex-wrap">
+                            <h5 className="text-text-heading text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] font-medium">
+                              {entry.title}
+                            </h5>
+                            <span
+                              className="px-[2vw] tablet:px-[1vw] desktop:px-[0.417vw] py-[0.533vw] tablet:py-[0.25vw] desktop:py-[0.104vw] rounded-full text-[2.133vw] tablet:text-[1vw] desktop:text-[0.417vw]"
+                              style={{
+                                backgroundColor: (entry.category.color || "#06B6D4") + "1A",
+                                color: entry.category.color || "#06B6D4",
+                              }}
+                            >
+                              {entry.category.name}
+                            </span>
                           </div>
-                        ))}
+                          <p className="text-text-muted text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw]">
+                            {entry.description}
+                          </p>
+                          {entry.impact && (
+                            <p className="text-accent-emerald text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw] font-medium">
+                              {entry.impact}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       )}
 
       {/* Load more */}
