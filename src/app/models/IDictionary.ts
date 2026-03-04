@@ -7,6 +7,7 @@ import type { IContactSection } from "./Contact";
 import type { ILayout } from "./Layout";
 import type { IBlogDictionary, IBlogPostDictionary } from "./IBlogDictionary";
 import type { IBragDictionary } from "./IBragDictionary";
+import type { IAdminDictionary } from "./IAdminDictionary";
 
 export interface IDictionary {
   layout: ILayout;
@@ -19,4 +20,5 @@ export interface IDictionary {
   blog: IBlogDictionary;
   blogPost: IBlogPostDictionary;
   brag: IBragDictionary;
+  admin: IAdminDictionary;
 }

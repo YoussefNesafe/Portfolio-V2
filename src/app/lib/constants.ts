@@ -1,6 +1,7 @@
 // Pagination
 export const POSTS_PER_PAGE = 9;
 export const ADMIN_POSTS_LIMIT = 100;
+export const ADMIN_POSTS_PER_PAGE = 20;
 export const DASHBOARD_RECENT_POSTS = 5;
 export const SEARCH_RESULTS_LIMIT = 20;
 

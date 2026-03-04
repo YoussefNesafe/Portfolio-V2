@@ -368,5 +368,37 @@
       "weekStreak": "Week Streak",
       "categories": "Categories"
     }
+  },
+  "admin": {
+    "posts": {
+      "title": "Posts",
+      "newPost": "New Post",
+      "table": {
+        "titleCol": "Title",
+        "statusCol": "Status",
+        "dateCol": "Date",
+        "actionsCol": "Actions"
+      },
+      "empty": {
+        "message": "No posts yet.",
+        "cta": "Create your first post"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "fallback": {
+        "uncategorized": "Uncategorized"
+      },
+      "mobileLabels": {
+        "status": "Status:",
+        "date": "Date:"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "pageOf": "Page {page} of {total} ({count} posts)"
+      }
+    }
   }
 }
