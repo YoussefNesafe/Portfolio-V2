@@ -8,34 +8,48 @@ import type { IBragStats } from "@/app/models/Brag";
 
 export const metadata: Metadata = {
   title: "Work Log",
-  description: "A running log of my daily accomplishments, learnings, and highlights.",
+  description:
+    "A running log of my daily accomplishments, learnings, and highlights.",
 };
 
 async function getBragStats(): Promise<IBragStats> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+  const oneYearAgo = new Date(
+    now.getFullYear() - 1,
+    now.getMonth(),
+    now.getDate(),
+  );
 
-  const [totalEntries, entriesThisMonth, categories, recentEntries, pinnedEntries] =
-    await Promise.all([
-      db.bragEntry.count({ where: { published: true } }),
-      db.bragEntry.count({ where: { published: true, date: { gte: startOfMonth } } }),
-      db.bragCategory.findMany({
-        include: { _count: { select: { entries: { where: { published: true } } } } },
-        orderBy: { sortOrder: "asc" },
-      }),
-      db.bragEntry.findMany({
-        where: { published: true, date: { gte: oneYearAgo } },
-        select: { date: true },
-        orderBy: { date: "asc" },
-      }),
-      db.bragEntry.findMany({
-        where: { published: true, pinned: true },
-        include: { category: true },
-        orderBy: { date: "desc" },
-        take: 5,
-      }),
-    ]);
+  const [
+    totalEntries,
+    entriesThisMonth,
+    categories,
+    recentEntries,
+    pinnedEntries,
+  ] = await Promise.all([
+    db.bragEntry.count({ where: { published: true } }),
+    db.bragEntry.count({
+      where: { published: true, date: { gte: startOfMonth } },
+    }),
+    db.bragCategory.findMany({
+      include: {
+        _count: { select: { entries: { where: { published: true } } } },
+      },
+      orderBy: { sortOrder: "asc" },
+    }),
+    db.bragEntry.findMany({
+      where: { published: true, date: { gte: oneYearAgo } },
+      select: { date: true },
+      orderBy: { date: "asc" },
+    }),
+    db.bragEntry.findMany({
+      where: { published: true, pinned: true },
+      include: { category: true },
+      orderBy: { date: "desc" },
+      take: 5,
+    }),
+  ]);
 
   // Build heatmap
   const heatmapMap = new Map<string, number>();
@@ -43,7 +57,10 @@ async function getBragStats(): Promise<IBragStats> {
     const key = entry.date.toISOString().split("T")[0];
     heatmapMap.set(key, (heatmapMap.get(key) || 0) + 1);
   }
-  const heatmapData = Array.from(heatmapMap.entries()).map(([date, count]) => ({ date, count }));
+  const heatmapData = Array.from(heatmapMap.entries()).map(([date, count]) => ({
+    date,
+    count,
+  }));
 
   // Monthly trend
   const monthlyMap = new Map<string, number>();
@@ -58,19 +75,25 @@ async function getBragStats(): Promise<IBragStats> {
       monthlyMap.set(key, monthlyMap.get(key)! + 1);
     }
   }
-  const monthlyTrend = Array.from(monthlyMap.entries()).map(([month, count]) => ({ month, count }));
+  const monthlyTrend = Array.from(monthlyMap.entries()).map(
+    ([month, count]) => ({ month, count }),
+  );
 
   // Current streak (consecutive weeks with entries)
   let currentStreak = 0;
   const weekMs = 7 * 24 * 60 * 60 * 1000;
   const currentWeekStart = new Date(now);
-  currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
+  currentWeekStart.setDate(
+    currentWeekStart.getDate() - currentWeekStart.getDay(),
+  );
   currentWeekStart.setHours(0, 0, 0, 0);
 
   for (let i = 0; i < 52; i++) {
     const weekStart = new Date(currentWeekStart.getTime() - i * weekMs);
     const weekEnd = new Date(weekStart.getTime() + weekMs);
-    const hasEntry = recentEntries.some((e) => e.date >= weekStart && e.date < weekEnd);
+    const hasEntry = recentEntries.some(
+      (e) => e.date >= weekStart && e.date < weekEnd,
+    );
     if (hasEntry) {
       currentStreak++;
     } else {
@@ -110,8 +133,7 @@ export default async function BragPage() {
 
   return (
     <div>
-      {/* Hero — matches blog page header spacing */}
-      <div className="mb-[8vw] tablet:mb-[4vw] desktop:mb-[2vw] text-center space-y-[2.667vw] tablet:space-y-[1.333vw] desktop:space-y-[0.556vw]">
+      <div className="my-[8vw] tablet:my-[4vw] desktop:my-[2vw] text-center ">
         <h1 className="text-[8vw] tablet:text-[4vw] desktop:text-[1.667vw] font-bold text-text-heading">
           <span className="gradient-text">{title}</span>
         </h1>
