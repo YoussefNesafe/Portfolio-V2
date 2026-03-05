@@ -4,7 +4,7 @@ import {
   computeRadialLayout,
   computeVerticalLayout,
   computeConnectionPath,
-} from "../layout";
+} from "../tree-layout";
 
 const MOCK_CATEGORIES: SkillCategory[] = [
   {
