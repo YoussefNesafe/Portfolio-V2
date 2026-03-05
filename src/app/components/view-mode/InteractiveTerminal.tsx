@@ -51,7 +51,7 @@ export default function InteractiveTerminal({
   onTriggerMatrix,
 }: InteractiveTerminalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const registry = useMemo(() => buildRegistry(), []);
 
   const triggerDownload = useCallback((path: string) => {
@@ -80,10 +80,7 @@ export default function InteractiveTerminal({
     useTerminal(registry, ctx);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [session.lines]);
 
   useEffect(() => {
@@ -135,8 +132,7 @@ export default function InteractiveTerminal({
 
       {/* Terminal body */}
       <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto p-[4.267vw] tablet:p-[2vw] desktop:p-[0.833vw] font-mono text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] leading-[1.8]"
+        className="flex-1 p-[4.267vw] tablet:p-[2vw] desktop:p-[0.833vw] font-mono text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] leading-[1.8]"
       >
         {/* Welcome message */}
         {WELCOME_LINES.map((line, i) => (
@@ -177,6 +173,7 @@ export default function InteractiveTerminal({
             aria-label="Terminal input"
           />
         </div>
+        <div ref={bottomRef} />
       </div>
     </section>
   );
