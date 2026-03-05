@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FiLinkedin, FiMail, FiChevronDown } from "react-icons/fi";
@@ -14,9 +14,20 @@ import AnimatedText from "@/app/components/ui/AnimatedText";
 import GridBackground from "@/app/components/ui/GridBackground";
 import GradientBlob from "@/app/components/ui/GradientBlob";
 import SectionDecorations from "@/app/components/ui/FloatingElements";
+import { useEasterEggs } from "@/app/components/easter-eggs/EasterEggsContext";
 
 export default function HeroSection(props: IHeroSection) {
   const [typewriterDone, setTypewriterDone] = useState(false);
+  const { triggerHelloEgg } = useEasterEggs();
+  const [overrideGreeting, setOverrideGreeting] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (triggerHelloEgg) {
+      setOverrideGreeting("> console.log('Hello, curious visitor!')");
+      const timer = setTimeout(() => setOverrideGreeting(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [triggerHelloEgg]);
 
   return (
     <section
@@ -49,7 +60,7 @@ export default function HeroSection(props: IHeroSection) {
         >
           <div className="font-mono text-[3.733vw] tablet:text-[1.75vw] desktop:text-[0.729vw] text-accent-emerald bg-bg-secondary/80 inline-block px-[3vw] py-[2.133vw] tablet:px-[2vw] tablet:py-[1vw] desktop:px-[0.833vw] desktop:py-[0.417vw] rounded-[1.333vw] tablet:rounded-[0.625vw] desktop:rounded-[0.26vw] border border-border-subtle">
             <AnimatedText
-              text={props.greeting}
+              text={overrideGreeting ?? props.greeting}
               speed={40}
               onComplete={() => setTypewriterDone(true)}
             />
