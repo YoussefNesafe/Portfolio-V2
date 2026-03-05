@@ -137,7 +137,7 @@ export default function SkillTreeNode({
         )}
       </div>
       <span
-        className={`mt-[0.8vw] tablet:mt-[0.375vw] desktop:mt-[0.156vw] text-[2.133vw] tablet:text-[1vw] desktop:text-[0.417vw] font-mono text-text-muted whitespace-nowrap transition-opacity duration-300 ${isDimmed ? "opacity-20" : ""}`}
+        className={`mt-[1.067vw] tablet:mt-[0.5vw] desktop:mt-[0.208vw] text-[2.667vw] tablet:text-[1.25vw] desktop:text-[0.521vw] font-mono text-text-muted whitespace-nowrap transition-opacity duration-300 ${isDimmed ? "opacity-20" : ""}`}
       >
         {node.label}
       </span>

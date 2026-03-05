@@ -36,9 +36,9 @@ export function computeConnectionPath(
   from: { x: number; y: number },
   to: { x: number; y: number }
 ): string {
-  const cx = (from.x + to.x) / 2;
-  const cy = from.y;
-  return `M ${from.x},${from.y} Q ${cx},${cy} ${to.x},${to.y}`;
+  const mx = (from.x + to.x) / 2;
+  const my = (from.y + to.y) / 2;
+  return `M ${from.x},${from.y} Q ${mx},${my} ${to.x},${to.y}`;
 }
 
 /**
@@ -55,11 +55,12 @@ export function computeRadialLayout(
   const nodes: LayoutNode[] = [];
   const connections: LayoutConnection[] = [];
 
+  const pad = 80; // padding for node labels at edges
   const cx = width / 2;
   const cy = height / 2;
-  const r = Math.min(width, height);
-  const catRadius = r * 0.3;
-  const skillRadius = r * 0.45;
+  const usable = Math.min(width - pad * 2, height - pad * 2);
+  const catRadius = usable * 0.25;
+  const skillRadius = usable * 0.44;
   const startAngle = -Math.PI / 2;
   const angleStep = (2 * Math.PI) / categories.length;
 
@@ -98,7 +99,7 @@ export function computeRadialLayout(
 
     // Fan skills around their category
     const skillCount = cat.skills.length;
-    const fanSpread = Math.PI / 4; // total fan angle
+    const fanSpread = angleStep * 0.7; // scale fan to available sector space
     const skillAngleStep = skillCount > 1 ? fanSpread / (skillCount - 1) : 0;
     const skillStartAngle = catAngle - fanSpread / 2;
 
