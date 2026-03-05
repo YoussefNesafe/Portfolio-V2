@@ -17,9 +17,12 @@ export default function SkillTree({ categories }: SkillTreeProps) {
   const layout = useSkillTreeLayout(containerRef, categories);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
-  const handleHover = useCallback((nodeId: string) => {
-    setHoveredNodeId(nodeId);
-  }, []);
+  const handleHover = useCallback(
+    (nodeId: string) => {
+      setHoveredNodeId((prev) => (prev === nodeId ? null : nodeId));
+    },
+    []
+  );
 
   const handleLeave = useCallback(() => {
     setHoveredNodeId(null);
