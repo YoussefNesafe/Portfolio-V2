@@ -19,6 +19,9 @@ export default function Footer({ credit, socials }: IFooter) {
         <p className="text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] text-text-muted">
           {credit} &copy; {year}
         </p>
+        <p className="text-[2.667vw] tablet:text-[1.25vw] desktop:text-[0.521vw] text-text-muted/30 font-mono">
+          // secrets are hidden in plain sight
+        </p>
         <div className="flex items-center gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw]">
           {socials.map((social) => {
             const Icon = iconMap[social.icon];

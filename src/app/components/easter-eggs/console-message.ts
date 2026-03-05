@@ -20,4 +20,9 @@ export function printConsoleMessage() {
     "%cLet's connect → linkedin.com/in/youssef-nesafe",
     styles.link,
   );
+  console.log("");
+  console.log(
+    "%cPsst... try typing 'hello' or 'hire' anywhere on the page 👀",
+    styles.text,
+  );
 }

@@ -45,6 +45,7 @@ export default function Header({ logo, nav }: IHeader) {
           <Image
             src="/logo.svg"
             alt={logo}
+            title="Try clicking me 5 times"
             width={64}
             height={64}
             className="w-full h-auto"
