@@ -8,9 +8,11 @@ import { cn } from "@/app/utils/cn";
 import { useScrollSpy } from "@/app/hooks/useScrollSpy";
 import Image from "next/image";
 import type { IHeader } from "@/app/models/Layout";
+import { useEasterEggs } from "@/app/components/easter-eggs/EasterEggsContext";
 
 export default function Header({ logo, nav }: IHeader) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { onLogoClick } = useEasterEggs();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const anchorItems = nav.filter((item) => item.href.startsWith("#"));
@@ -37,6 +39,8 @@ export default function Header({ logo, nav }: IHeader) {
         <Link
           href={isHome ? "#hero" : "/"}
           className="block w-[8vw] tablet:w-[4vw] desktop:w-[1.8vw]"
+          onClick={onLogoClick}
+          data-logo-glitch
         >
           <Image
             src="/logo.svg"
