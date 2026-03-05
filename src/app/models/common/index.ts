@@ -22,10 +22,13 @@ export interface Stat {
   label: string;
 }
 
+export type SkillTier = "expert" | "proficient" | "familiar";
+
 export interface Skill {
   name: string;
   icon: string;
   color: string;
+  tier?: SkillTier;
 }
 
 export interface SkillCategory {
