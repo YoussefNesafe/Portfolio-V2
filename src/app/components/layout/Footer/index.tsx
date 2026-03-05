@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FiLinkedin, FiMail } from "react-icons/fi";
 import type { IFooter } from "@/app/models/Layout";
 import type { IconType } from "react-icons";
+import { useViewMode } from "@/app/components/view-mode/ViewModeContext";
 
 const iconMap: Record<string, IconType> = {
   FiLinkedin,
@@ -11,7 +12,10 @@ const iconMap: Record<string, IconType> = {
 };
 
 export default function Footer({ credit, socials }: IFooter) {
+  const { mode } = useViewMode();
   const year = new Date().getFullYear();
+
+  if (mode === "dev") return null;
 
   return (
     <footer className="border-t border-border-subtle">

@@ -5,11 +5,12 @@ import ExperienceSection from "@/app/_sections/portfolio/ExperienceSection";
 import ProjectsSection from "@/app/_sections/portfolio/ProjectsSection";
 import SkillsSection from "@/app/_sections/portfolio/SkillsSection";
 import ContactSection from "@/app/_sections/portfolio/ContactSection";
+import HomeContent from "./HomeContent";
 
 export default async function Home() {
   const dict = await getDictionary();
 
-  return (
+  const designerContent = (
     <>
       <HeroSection {...dict.hero} />
       <AboutSection {...dict.about} />
@@ -18,5 +19,19 @@ export default async function Home() {
       <SkillsSection {...dict.skills} />
       <ContactSection {...dict.contact} />
     </>
+  );
+
+  return (
+    <HomeContent
+      dict={{
+        hero: dict.hero,
+        about: dict.about,
+        experience: dict.experience,
+        projects: dict.projects,
+        skills: dict.skills,
+        contact: dict.contact,
+      }}
+      designerContent={designerContent}
+    />
   );
 }

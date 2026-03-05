@@ -74,8 +74,14 @@ export default function EasterEggsProvider({
     }
   }, []);
 
+  const triggerMatrix = useCallback(() => {
+    if (!showMatrix && !showSecret) {
+      setShowMatrix(true);
+    }
+  }, [showMatrix, showSecret]);
+
   return (
-    <EasterEggsContext.Provider value={{ onLogoClick, triggerHelloEgg }}>
+    <EasterEggsContext.Provider value={{ onLogoClick, triggerHelloEgg, triggerMatrix }}>
       {children}
 
       {showMatrix && (

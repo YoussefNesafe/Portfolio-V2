@@ -107,7 +107,7 @@ export default function InteractiveTerminal({
       } else if (e.key === "Tab") {
         e.preventDefault();
         const completed = autocomplete(input);
-        if (completed !== input) setInput(completed);
+        if (completed) setInput(completed);
       }
     },
     [input, execute, handleHistoryNav, autocomplete, setInput],
