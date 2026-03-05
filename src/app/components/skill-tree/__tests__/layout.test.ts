@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { SkillCategory } from "@/app/models/common";
 import {
-  computeRadialLayout,
+  computeCircuitLayout,
   computeVerticalLayout,
   computeConnectionPath,
 } from "../tree-layout";
@@ -37,14 +37,15 @@ const MOCK_CATEGORIES: SkillCategory[] = [
   },
 ];
 
-describe("computeRadialLayout", () => {
-  const layout = computeRadialLayout(MOCK_CATEGORIES, 800, 600);
+describe("computeCircuitLayout", () => {
+  const layout = computeCircuitLayout(MOCK_CATEGORIES, 800, 600);
 
-  it("places core node at center", () => {
+  it("places core node at horizontal center, shifted up vertically", () => {
     const core = layout.nodes.find((n) => n.type === "core");
     expect(core).toBeDefined();
     expect(core!.x).toBe(400);
-    expect(core!.y).toBe(300);
+    expect(core!.y).toBeLessThan(300);
+    expect(core!.y).toBeGreaterThan(200);
   });
 
   it("creates correct number of category nodes", () => {
@@ -62,19 +63,13 @@ describe("computeRadialLayout", () => {
     expect(layout.connections).toHaveLength(5);
   });
 
-  it("places categories at equal angles", () => {
+  it("places categories at distinct positions around center", () => {
     const categoryNodes = layout.nodes.filter((n) => n.type === "category");
-    const cx = 400;
-    const cy = 300;
+    const [cat0, cat1] = categoryNodes;
 
-    // Calculate angles from center for each category
-    const angles = categoryNodes.map((n) =>
-      Math.atan2(n.y - cy, n.x - cx)
-    );
-
-    // With 2 categories, angle difference should be PI
-    const diff = Math.abs(angles[1] - angles[0]);
-    expect(diff).toBeCloseTo(Math.PI, 1);
+    // Categories should be at different positions
+    const dist = Math.sqrt((cat0.x - cat1.x) ** 2 + (cat0.y - cat1.y) ** 2);
+    expect(dist).toBeGreaterThan(50);
   });
 
   it("includes tier information on skill nodes", () => {
@@ -86,6 +81,15 @@ describe("computeRadialLayout", () => {
     const jest = skillNodes.find((n) => n.label === "Jest");
     expect(jest).toBeDefined();
     expect(jest!.tier).toBe("proficient");
+  });
+
+  it("keeps all nodes within bounds", () => {
+    for (const node of layout.nodes) {
+      expect(node.x).toBeGreaterThanOrEqual(0);
+      expect(node.x).toBeLessThanOrEqual(800);
+      expect(node.y).toBeGreaterThanOrEqual(0);
+      expect(node.y).toBeLessThanOrEqual(600);
+    }
   });
 });
 
@@ -126,12 +130,19 @@ describe("computeVerticalLayout", () => {
 });
 
 describe("computeConnectionPath", () => {
-  it("returns a valid SVG quadratic bezier path", () => {
-    const path = computeConnectionPath(
-      { x: 0, y: 0 },
-      { x: 100, y: 100 }
-    );
+  it("returns a straight vertical line when x is aligned", () => {
+    const path = computeConnectionPath({ x: 100, y: 0 }, { x: 100, y: 100 });
+    expect(path).toMatch(/^M .+ L .+$/);
+  });
 
-    expect(path).toMatch(/^M\s*[\d.-]+,[\d.-]+\s*Q\s*[\d.-]+,[\d.-]+\s+[\d.-]+,[\d.-]+$/);
+  it("returns a straight horizontal line when y is aligned", () => {
+    const path = computeConnectionPath({ x: 0, y: 50 }, { x: 100, y: 50 });
+    expect(path).toMatch(/^M .+ L .+$/);
+  });
+
+  it("returns a right-angle path with rounded corner for diagonal", () => {
+    const path = computeConnectionPath({ x: 0, y: 0 }, { x: 100, y: 100 });
+    // Should contain H (horizontal), Q (quadratic curve), V (vertical) or vice versa
+    expect(path).toMatch(/[HV].*Q.*[HV]/);
   });
 });

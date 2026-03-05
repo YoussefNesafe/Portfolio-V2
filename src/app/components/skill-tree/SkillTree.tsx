@@ -92,12 +92,12 @@ export default function SkillTree({ categories }: SkillTreeProps) {
 
   const containerHeight = layout.totalHeight
     ? `${layout.totalHeight}px`
-    : "clamp(500px, 62vw, 1100px)";
+    : "clamp(550px, 64vw, 980px)";
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full mt-[5.333vw] tablet:mt-[2.5vw] desktop:mt-[1.042vw] pb-[10.667vw] tablet:pb-[5vw] desktop:pb-[2.083vw]"
+      className="relative w-full mt-[2.667vw] tablet:mt-[1.25vw] desktop:mt-[0.521vw] pb-[5.333vw] tablet:pb-[2.5vw] desktop:pb-[1.042vw]"
       style={{ height: containerHeight }}
     >
       {layout.nodes.length > 0 && (

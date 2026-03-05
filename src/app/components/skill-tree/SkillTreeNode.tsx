@@ -13,19 +13,19 @@ const tierStyles: Record<
   { border: string; glow: string; opacity: string; borderStyle: string }
 > = {
   expert: {
-    border: "border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.104vw]",
-    glow: "shadow-[0_0_12px_var(--node-color)]",
+    border: "border-[0.533vw] tablet:border-[0.25vw] desktop:border-[0.104vw]",
+    glow: "shadow-[0_0_8px_var(--node-color)]",
     opacity: "opacity-100",
     borderStyle: "border-solid",
   },
   proficient: {
-    border: "border-[0.133vw] tablet:border-[0.063vw] desktop:border-[0.052vw]",
-    glow: "shadow-[0_0_6px_var(--node-color)]",
+    border: "border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.052vw]",
+    glow: "shadow-[0_0_4px_var(--node-color)]",
     opacity: "opacity-90",
     borderStyle: "border-solid",
   },
   familiar: {
-    border: "border-[0.133vw] tablet:border-[0.063vw] desktop:border-[0.052vw]",
+    border: "border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.052vw]",
     glow: "",
     opacity: "opacity-60",
     borderStyle: "border-dashed",
@@ -54,13 +54,13 @@ export default function SkillTreeNode({
   if (node.type === "core") {
     return (
       <motion.div
-        className="absolute flex items-center justify-center rounded-full bg-background border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.104vw] border-accent-cyan shadow-[0_0_20px_theme(colors.accent-cyan)] w-[16vw] h-[16vw] tablet:w-[7.5vw] tablet:h-[7.5vw] desktop:w-[3.646vw] desktop:h-[3.646vw] cursor-pointer z-10"
+        className="absolute flex items-center justify-center bg-background border-[0.533vw] tablet:border-[0.25vw] desktop:border-[0.104vw] border-accent-cyan shadow-[0_0_20px_theme(colors.accent-cyan)] w-[18vw] h-[10vw] tablet:w-[8.5vw] tablet:h-[4.75vw] desktop:w-[4.167vw] desktop:h-[2.083vw] cursor-pointer z-10 rounded-[0.8vw] tablet:rounded-[0.375vw] desktop:rounded-[0.156vw]"
         style={{
           left: `${node.x}px`,
           top: `${node.y}px`,
           transform: "translate(-50%, -50%)",
         }}
-        initial={{ opacity: 0, scale: 0.5 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.3, delay: animationDelay }}
@@ -68,8 +68,8 @@ export default function SkillTreeNode({
         onMouseLeave={onLeave}
         onClick={() => onHover(node.id)}
       >
-        <span className="text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] font-mono font-bold text-accent-cyan">
-          {"</>"}
+        <span className="text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] font-mono font-bold text-accent-cyan tracking-wider">
+          {"CPU"}
         </span>
       </motion.div>
     );
@@ -78,13 +78,13 @@ export default function SkillTreeNode({
   if (node.type === "category") {
     return (
       <motion.div
-        className={`absolute flex items-center justify-center rounded-full bg-bg-secondary border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.104vw] border-accent-purple w-[13.333vw] h-[13.333vw] tablet:w-[6.25vw] tablet:h-[6.25vw] desktop:w-[2.604vw] desktop:h-[2.604vw] cursor-pointer z-10 transition-opacity duration-300 ${isDimmed ? "opacity-30" : "opacity-100"}`}
+        className={`absolute flex items-center justify-center bg-bg-secondary border-[0.267vw] tablet:border-[0.125vw] desktop:border-[0.052vw] border-accent-purple cursor-pointer z-10 transition-opacity duration-300 rounded-[0.533vw] tablet:rounded-[0.25vw] desktop:rounded-[0.104vw] px-[2.667vw] py-[1.333vw] tablet:px-[1.25vw] tablet:py-[0.625vw] desktop:px-[0.521vw] desktop:py-[0.26vw] ${isDimmed ? "opacity-30" : "opacity-100"}`}
         style={{
           left: `${node.x}px`,
           top: `${node.y}px`,
           transform: "translate(-50%, -50%)",
         }}
-        initial={{ opacity: 0, scale: 0.5 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.3, delay: animationDelay }}
@@ -92,14 +92,14 @@ export default function SkillTreeNode({
         onMouseLeave={onLeave}
         onClick={() => onHover(node.id)}
       >
-        <span className="text-[2.133vw] tablet:text-[1vw] desktop:text-[0.417vw] font-mono text-accent-purple text-center leading-tight px-[0.533vw] tablet:px-[0.25vw] desktop:px-[0.104vw]">
+        <span className="text-[2.4vw] tablet:text-[1.125vw] desktop:text-[0.469vw] font-mono text-accent-purple text-center leading-tight whitespace-nowrap">
           {node.label}
         </span>
       </motion.div>
     );
   }
 
-  // Skill node
+  // Skill node — rectangular PCB pad
   const tier = node.tier ?? "familiar";
   const styles = tierStyles[tier];
   const nodeColor = node.color ?? "#06B6D4";
@@ -112,7 +112,7 @@ export default function SkillTreeNode({
         top: `${node.y}px`,
         transform: "translate(-50%, -50%)",
       }}
-      initial={{ opacity: 0, scale: 0.5 }}
+      initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.3, delay: animationDelay }}
@@ -121,7 +121,7 @@ export default function SkillTreeNode({
       onClick={() => onHover(node.id)}
     >
       <div
-        className={`flex items-center justify-center rounded-full bg-bg-secondary ${styles.border} ${styles.borderStyle} ${styles.opacity} ${styles.glow} w-[10.667vw] h-[10.667vw] tablet:w-[5vw] tablet:h-[5vw] desktop:w-[2.083vw] desktop:h-[2.083vw] cursor-pointer transition-all duration-300 ${isDimmed ? "!opacity-20" : ""} ${isHighlighted ? "!opacity-100 scale-110" : ""}`}
+        className={`flex items-center justify-center bg-bg-secondary ${styles.border} ${styles.borderStyle} ${styles.opacity} ${styles.glow} w-[9.333vw] h-[9.333vw] tablet:w-[4.375vw] tablet:h-[4.375vw] desktop:w-[1.823vw] desktop:h-[1.823vw] cursor-pointer transition-all duration-300 rounded-[1.067vw] tablet:rounded-[0.5vw] desktop:rounded-[0.208vw] ${isDimmed ? "!opacity-20" : ""} ${isHighlighted ? "!opacity-100 scale-110" : ""}`}
         style={
           {
             borderColor: nodeColor,
@@ -131,13 +131,13 @@ export default function SkillTreeNode({
       >
         {Icon && (
           <Icon
-            className="w-[4.267vw] h-[4.267vw] tablet:w-[2vw] tablet:h-[2vw] desktop:w-[0.833vw] desktop:h-[0.833vw]"
+            className="w-[4vw] h-[4vw] tablet:w-[1.875vw] tablet:h-[1.875vw] desktop:w-[0.781vw] desktop:h-[0.781vw]"
             style={{ color: nodeColor }}
           />
         )}
       </div>
       <span
-        className={`mt-[1.067vw] tablet:mt-[0.5vw] desktop:mt-[0.208vw] text-[2.667vw] tablet:text-[1.25vw] desktop:text-[0.521vw] font-mono text-text-muted whitespace-nowrap transition-opacity duration-300 ${isDimmed ? "opacity-20" : ""}`}
+        className={`mt-[0.8vw] tablet:mt-[0.375vw] desktop:mt-[0.156vw] text-[2.4vw] tablet:text-[1.125vw] desktop:text-[0.469vw] font-mono text-text-muted whitespace-nowrap transition-opacity duration-300 ${isDimmed ? "opacity-20" : ""}`}
       >
         {node.label}
       </span>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, type RefObject } from "react";
 import type { SkillCategory } from "@/app/models/common";
 import {
-  computeRadialLayout,
+  computeCircuitLayout,
   computeVerticalLayout,
   type TreeLayout,
 } from "../tree-layout";
@@ -27,7 +27,7 @@ export function useSkillTreeLayout(
     const isMobile = width < MOBILE_BREAKPOINT;
     const result = isMobile
       ? computeVerticalLayout(categories, width)
-      : computeRadialLayout(categories, width, height);
+      : computeCircuitLayout(categories, width, height);
 
     setLayout(result);
   }, [containerRef, categories]);
