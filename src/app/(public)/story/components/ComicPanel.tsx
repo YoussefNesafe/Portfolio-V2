@@ -18,6 +18,7 @@ interface ComicPanelProps {
   accentColor: string;
   skipToEnd: boolean;
   onNarrationComplete: () => void;
+  onChoice?: (personality: string) => void;
 }
 
 export default function ComicPanel({
@@ -25,6 +26,7 @@ export default function ComicPanel({
   accentColor,
   skipToEnd,
   onNarrationComplete,
+  onChoice,
 }: ComicPanelProps) {
   const rotation = hashToRotation(panel.visual + panel.layout);
 
@@ -78,6 +80,8 @@ export default function ComicPanel({
           skipToEnd={skipToEnd}
           onComplete={onNarrationComplete}
           accentColor={accentColor}
+          choice={panel.choice}
+          onChoice={onChoice}
         />
       </div>
     </div>

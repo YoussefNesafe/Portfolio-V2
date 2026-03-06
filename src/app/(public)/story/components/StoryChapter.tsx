@@ -13,6 +13,8 @@ interface StoryChapterProps {
   accentColor: string;
   narrationComplete: boolean;
   onNarrationComplete: () => void;
+  onChoice?: (personality: string) => void;
+  selectedChoice: string | null;
 }
 
 export default function StoryChapter({
@@ -22,9 +24,25 @@ export default function StoryChapter({
   accentColor,
   narrationComplete,
   onNarrationComplete,
+  onChoice,
+  selectedChoice,
 }: StoryChapterProps) {
   const panel = chapter.panels[panelIndex];
   const variants = direction === "forward" ? panelSlideIn : panelSlideBack;
+
+  // Override panel 3 narration with choice followUp when a choice was made
+  let effectivePanel = panel;
+  if (panelIndex === 2 && selectedChoice) {
+    const choicePanel = chapter.panels[1];
+    if (choicePanel.choice) {
+      const chosen = choicePanel.choice.options.find(
+        (opt) => opt.personality === selectedChoice
+      );
+      if (chosen) {
+        effectivePanel = { ...panel, narration: chosen.followUp };
+      }
+    }
+  }
 
   return (
     <div className="w-full">
@@ -52,21 +70,23 @@ export default function StoryChapter({
           animate="center"
           exit="exit"
         >
-          {panel.layout === "full" && (
+          {effectivePanel.layout === "full" && (
             <ComicPanel
-              panel={panel}
+              panel={effectivePanel}
               accentColor={accentColor}
               skipToEnd={narrationComplete}
               onNarrationComplete={onNarrationComplete}
+              onChoice={onChoice}
             />
           )}
-          {panel.layout === "split" && (
+          {effectivePanel.layout === "split" && (
             <div className="grid grid-cols-1 tablet:grid-cols-2 gap-[2.667vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]">
               <ComicPanel
-                panel={panel}
+                panel={effectivePanel}
                 accentColor={accentColor}
                 skipToEnd={narrationComplete}
                 onNarrationComplete={onNarrationComplete}
+                onChoice={onChoice}
               />
               <div
                 className="comic-panel rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw] min-h-[40vw] tablet:min-h-[18.75vw] desktop:min-h-[10.417vw] flex items-center justify-center"
@@ -76,13 +96,14 @@ export default function StoryChapter({
               </div>
             </div>
           )}
-          {panel.layout === "triple" && (
+          {effectivePanel.layout === "triple" && (
             <div className="grid grid-cols-1 tablet:grid-cols-3 gap-[2.667vw] tablet:gap-[1.25vw] desktop:gap-[0.521vw]">
               <ComicPanel
-                panel={panel}
+                panel={effectivePanel}
                 accentColor={accentColor}
                 skipToEnd={narrationComplete}
                 onNarrationComplete={onNarrationComplete}
+                onChoice={onChoice}
               />
               <div
                 className="comic-panel rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw] min-h-[40vw] tablet:min-h-[18.75vw] desktop:min-h-[10.417vw] flex items-center justify-center relative"
