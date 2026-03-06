@@ -41,6 +41,19 @@ export default function ViewTransitionHandler() {
       if (targetPath === pathname) return;
 
       e.preventDefault();
+
+      // Store click position for iris reveal origin
+      const x = mouseEvent.clientX;
+      const y = mouseEvent.clientY;
+      // Calculate the max radius needed to cover the entire viewport from click point
+      const maxRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+      document.documentElement.style.setProperty("--iris-x", `${x}px`);
+      document.documentElement.style.setProperty("--iris-y", `${y}px`);
+      document.documentElement.style.setProperty("--iris-radius", `${maxRadius}px`);
+
       document.startViewTransition(() => {
         router.push(href);
       });
