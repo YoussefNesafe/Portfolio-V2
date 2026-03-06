@@ -212,33 +212,31 @@
       {
         "name": "Frontend",
         "skills": [
-          { "name": "React", "icon": "SiReact", "color": "#61DAFB", "tier": "expert" },
-          { "name": "Next.js", "icon": "SiNextdotjs", "color": "#FFFFFF", "tier": "expert" },
-          { "name": "Vue.js", "icon": "SiVuedotjs", "color": "#4FC08D", "tier": "proficient" },
-          { "name": "TypeScript", "icon": "SiTypescript", "color": "#3178C6", "tier": "expert" },
-          { "name": "JavaScript", "icon": "SiJavascript", "color": "#F7DF1E", "tier": "expert" }
+          { "name": "React", "icon": "SiReact", "color": "#61DAFB" },
+          { "name": "Next.js", "icon": "SiNextdotjs", "color": "#FFFFFF" },
+          { "name": "Vue.js", "icon": "SiVuedotjs", "color": "#4FC08D" },
+          { "name": "TypeScript", "icon": "SiTypescript", "color": "#3178C6" },
+          { "name": "JavaScript", "icon": "SiJavascript", "color": "#F7DF1E" }
         ]
       },
       {
         "name": "State & Data",
         "skills": [
-          { "name": "GraphQL", "icon": "SiGraphql", "color": "#E10098", "tier": "proficient" },
+          { "name": "GraphQL", "icon": "SiGraphql", "color": "#E10098" },
           {
             "name": "Apollo Client",
             "icon": "SiApollographql",
-            "color": "#311C87",
-            "tier": "proficient"
+            "color": "#311C87"
           },
-          { "name": "React Query", "icon": "SiReactquery", "color": "#FF4154", "tier": "proficient" },
-          { "name": "Zustand", "icon": "SiReact", "color": "#61DAFB", "tier": "familiar" },
-          { "name": "Redux", "icon": "SiRedux", "color": "#764ABC", "tier": "proficient" },
+          { "name": "React Query", "icon": "SiReactquery", "color": "#FF4154" },
+          { "name": "Zustand", "icon": "SiReact", "color": "#61DAFB" },
+          { "name": "Redux", "icon": "SiRedux", "color": "#764ABC" },
           {
             "name": "REST APIs",
             "icon": "SiOpenapiinitiative",
-            "color": "#6BA539",
-            "tier": "proficient"
+            "color": "#6BA539"
           },
-          { "name": "WebSocket", "icon": "SiSocketdotio", "color": "#010101", "tier": "familiar" }
+          { "name": "WebSocket", "icon": "SiSocketdotio", "color": "#010101" }
         ]
       },
       {
@@ -247,41 +245,38 @@
           {
             "name": "Tailwind CSS",
             "icon": "SiTailwindcss",
-            "color": "#06B6D4",
-            "tier": "expert"
+            "color": "#06B6D4"
           },
-          { "name": "Material-UI", "icon": "SiMui", "color": "#007FFF", "tier": "proficient" },
-          { "name": "Quasar", "icon": "SiQuasar", "color": "#1976D2", "tier": "familiar" },
-          { "name": "Vuetify", "icon": "SiVuetify", "color": "#1867C0", "tier": "familiar" },
-          { "name": "SASS/SCSS", "icon": "SiSass", "color": "#CC6699", "tier": "expert" }
+          { "name": "Material-UI", "icon": "SiMui", "color": "#007FFF" },
+          { "name": "Quasar", "icon": "SiQuasar", "color": "#1976D2" },
+          { "name": "Vuetify", "icon": "SiVuetify", "color": "#1867C0" },
+          { "name": "SASS/SCSS", "icon": "SiSass", "color": "#CC6699" }
         ]
       },
       {
         "name": "Testing",
         "skills": [
-          { "name": "Jest", "icon": "SiJest", "color": "#C21325", "tier": "proficient" },
-          { "name": "Cypress", "icon": "SiCypress", "color": "#69D3A7", "tier": "proficient" },
+          { "name": "Jest", "icon": "SiJest", "color": "#C21325" },
+          { "name": "Cypress", "icon": "SiCypress", "color": "#69D3A7" },
           {
             "name": "Testing Library",
             "icon": "SiTestinglibrary",
-            "color": "#E33332",
-            "tier": "proficient"
+            "color": "#E33332"
           }
         ]
       },
       {
         "name": "DevOps & Tools",
         "skills": [
-          { "name": "Git", "icon": "SiGit", "color": "#F05032", "tier": "expert" },
-          { "name": "Docker", "icon": "SiDocker", "color": "#2496ED", "tier": "proficient" },
+          { "name": "Git", "icon": "SiGit", "color": "#F05032" },
+          { "name": "Docker", "icon": "SiDocker", "color": "#2496ED" },
           {
             "name": "GitHub Actions",
             "icon": "SiGithubactions",
-            "color": "#2088FF",
-            "tier": "familiar"
+            "color": "#2088FF"
           },
-          { "name": "Webpack", "icon": "SiWebpack", "color": "#8DD6F9", "tier": "familiar" },
-          { "name": "Vite", "icon": "SiVite", "color": "#646CFF", "tier": "proficient" }
+          { "name": "Webpack", "icon": "SiWebpack", "color": "#8DD6F9" },
+          { "name": "Vite", "icon": "SiVite", "color": "#646CFF" }
         ]
       }
     ]
