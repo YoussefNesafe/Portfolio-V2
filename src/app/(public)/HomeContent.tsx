@@ -3,6 +3,7 @@
 import { useViewMode } from "@/app/components/view-mode/ViewModeContext";
 import { useEasterEggs } from "@/app/components/easter-eggs/EasterEggsContext";
 import InteractiveTerminal from "@/app/components/view-mode/InteractiveTerminal";
+import { XRayProvider, XRayToggle, XRayInspector } from "@/app/components/xray";
 import type { IDictionary } from "@/app/models/IDictionary";
 
 interface HomeContentProps {
@@ -26,5 +27,11 @@ export default function HomeContent({
     );
   }
 
-  return <>{designerContent}</>;
+  return (
+    <XRayProvider>
+      {designerContent}
+      <XRayToggle />
+      <XRayInspector />
+    </XRayProvider>
+  );
 }
