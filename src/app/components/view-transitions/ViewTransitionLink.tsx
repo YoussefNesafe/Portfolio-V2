@@ -17,14 +17,15 @@ export default function ViewTransitionHandler() {
       const href = anchor.getAttribute("href");
       if (!href) return;
 
-      // Skip external links, anchor links, mailto, tel
+      // Skip external links, mailto, tel
       if (
         href.startsWith("http") ||
-        href.startsWith("#") ||
         href.startsWith("mailto:") ||
-        href.startsWith("tel:") ||
-        href.includes("/#")
+        href.startsWith("tel:")
       ) return;
+
+      // Skip same-page anchor links (e.g. #hero on homepage)
+      if (href.startsWith("#")) return;
 
       // Skip if modifier keys held (new tab, etc.)
       const mouseEvent = e as MouseEvent;
@@ -33,8 +34,11 @@ export default function ViewTransitionHandler() {
       // Skip if target="_blank"
       if (anchor.target === "_blank") return;
 
-      // Skip if same page
-      if (href === pathname) return;
+      // Extract the path portion (e.g. "/#hero" → "/", "/blog" → "/blog")
+      const targetPath = href.split("#")[0] || "/";
+
+      // Skip if navigating to same page (anchor jump only)
+      if (targetPath === pathname) return;
 
       e.preventDefault();
       document.startViewTransition(() => {
