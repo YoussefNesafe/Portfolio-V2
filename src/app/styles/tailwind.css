@@ -57,6 +57,11 @@
   ::-webkit-scrollbar-thumb {
     @apply rounded-[1.067vw] bg-accent-cyan/30 tablet:rounded-[0.5vw] desktop:rounded-[0.208vw];
   }
+
+  body.cursor-none,
+  body.cursor-none * {
+    cursor: none !important;
+  }
 }
 
 @layer components {
