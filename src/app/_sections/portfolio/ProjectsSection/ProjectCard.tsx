@@ -9,6 +9,7 @@ import type { ProjectItem } from "@/app/models/common";
 export default function ProjectCard({ item, index }: { item: ProjectItem; index: number }) {
   return (
     <motion.div
+      data-xray="ProjectCard"
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"

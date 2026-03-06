@@ -17,6 +17,7 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <motion.div
+      data-xray="SectionHeading"
       initial="hidden"
       whileInView="visible"
       viewport={defaultViewport}

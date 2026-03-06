@@ -21,6 +21,7 @@ export default function TechBadge({ name, icon, color }: TechBadgeProps) {
 
   return (
     <motion.div
+      data-xray="TechBadge"
       variants={scaleUp}
       className="flex items-center gap-[2.133vw] tablet:gap-[1vw] desktop:gap-[0.417vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] border border-border-subtle bg-bg-secondary px-[3.2vw] py-[2.133vw] tablet:px-[1.5vw] tablet:py-[1vw] desktop:px-[0.625vw] desktop:py-[0.417vw] transition-all duration-200 hover:-translate-y-[0.267vw] tablet:hover:-translate-y-[0.125vw] desktop:hover:-translate-y-[0.052vw] hover:border-accent-cyan/20"
     >

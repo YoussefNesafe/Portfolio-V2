@@ -13,6 +13,7 @@ export default function GlowCard({
 }: GlowCardProps) {
   return (
     <div
+      data-xray="GlowCard"
       className={cn(
         "rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw]",
         "border border-border-subtle bg-bg-secondary",

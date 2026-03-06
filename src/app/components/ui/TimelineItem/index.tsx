@@ -14,7 +14,7 @@ export default function TimelineItem({ item, index }: TimelineItemProps) {
   const isEven = index % 2 === 0;
 
   return (
-    <div className="relative flex flex-col desktop:flex-row desktop:items-start gap-[4.267vw] tablet:gap-[2vw] desktop:gap-0">
+    <div data-xray="TimelineItem" className="relative flex flex-col desktop:flex-row desktop:items-start gap-[4.267vw] tablet:gap-[2vw] desktop:gap-0">
       {/* Desktop: alternating sides */}
       <div className="hidden desktop:block desktop:w-[45%]">
         {isEven && (
