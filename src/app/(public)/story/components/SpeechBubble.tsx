@@ -9,6 +9,11 @@ interface SpeechBubbleProps {
   skipToEnd: boolean;
   onComplete: () => void;
   accentColor: string;
+  choice?: {
+    question: string;
+    options: { label: string; personality: string; followUp: string[] }[];
+  };
+  onChoice?: (personality: string) => void;
 }
 
 export default function SpeechBubble({
@@ -16,6 +21,8 @@ export default function SpeechBubble({
   skipToEnd,
   onComplete,
   accentColor,
+  choice,
+  onChoice,
 }: SpeechBubbleProps) {
   const fullText = lines.join(" ");
 
@@ -38,6 +45,26 @@ export default function SpeechBubble({
           />
         )}
       </div>
+      {choice && onChoice && skipToEnd && (
+        <div className="mt-[4.267vw] tablet:mt-[2vw] desktop:mt-[0.833vw] space-y-[2.667vw] tablet:space-y-[1.25vw] desktop:space-y-[0.521vw]">
+          <p
+            className="text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] font-semibold mb-[2.133vw] tablet:mb-[1vw] desktop:mb-[0.417vw]"
+            style={{ color: accentColor }}
+          >
+            {choice.question}
+          </p>
+          {choice.options.map((opt) => (
+            <button
+              key={opt.personality}
+              onClick={() => onChoice(opt.personality)}
+              className="w-full text-left p-[3.2vw] tablet:p-[1.5vw] desktop:p-[0.625vw] rounded-[2.133vw] tablet:rounded-[1vw] desktop:rounded-[0.417vw] border border-border-subtle bg-bg-secondary/50 hover:bg-bg-tertiary/50 transition-colors text-[3.2vw] tablet:text-[1.5vw] desktop:text-[0.625vw] text-foreground cursor-pointer"
+              style={{ borderColor: `${accentColor}30` }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }
