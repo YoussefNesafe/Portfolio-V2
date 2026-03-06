@@ -22,19 +22,19 @@ interface StoryPageProps {
 
 export default function StoryPage({ story }: StoryPageProps) {
   const router = useRouter();
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    const check = () => {
+      const desktop = window.innerWidth >= 1024;
+      setIsDesktop(desktop);
+      if (!desktop) router.push("/");
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-  }, []);
+  }, [router]);
 
-  if (!isDesktop) {
-    router.push("/");
-    return null;
-  }
   const {
     chapterIndex,
     panelIndex,
@@ -53,6 +53,8 @@ export default function StoryPage({ story }: StoryPageProps) {
     onTransitionEnd,
     computeResult,
   } = useStoryState(story.chapters);
+
+  if (!isDesktop) return null;
 
   const accentColor = COLOR_MAP[currentChapter.color] || COLOR_MAP.cyan;
   const isFirst = chapterIndex === 0 && panelIndex === 0;

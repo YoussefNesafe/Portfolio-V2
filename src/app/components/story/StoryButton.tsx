@@ -10,7 +10,7 @@ export default function StoryButton() {
   if (pathname === "/story") return null;
 
   return (
-    <div className="hidden desktop:fixed desktop:bottom-[3.125vw] desktop:right-[0.833vw] z-40">
+    <div className="hidden desktop:block fixed bottom-[3.125vw] right-[0.833vw] z-40">
       <Link
         href="/story"
         className="flex items-center justify-center w-[10.667vw] h-[10.667vw] tablet:w-[5vw] tablet:h-[5vw] desktop:w-[2.083vw] desktop:h-[2.083vw] rounded-full bg-bg-secondary/90 backdrop-blur-lg border border-border-subtle text-text-muted cursor-pointer transition-all duration-300 hover:text-accent-cyan hover:border-accent-cyan/40 hover:shadow-[0_0_12px_theme(colors.accent-cyan/30)]"
