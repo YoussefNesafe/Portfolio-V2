@@ -40,11 +40,9 @@ export function useStoryState(chapters: IStoryChapter[]) {
   }, []);
 
   const goNext = useCallback(() => {
-    setState((prev) => {
-      if (!prev.narrationComplete) {
-        return { ...prev, narrationComplete: true };
-      }
+    let shouldNavigateHome = false;
 
+    setState((prev) => {
       const chapter = chapters[prev.chapterIndex];
       const hasMorePanels = prev.panelIndex < chapter.panels.length - 1;
       const hasMoreChapters = prev.chapterIndex < chapters.length - 1;
@@ -66,22 +64,14 @@ export function useStoryState(chapters: IStoryChapter[]) {
         };
       }
 
-      // Story complete — navigate home
+      // Story complete
+      shouldNavigateHome = true;
       return prev;
     });
 
-    // Check if we should navigate home (story complete)
-    setState((prev) => {
-      if (
-        prev.narrationComplete &&
-        prev.chapterIndex === chapters.length - 1 &&
-        prev.panelIndex ===
-          chapters[chapters.length - 1].panels.length - 1
-      ) {
-        router.push("/");
-      }
-      return prev;
-    });
+    if (shouldNavigateHome) {
+      router.push("/");
+    }
   }, [chapters, router]);
 
   const goBack = useCallback(() => {
