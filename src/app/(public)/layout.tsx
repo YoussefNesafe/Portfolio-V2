@@ -5,6 +5,7 @@ import ScrollProgress from "@/app/components/ui/ScrollProgress";
 import EasterEggsProvider from "@/app/components/easter-eggs/EasterEggsProvider";
 import ViewModeProvider from "@/app/components/view-mode/ViewModeProvider";
 import ViewModeToggle from "@/app/components/view-mode/ViewModeToggle";
+import ViewTransitionHandler from "@/app/components/view-transitions/ViewTransitionLink";
 
 export default async function PublicLayout({
   children,
@@ -17,6 +18,7 @@ export default async function PublicLayout({
     <EasterEggsProvider>
       <ViewModeProvider>
         <main className="overflow-x-clip">
+          <ViewTransitionHandler />
           <ScrollProgress />
           <Header {...dict.layout.header} />
           {children}

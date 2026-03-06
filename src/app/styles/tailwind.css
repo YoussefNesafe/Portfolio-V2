@@ -2,10 +2,6 @@
 @config "../../../tailwind.config.ts";
 
 /* View Transitions — crossfade + slide-up between routes */
-@view-transition {
-  navigation: auto;
-}
-
 ::view-transition-old(root) {
   animation: fade-and-slide-out 300ms ease-in both;
 }
