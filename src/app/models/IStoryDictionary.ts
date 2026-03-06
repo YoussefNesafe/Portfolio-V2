@@ -4,6 +4,25 @@ export interface IStoryPanel {
   narration: string[];
   highlight?: string;
   visual: string;
+  choice?: IStoryChoice;
+}
+
+export interface IStoryChoiceOption {
+  label: string;
+  personality: string;
+  followUp: string[];
+}
+
+export interface IStoryChoice {
+  question: string;
+  options: IStoryChoiceOption[];
+}
+
+export interface IStoryPersonality {
+  id: string;
+  title: string;
+  color: string;
+  description: string;
 }
 
 export interface IStoryChapter {
@@ -26,4 +45,6 @@ export interface IStoryDictionary {
   subtitle: string;
   chapters: IStoryChapter[];
   nav: IStoryNav;
+  personalities: IStoryPersonality[];
+  result: { title: string };
 }
