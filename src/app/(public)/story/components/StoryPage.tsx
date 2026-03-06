@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { IStoryDictionary } from "@/app/models/IStoryDictionary";
 import { useStoryState } from "@/app/hooks/useStoryState";
@@ -21,6 +22,19 @@ interface StoryPageProps {
 
 export default function StoryPage({ story }: StoryPageProps) {
   const router = useRouter();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  if (!isDesktop) {
+    router.push("/");
+    return null;
+  }
   const {
     chapterIndex,
     panelIndex,
