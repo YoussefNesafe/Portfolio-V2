@@ -429,7 +429,28 @@
               "Late nights fueled by curiosity. Endless documentation. Stack Overflow rabbit holes.",
               "Each bug fixed was a small victory. Each project, a stepping stone."
             ],
-            "visual": "browser-sketch"
+            "visual": "browser-sketch",
+            "choice": {
+              "question": "What drew you to coding?",
+              "options": [
+                {
+                  "label": "The thrill of building something from nothing",
+                  "personality": "maverick",
+                  "followUp": [
+                    "That restless energy — the need to create, to ship, to see ideas come alive.",
+                    "It wasn't about perfection. It was about momentum."
+                  ]
+                },
+                {
+                  "label": "The puzzle of making things work",
+                  "personality": "architect",
+                  "followUp": [
+                    "The elegance of a well-designed system. The satisfaction of pieces clicking into place.",
+                    "Every problem was a blueprint waiting to be drawn."
+                  ]
+                }
+              ]
+            }
           },
           {
             "layout": "full",
@@ -467,7 +488,28 @@
               "Node.js, PostgreSQL, Prisma — the backend foundation that keeps everything running.",
               "Tailwind, Framer Motion, responsive design — the finishing touches that make it shine."
             ],
-            "visual": "skill-cards"
+            "visual": "skill-cards",
+            "choice": {
+              "question": "How do you pick your tools?",
+              "options": [
+                {
+                  "label": "Whatever solves the problem fastest",
+                  "personality": "explorer",
+                  "followUp": [
+                    "New framework? Let's try it. Unfamiliar territory? Even better.",
+                    "The best tool is the one that gets you to the answer."
+                  ]
+                },
+                {
+                  "label": "Master a few, deeply",
+                  "personality": "craftsman",
+                  "followUp": [
+                    "Depth over breadth. Knowing every edge case, every optimization.",
+                    "True mastery means the tool disappears — only the craft remains."
+                  ]
+                }
+              ]
+            }
           },
           {
             "layout": "split",
@@ -504,7 +546,28 @@
               "From responsive portfolios to complex admin dashboards — each project pushed the boundaries of what I thought possible.",
               "The best code tells a story of its own."
             ],
-            "visual": "browser-sketch"
+            "visual": "browser-sketch",
+            "choice": {
+              "question": "What makes a project 'done'?",
+              "options": [
+                {
+                  "label": "When it ships and users love it",
+                  "personality": "maverick",
+                  "followUp": [
+                    "Done is better than perfect. Ship it, learn from it, iterate.",
+                    "The real test isn't the code review — it's the user's reaction."
+                  ]
+                },
+                {
+                  "label": "When every detail feels right",
+                  "personality": "craftsman",
+                  "followUp": [
+                    "That last 10% is what separates good from great.",
+                    "Every pixel, every transition, every interaction — all intentional."
+                  ]
+                }
+              ]
+            }
           },
           {
             "layout": "full",
@@ -542,7 +605,28 @@
               "Push the craft forward, one commit at a time."
             ],
             "highlight": "one commit at a time",
-            "visual": "tech-orbit"
+            "visual": "tech-orbit",
+            "choice": {
+              "question": "What excites you about the future?",
+              "options": [
+                {
+                  "label": "New frontiers — AI, spatial computing, the unknown",
+                  "personality": "explorer",
+                  "followUp": [
+                    "The next decade will redefine what developers can build.",
+                    "And I want to be at the frontier, building what doesn't exist yet."
+                  ]
+                },
+                {
+                  "label": "Building systems that outlast trends",
+                  "personality": "architect",
+                  "followUp": [
+                    "Trends come and go. Good architecture endures.",
+                    "The future belongs to those who build foundations, not facades."
+                  ]
+                }
+              ]
+            }
           },
           {
             "layout": "full",
@@ -561,6 +645,35 @@
       "next": "Next",
       "finish": "Back to Portfolio",
       "skipNarration": "Skip"
+    },
+    "personalities": [
+      {
+        "id": "architect",
+        "title": "The Architect",
+        "color": "#06B6D4",
+        "description": "You see the big picture. Systems thinking, clean structure, and elegant solutions define your approach. You don't just write code — you design foundations that others build upon."
+      },
+      {
+        "id": "explorer",
+        "title": "The Explorer",
+        "color": "#A855F7",
+        "description": "Curiosity is your compass. You're always learning, always experimenting, always pushing into new territory. For you, the journey of discovery is the destination."
+      },
+      {
+        "id": "craftsman",
+        "title": "The Craftsman",
+        "color": "#10B981",
+        "description": "Details matter. You obsess over quality, polish every edge, and won't ship until it feels right. Your code isn't just functional — it's a work of art."
+      },
+      {
+        "id": "maverick",
+        "title": "The Maverick",
+        "color": "gradient",
+        "description": "You move fast and build boldly. While others deliberate, you ship. Your bias for action and fearless experimentation turn ideas into reality at breakneck speed."
+      }
+    ],
+    "result": {
+      "title": "Your Developer DNA"
     }
   }
 }
