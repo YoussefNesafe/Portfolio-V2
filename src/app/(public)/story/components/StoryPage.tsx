@@ -1,11 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { IStoryDictionary } from "@/app/models/IStoryDictionary";
 import { useStoryState } from "@/app/hooks/useStoryState";
 import StoryChapter from "./StoryChapter";
 import StoryNav from "./StoryNav";
 import StoryProgress from "./StoryProgress";
 import ChapterTransition from "./ChapterTransition";
+import ResultCard from "./ResultCard";
 
 const COLOR_MAP: Record<string, string> = {
   cyan: "#06B6D4",
@@ -18,6 +20,7 @@ interface StoryPageProps {
 }
 
 export default function StoryPage({ story }: StoryPageProps) {
+  const router = useRouter();
   const {
     chapterIndex,
     panelIndex,
@@ -27,10 +30,14 @@ export default function StoryPage({ story }: StoryPageProps) {
     currentChapter,
     totalPanels,
     globalPanelIndex,
+    selectedChoice,
+    showResult,
     goNext,
     goBack,
+    makeChoice,
     onNarrationComplete,
     onTransitionEnd,
+    computeResult,
   } = useStoryState(story.chapters);
 
   const accentColor = COLOR_MAP[currentChapter.color] || COLOR_MAP.cyan;
@@ -39,6 +46,10 @@ export default function StoryPage({ story }: StoryPageProps) {
     chapterIndex === story.chapters.length - 1 &&
     panelIndex === currentChapter.panels.length - 1 &&
     narrationComplete;
+
+  const currentPanel = currentChapter.panels[panelIndex];
+  const isChoicePanel = !!currentPanel.choice && !selectedChoice;
+  const resultPersonality = computeResult(story.personalities);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -56,21 +67,25 @@ export default function StoryPage({ story }: StoryPageProps) {
           accentColor={accentColor}
           narrationComplete={narrationComplete}
           onNarrationComplete={onNarrationComplete}
+          onChoice={makeChoice}
+          selectedChoice={selectedChoice}
         />
 
-        <div className="mt-[6.4vw] tablet:mt-[3vw] desktop:mt-[1.25vw] w-full max-w-[90vw] tablet:max-w-[60vw] desktop:max-w-[41.667vw]">
-          <StoryNav
-            nav={story.nav}
-            chapters={story.chapters}
-            chapterIndex={chapterIndex}
-            panelIndex={panelIndex}
-            onNext={goNext}
-            onBack={goBack}
-            isFirst={isFirst}
-            isLast={isLast}
-            accentColor={accentColor}
-          />
-        </div>
+        {!isChoicePanel && (
+          <div className="mt-[6.4vw] tablet:mt-[3vw] desktop:mt-[1.25vw] w-full max-w-[90vw] tablet:max-w-[60vw] desktop:max-w-[41.667vw]">
+            <StoryNav
+              nav={story.nav}
+              chapters={story.chapters}
+              chapterIndex={chapterIndex}
+              panelIndex={panelIndex}
+              onNext={goNext}
+              onBack={goBack}
+              isFirst={isFirst}
+              isLast={isLast}
+              accentColor={accentColor}
+            />
+          </div>
+        )}
       </div>
 
       <ChapterTransition
@@ -92,6 +107,14 @@ export default function StoryPage({ story }: StoryPageProps) {
         }
         onComplete={onTransitionEnd}
       />
+
+      {showResult && resultPersonality && (
+        <ResultCard
+          personality={resultPersonality}
+          resultTitle={story.result.title}
+          onBack={() => router.push("/")}
+        />
+      )}
     </div>
   );
 }
