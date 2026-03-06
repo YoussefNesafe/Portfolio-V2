@@ -40,39 +40,32 @@ export function useStoryState(chapters: IStoryChapter[]) {
   }, []);
 
   const goNext = useCallback(() => {
-    let shouldNavigateHome = false;
+    const chapter = chapters[state.chapterIndex];
+    const hasMorePanels = state.panelIndex < chapter.panels.length - 1;
+    const hasMoreChapters = state.chapterIndex < chapters.length - 1;
 
-    setState((prev) => {
-      const chapter = chapters[prev.chapterIndex];
-      const hasMorePanels = prev.panelIndex < chapter.panels.length - 1;
-      const hasMoreChapters = prev.chapterIndex < chapters.length - 1;
-
-      if (hasMorePanels) {
-        return {
-          ...prev,
-          panelIndex: prev.panelIndex + 1,
-          narrationComplete: false,
-          direction: "forward" as Direction,
-        };
-      }
-
-      if (hasMoreChapters) {
-        return {
-          ...prev,
-          isTransitioning: true,
-          direction: "forward" as Direction,
-        };
-      }
-
-      // Story complete
-      shouldNavigateHome = true;
-      return prev;
-    });
-
-    if (shouldNavigateHome) {
-      router.push("/");
+    if (hasMorePanels) {
+      setState((prev) => ({
+        ...prev,
+        panelIndex: prev.panelIndex + 1,
+        narrationComplete: false,
+        direction: "forward" as Direction,
+      }));
+      return;
     }
-  }, [chapters, router]);
+
+    if (hasMoreChapters) {
+      setState((prev) => ({
+        ...prev,
+        isTransitioning: true,
+        direction: "forward" as Direction,
+      }));
+      return;
+    }
+
+    // Story complete — navigate home
+    router.push("/");
+  }, [chapters, state.chapterIndex, state.panelIndex, router]);
 
   const goBack = useCallback(() => {
     setState((prev) => {

@@ -217,6 +217,10 @@
   }
 
   /* Halftone dot overlay */
+  .halftone-overlay {
+    pointer-events: none;
+  }
+
   .halftone-overlay::before {
     content: "";
     position: absolute;
