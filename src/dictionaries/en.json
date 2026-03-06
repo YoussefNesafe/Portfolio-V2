@@ -9,7 +9,8 @@
         { "label": "Projects", "href": "#projects" },
         { "label": "Skills", "href": "#skills" },
         { "label": "Contact", "href": "#contact" },
-        { "label": "Blog", "href": "/blog" }
+        { "label": "Blog", "href": "/blog" },
+        { "label": "Work Log", "href": "/brag" }
       ]
     },
     "footer": {

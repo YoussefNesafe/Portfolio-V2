@@ -42,14 +42,10 @@ export default function ViewTransitionHandler() {
 
       e.preventDefault();
 
-      // Store click position for iris reveal origin
-      const x = mouseEvent.clientX;
-      const y = mouseEvent.clientY;
-      // Calculate the max radius needed to cover the entire viewport from click point
-      const maxRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-      );
+      // Set iris reveal origin to center of viewport
+      const x = window.innerWidth / 2;
+      const y = window.innerHeight / 2;
+      const maxRadius = Math.hypot(x, y);
       document.documentElement.style.setProperty("--iris-x", `${x}px`);
       document.documentElement.style.setProperty("--iris-y", `${y}px`);
       document.documentElement.style.setProperty("--iris-radius", `${maxRadius}px`);

@@ -3,12 +3,12 @@
 
 /* View Transitions — Iris circle reveal from click point */
 ::view-transition-old(root) {
-  animation: iris-out 600ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: iris-out 1400ms cubic-bezier(0.4, 0, 0.2, 1) both;
   z-index: 1;
 }
 
 ::view-transition-new(root) {
-  animation: iris-in 600ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: iris-in 1400ms cubic-bezier(0.4, 0, 0.2, 1) both;
   z-index: 2;
 }
 
