@@ -6,6 +6,7 @@ import EasterEggsProvider from "@/app/components/easter-eggs/EasterEggsProvider"
 import ViewModeProvider from "@/app/components/view-mode/ViewModeProvider";
 import ViewModeToggle from "@/app/components/view-mode/ViewModeToggle";
 import ViewTransitionHandler from "@/app/components/view-transitions/ViewTransitionLink";
+import StoryButton from "@/app/components/story/StoryButton";
 
 export default async function PublicLayout({
   children,
@@ -25,6 +26,7 @@ export default async function PublicLayout({
           <Footer {...dict.layout.footer} />
         </main>
         <ViewModeToggle />
+        <StoryButton />
       </ViewModeProvider>
     </EasterEggsProvider>
   );

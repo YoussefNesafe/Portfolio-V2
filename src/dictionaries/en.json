@@ -401,5 +401,166 @@
         "pageOf": "Page {page} of {total} ({count} posts)"
       }
     }
+  },
+  "story": {
+    "title": "My Story",
+    "subtitle": "A developer's journey through code and creativity",
+    "chapters": [
+      {
+        "id": "origin",
+        "title": "The Origin",
+        "subtitle": "Where it all began",
+        "color": "cyan",
+        "panels": [
+          {
+            "layout": "full",
+            "background": "grid",
+            "narration": [
+              "Every developer has an origin story.",
+              "Mine started with a blinking cursor on a dark screen — and the realization that I could build anything."
+            ],
+            "highlight": "origin story",
+            "visual": "code-editor"
+          },
+          {
+            "layout": "split",
+            "background": "dots",
+            "narration": [
+              "Late nights fueled by curiosity. Endless documentation. Stack Overflow rabbit holes.",
+              "Each bug fixed was a small victory. Each project, a stepping stone."
+            ],
+            "visual": "browser-sketch"
+          },
+          {
+            "layout": "full",
+            "background": "gradient",
+            "narration": [
+              "From simple HTML pages to full-stack applications — the transformation was gradual but relentless.",
+              "The passion became a profession."
+            ],
+            "highlight": "transformation",
+            "visual": "code-editor"
+          }
+        ]
+      },
+      {
+        "id": "skills",
+        "title": "The Arsenal",
+        "subtitle": "Tools of the trade",
+        "color": "purple",
+        "panels": [
+          {
+            "layout": "full",
+            "background": "dots",
+            "narration": [
+              "A developer is only as sharp as their toolkit.",
+              "Over the years, I've forged mine through practice, projects, and relentless iteration."
+            ],
+            "highlight": "toolkit",
+            "visual": "tech-orbit"
+          },
+          {
+            "layout": "triple",
+            "background": "none",
+            "narration": [
+              "React, Next.js, TypeScript — the frontend trinity that powers modern web experiences.",
+              "Node.js, PostgreSQL, Prisma — the backend foundation that keeps everything running.",
+              "Tailwind, Framer Motion, responsive design — the finishing touches that make it shine."
+            ],
+            "visual": "skill-cards"
+          },
+          {
+            "layout": "split",
+            "background": "gradient",
+            "narration": [
+              "But skills are not just tools — they're a mindset.",
+              "Clean architecture. Test-driven development. Performance optimization. These principles guide every line of code."
+            ],
+            "highlight": "mindset",
+            "visual": "dashboard-sketch"
+          }
+        ]
+      },
+      {
+        "id": "projects",
+        "title": "The Works",
+        "subtitle": "Building what matters",
+        "color": "emerald",
+        "panels": [
+          {
+            "layout": "full",
+            "background": "grid",
+            "narration": [
+              "Ideas are worth nothing without execution.",
+              "Every project in my portfolio represents a problem solved, a challenge conquered."
+            ],
+            "highlight": "execution",
+            "visual": "project-montage"
+          },
+          {
+            "layout": "split",
+            "background": "dots",
+            "narration": [
+              "From responsive portfolios to complex admin dashboards — each project pushed the boundaries of what I thought possible.",
+              "The best code tells a story of its own."
+            ],
+            "visual": "browser-sketch"
+          },
+          {
+            "layout": "full",
+            "background": "none",
+            "narration": [
+              "This very portfolio is a testament to that philosophy.",
+              "Every interaction, every transition, every pixel — intentionally crafted."
+            ],
+            "highlight": "intentionally crafted",
+            "visual": "dashboard-sketch"
+          }
+        ]
+      },
+      {
+        "id": "vision",
+        "title": "The Vision",
+        "subtitle": "What comes next",
+        "color": "cyan",
+        "panels": [
+          {
+            "layout": "full",
+            "background": "gradient",
+            "narration": [
+              "The best developers never stop learning.",
+              "The landscape shifts. New frameworks emerge. AI reshapes our workflow. And I adapt."
+            ],
+            "highlight": "never stop learning",
+            "visual": "horizon"
+          },
+          {
+            "layout": "split",
+            "background": "dots",
+            "narration": [
+              "My vision? Build software that matters. Create experiences that resonate.",
+              "Push the craft forward, one commit at a time."
+            ],
+            "highlight": "one commit at a time",
+            "visual": "tech-orbit"
+          },
+          {
+            "layout": "full",
+            "background": "none",
+            "narration": [
+              "Thanks for reading my story.",
+              "Now, let's build something together."
+            ],
+            "visual": "cta"
+          }
+        ]
+      }
+    ],
+    "nav": {
+      "back": "Back",
+      "next": "Next",
+      "finish": "Back to Portfolio",
+      "skipNarration": "Skip"
+    }
   }
 }

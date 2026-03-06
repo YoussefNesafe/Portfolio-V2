@@ -8,6 +8,7 @@ import type { ILayout } from "./Layout";
 import type { IBlogDictionary, IBlogPostDictionary } from "./IBlogDictionary";
 import type { IBragDictionary } from "./IBragDictionary";
 import type { IAdminDictionary } from "./IAdminDictionary";
+import type { IStoryDictionary } from "./IStoryDictionary";
 
 export interface IDictionary {
   layout: ILayout;
@@ -21,4 +22,5 @@ export interface IDictionary {
   blogPost: IBlogPostDictionary;
   brag: IBragDictionary;
   admin: IAdminDictionary;
+  story: IStoryDictionary;
 }

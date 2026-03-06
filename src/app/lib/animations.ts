@@ -51,3 +51,47 @@ export const fastStaggerContainer: Variants = {
 };
 
 export const defaultViewport = { once: true, amount: 0.3 } as const;
+
+export const panelSlideIn: Variants = {
+  enter: { x: "100%", opacity: 0 },
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+  exit: { x: "-100%", opacity: 0, transition: { duration: 0.4 } },
+};
+
+export const panelSlideBack: Variants = {
+  enter: { x: "-100%", opacity: 0 },
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+  exit: { x: "100%", opacity: 0, transition: { duration: 0.4 } },
+};
+
+export const bubblePop: Variants = {
+  hidden: { opacity: 0, scale: 0.85, y: 10 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
+
+export const chapterFade: Variants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    scale: 1.1,
+    transition: { duration: 0.4 },
+  },
+};
