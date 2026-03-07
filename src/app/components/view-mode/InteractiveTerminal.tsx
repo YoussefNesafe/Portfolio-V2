@@ -10,7 +10,6 @@ interface InteractiveTerminalProps {
     IDictionary,
     "hero" | "about" | "experience" | "projects" | "skills" | "contact"
   >;
-  onTriggerMatrix: () => void;
 }
 
 const PROMPT = "visitor@youssef:~$ ";
@@ -48,7 +47,6 @@ function OutputLineComponent({ line }: { line: OutputLine }) {
 
 export default function InteractiveTerminal({
   dict,
-  onTriggerMatrix,
 }: InteractiveTerminalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -69,11 +67,10 @@ export default function InteractiveTerminal({
     () => ({
       dict,
       history: [],
-      triggerMatrix: onTriggerMatrix,
       triggerDownload,
       triggerMailto,
     }),
-    [dict, onTriggerMatrix, triggerDownload, triggerMailto],
+    [dict, triggerDownload, triggerMailto],
   );
 
   const { session, input, setInput, execute, handleHistoryNav, autocomplete } =

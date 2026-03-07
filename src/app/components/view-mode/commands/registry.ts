@@ -8,7 +8,6 @@ export interface OutputLine {
 export interface CommandContext {
   dict: Pick<IDictionary, "hero" | "about" | "experience" | "projects" | "skills" | "contact">;
   history: string[];
-  triggerMatrix: () => void;
   triggerDownload: (path: string) => void;
   triggerMailto: (email: string) => void;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useViewMode } from "@/app/components/view-mode/ViewModeContext";
-import { useEasterEggs } from "@/app/components/easter-eggs/EasterEggsContext";
 import InteractiveTerminal from "@/app/components/view-mode/InteractiveTerminal";
 import { XRayProvider, XRayToggle, XRayInspector } from "@/app/components/xray";
 import CustomCursor from "@/app/components/cursor/CustomCursor";
@@ -20,12 +19,8 @@ export default function HomeContent({
   designerContent,
 }: HomeContentProps) {
   const { mode } = useViewMode();
-  const { triggerMatrix } = useEasterEggs();
-
   if (mode === "dev") {
-    return (
-      <InteractiveTerminal dict={dict} onTriggerMatrix={triggerMatrix} />
-    );
+    return <InteractiveTerminal dict={dict} />;
   }
 
   return (

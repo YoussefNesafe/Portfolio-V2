@@ -209,15 +209,6 @@ const coffeeCmd: CommandDefinition = {
   ],
 };
 
-const matrixCmd: CommandDefinition = {
-  name: "matrix",
-  description: "Enter the Matrix",
-  execute: (_args, ctx) => {
-    ctx.triggerMatrix();
-    return [success("Entering the Matrix..."), muted("Follow the white rabbit.")];
-  },
-};
-
 const neofetchCmd: CommandDefinition = {
   name: "neofetch",
   description: "Display system information",
@@ -297,7 +288,6 @@ export const allCommands: CommandDefinition[] = [
   echoCmd,
   sudoRmCmd,
   coffeeCmd,
-  matrixCmd,
   neofetchCmd,
   pingCmd,
   exitCmd,
