@@ -481,30 +481,70 @@ export function drawPlayer(
   facingLeft: boolean,
   isSprinting: boolean = false,
   crouchSquish: number = 1,
+  isSuperSaiyan: boolean = false,
+  isFlying: boolean = false,
+  transformTimer: number = 0,
 ): void {
   const frame = frames[frameIndex % frames.length];
   const spriteW = frame[0].length * scale;
   const spriteH = frame.length * scale;
   const centerX = x + spriteW / 2;
   const centerY = y + spriteH / 2;
+  const now = Date.now();
 
-  // Sprint power glow — large glowing aura around character
-  if (isSprinting) {
-    const now = Date.now();
+  // Transformation animation — intense aura burst
+  if (transformTimer > 0) {
+    const t = transformTimer / 120;
+    const burstRadius = spriteW * (3 - t * 2);
+    const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, burstRadius);
+    grad.addColorStop(0, `rgba(255, 215, 0, ${t * 0.8})`);
+    grad.addColorStop(0.3, `rgba(255, 140, 0, ${t * 0.5})`);
+    grad.addColorStop(0.6, `rgba(255, 69, 0, ${t * 0.3})`);
+    grad.addColorStop(1, "rgba(255, 69, 0, 0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, burstRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lightning bolts during transformation
+    for (let i = 0; i < 6; i++) {
+      const angle = (now / 50 + i * 1.05) % (Math.PI * 2);
+      const dist = spriteW * (0.8 + Math.sin(now / 30 + i) * 0.4);
+      const lx = centerX + Math.cos(angle) * dist;
+      const ly = centerY + Math.sin(angle) * dist;
+      ctx.strokeStyle = `rgba(255, 255, 100, ${t * 0.8})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX + Math.cos(angle) * spriteW * 0.3, centerY + Math.sin(angle) * spriteW * 0.3);
+      const midX = (centerX + lx) / 2 + (Math.random() - 0.5) * 15;
+      const midY = (centerY + ly) / 2 + (Math.random() - 0.5) * 15;
+      ctx.lineTo(midX, midY);
+      ctx.lineTo(lx, ly);
+      ctx.stroke();
+    }
+  }
+
+  // Sprint / SSJ power glow
+  if (isSprinting || isSuperSaiyan) {
     const pulse = 0.4 + Math.sin(now / 100) * 0.15;
+    const glowMult = isSuperSaiyan ? 1.5 : 1;
 
     // Outer glow
-    const grad = ctx.createRadialGradient(centerX, centerY, spriteW * 0.3, centerX, centerY, spriteW * 1.2);
-    grad.addColorStop(0, `rgba(255, 215, 0, ${pulse * 0.5})`);
-    grad.addColorStop(0.4, `rgba(255, 107, 0, ${pulse * 0.3})`);
+    const grad = ctx.createRadialGradient(
+      centerX, centerY, spriteW * 0.3,
+      centerX, centerY, spriteW * 1.2 * glowMult,
+    );
+    grad.addColorStop(0, `rgba(255, 215, 0, ${pulse * 0.5 * glowMult})`);
+    grad.addColorStop(0.4, `rgba(255, 107, 0, ${pulse * 0.3 * glowMult})`);
     grad.addColorStop(1, "rgba(255, 107, 0, 0)");
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(centerX, centerY, spriteW * 1.2, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, spriteW * 1.2 * glowMult, 0, Math.PI * 2);
     ctx.fill();
 
-    // Inner ki flames — upward streaks
-    for (let i = 0; i < 12; i++) {
+    // Ki flames
+    const flameCount = isSuperSaiyan ? 18 : 12;
+    for (let i = 0; i < flameCount; i++) {
       const flameX = centerX + (Math.sin(now / 80 + i * 1.7) * spriteW * 0.4);
       const flameY = centerY - (((now / 40 + i * 50) % (spriteH * 1.2)));
       const flameAlpha = 0.5 - (((now / 40 + i * 50) % (spriteH * 1.2)) / (spriteH * 1.2)) * 0.5;
@@ -518,20 +558,36 @@ export function drawPlayer(
     }
   }
 
-  // Normal aura particles
-  const auraColors = isSprinting ? ["#FFD700", "#FF6B00"] : ["#06B6D4", "#A855F7"];
-  const auraCount = isSprinting ? 14 : 7;
-  const auraScale = isSprinting ? 1.5 : 1;
+  // Flying wind lines
+  if (isFlying) {
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 6; i++) {
+      const lineY = centerY - spriteH * 0.3 + i * (spriteH * 0.1);
+      const lineX = centerX + spriteW * 0.5;
+      const lineLen = 15 + Math.sin(now / 100 + i) * 8;
+      ctx.beginPath();
+      ctx.moveTo(lineX, lineY);
+      ctx.lineTo(lineX + lineLen, lineY + (Math.random() - 0.5) * 3);
+      ctx.stroke();
+    }
+  }
+
+  // Aura particles
+  const isGold = isSprinting || isSuperSaiyan;
+  const auraColors = isGold ? ["#FFD700", "#FF6B00"] : ["#06B6D4", "#A855F7"];
+  const auraCount = isSuperSaiyan ? 18 : isSprinting ? 14 : 7;
+  const auraSc = isSuperSaiyan ? 1.8 : isSprinting ? 1.5 : 1;
 
   for (let i = 0; i < auraCount; i++) {
     const angle =
       (i / auraCount) * Math.PI * 2 +
       Math.sin(frameIndex * 0.3 + i) * 0.4;
-    const dist = (spriteW * 0.5 + Math.sin(frameIndex * 0.5 + i * 1.3) * 6) * auraScale;
+    const dist = (spriteW * 0.5 + Math.sin(frameIndex * 0.5 + i * 1.3) * 6) * auraSc;
     const px = centerX + Math.cos(angle) * dist;
     const py = centerY + Math.sin(angle) * dist;
-    const alpha = (0.3 + Math.sin(frameIndex * 0.4 + i * 0.7) * 0.1) * (isSprinting ? 1.5 : 1);
-    const size = (3 + Math.sin(frameIndex * 0.6 + i * 1.1) * 1.5) * auraScale;
+    const alpha = (0.3 + Math.sin(frameIndex * 0.4 + i * 0.7) * 0.1) * (isGold ? 1.5 : 1);
+    const size = (3 + Math.sin(frameIndex * 0.6 + i * 1.1) * 1.5) * auraSc;
 
     const color = auraColors[i % 2];
     const [r, g, b] = parseHex(color);
@@ -542,7 +598,7 @@ export function drawPlayer(
     ctx.fill();
   }
 
-  // Draw the sprite with optional crouch squish
+  // Draw the sprite with optional crouch squish & SSJ golden tint
   ctx.save();
   if (crouchSquish < 1) {
     const squishY = y + spriteH * (1 - crouchSquish);
@@ -1006,4 +1062,275 @@ export function drawPowerUpFlash(
   if (intensity <= 0) return;
   ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, intensity)})`;
   ctx.fillRect(0, 0, w, h);
+}
+
+// ---------------------------------------------------------------------------
+// 15. Kamehameha beam
+// ---------------------------------------------------------------------------
+
+export function drawKamehameha(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  playerX: number,
+  playerY: number,
+  playerScale: number,
+  facingLeft: boolean,
+  timer: number,
+  maxTimer: number,
+  isSuperSaiyan: boolean,
+): void {
+  const progress = 1 - timer / maxTimer; // 0→1 as blast progresses
+  const spriteW = 32 * playerScale;
+  const spriteH = 32 * playerScale;
+  const centerY = playerY + spriteH * 0.45;
+  const startX = facingLeft ? playerX : playerX + spriteW;
+  const dir = facingLeft ? -1 : 1;
+  const beamLen = progress * w * 0.8;
+  const beamWidth = 8 + progress * 12;
+  const now = Date.now();
+
+  // Charge glow at hands
+  const chargeRadius = 10 + Math.sin(now / 50) * 3;
+  const chargeGrad = ctx.createRadialGradient(
+    startX, centerY, 0,
+    startX, centerY, chargeRadius,
+  );
+  if (isSuperSaiyan) {
+    chargeGrad.addColorStop(0, "rgba(255, 215, 0, 0.9)");
+    chargeGrad.addColorStop(0.5, "rgba(255, 140, 0, 0.5)");
+    chargeGrad.addColorStop(1, "rgba(255, 69, 0, 0)");
+  } else {
+    chargeGrad.addColorStop(0, "rgba(150, 200, 255, 0.9)");
+    chargeGrad.addColorStop(0.5, "rgba(59, 130, 246, 0.5)");
+    chargeGrad.addColorStop(1, "rgba(59, 130, 246, 0)");
+  }
+  ctx.fillStyle = chargeGrad;
+  ctx.beginPath();
+  ctx.arc(startX, centerY, chargeRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Main beam
+  const beamGrad = ctx.createLinearGradient(startX, centerY - beamWidth, startX, centerY + beamWidth);
+  if (isSuperSaiyan) {
+    beamGrad.addColorStop(0, "rgba(255, 215, 0, 0)");
+    beamGrad.addColorStop(0.3, "rgba(255, 200, 50, 0.7)");
+    beamGrad.addColorStop(0.5, "rgba(255, 255, 200, 0.9)");
+    beamGrad.addColorStop(0.7, "rgba(255, 200, 50, 0.7)");
+    beamGrad.addColorStop(1, "rgba(255, 215, 0, 0)");
+  } else {
+    beamGrad.addColorStop(0, "rgba(59, 130, 246, 0)");
+    beamGrad.addColorStop(0.3, "rgba(100, 180, 255, 0.7)");
+    beamGrad.addColorStop(0.5, "rgba(200, 230, 255, 0.9)");
+    beamGrad.addColorStop(0.7, "rgba(100, 180, 255, 0.7)");
+    beamGrad.addColorStop(1, "rgba(59, 130, 246, 0)");
+  }
+  ctx.fillStyle = beamGrad;
+  ctx.fillRect(
+    facingLeft ? startX - beamLen : startX,
+    centerY - beamWidth / 2,
+    beamLen,
+    beamWidth,
+  );
+
+  // Core beam (bright center)
+  ctx.fillStyle = isSuperSaiyan
+    ? `rgba(255, 255, 200, ${0.8 - progress * 0.3})`
+    : `rgba(220, 240, 255, ${0.8 - progress * 0.3})`;
+  ctx.fillRect(
+    facingLeft ? startX - beamLen : startX,
+    centerY - beamWidth / 6,
+    beamLen,
+    beamWidth / 3,
+  );
+
+  // Impact flash at beam tip
+  const tipX = startX + dir * beamLen;
+  const impactPulse = 0.5 + Math.sin(now / 40) * 0.3;
+  const impactGrad = ctx.createRadialGradient(tipX, centerY, 0, tipX, centerY, 20);
+  impactGrad.addColorStop(0, `rgba(255, 255, 255, ${impactPulse})`);
+  impactGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+  ctx.fillStyle = impactGrad;
+  ctx.beginPath();
+  ctx.arc(tipX, centerY, 20, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// ---------------------------------------------------------------------------
+// 16. Teleport flash
+// ---------------------------------------------------------------------------
+
+export function drawTeleportFlash(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  intensity: number,
+): void {
+  if (intensity <= 0) return;
+  // Cyan/white flash
+  ctx.fillStyle = `rgba(6, 182, 212, ${Math.min(0.4, intensity * 0.4)})`;
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.3, intensity * 0.3)})`;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// ---------------------------------------------------------------------------
+// 17. Transform flash (golden)
+// ---------------------------------------------------------------------------
+
+export function drawTransformFlash(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  intensity: number,
+): void {
+  if (intensity <= 0) return;
+  ctx.fillStyle = `rgba(255, 215, 0, ${Math.min(0.6, intensity * 0.6)})`;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// ---------------------------------------------------------------------------
+// 18. Dust particles (landing impact)
+// ---------------------------------------------------------------------------
+
+export function drawDustParticles(
+  ctx: CanvasRenderingContext2D,
+  particles: { x: number; y: number; life: number }[],
+): void {
+  for (const p of particles) {
+    const alpha = Math.min(1, p.life / 15) * 0.6;
+    const size = 2 + (1 - p.life / 35) * 3;
+    ctx.fillStyle = `rgba(180, 160, 120, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 19. Wish screen (all 7 Dragon Balls collected)
+// ---------------------------------------------------------------------------
+
+export function drawWishScreen(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  timer: number,
+): void {
+  const fadeIn = Math.min(1, timer / 60);
+  const now = Date.now();
+
+  // Dark overlay
+  ctx.fillStyle = `rgba(0, 0, 0, ${fadeIn * 0.85})`;
+  ctx.fillRect(0, 0, w, h);
+
+  // Golden glow in center
+  const glowPulse = 0.3 + Math.sin(now / 300) * 0.15;
+  const glowGrad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.35);
+  glowGrad.addColorStop(0, `rgba(255, 215, 0, ${glowPulse * fadeIn})`);
+  glowGrad.addColorStop(0.5, `rgba(255, 140, 0, ${glowPulse * 0.3 * fadeIn})`);
+  glowGrad.addColorStop(1, "rgba(255, 69, 0, 0)");
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath();
+  ctx.arc(w / 2, h / 2, w * 0.35, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Dragon Balls in circle
+  if (timer > 30) {
+    const dbFade = Math.min(1, (timer - 30) / 40);
+    const radius = Math.min(w, h) * 0.15;
+    for (let i = 0; i < 7; i++) {
+      const angle = (i / 7) * Math.PI * 2 - Math.PI / 2 + now / 3000;
+      const bx = w / 2 + Math.cos(angle) * radius;
+      const by = h / 2 + Math.sin(angle) * radius;
+
+      // Glow
+      const bgGrad = ctx.createRadialGradient(bx, by, 0, bx, by, 15);
+      bgGrad.addColorStop(0, `rgba(255, 140, 0, ${0.6 * dbFade})`);
+      bgGrad.addColorStop(1, "rgba(255, 140, 0, 0)");
+      ctx.fillStyle = bgGrad;
+      ctx.beginPath();
+      ctx.arc(bx, by, 15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ball
+      ctx.fillStyle = `rgba(255, 160, 30, ${dbFade})`;
+      ctx.beginPath();
+      ctx.arc(bx, by, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Star count
+      ctx.fillStyle = `rgba(180, 40, 0, ${dbFade})`;
+      ctx.font = "bold 8px monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`${i + 1}`, bx, by + 1);
+    }
+  }
+
+  // Title text
+  if (timer > 60) {
+    const textFade = Math.min(1, (timer - 60) / 40);
+    const fontSize = Math.max(Math.round(w * 0.03), 24);
+    ctx.save();
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "#FFD700";
+    ctx.font = `bold ${fontSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = `rgba(255, 215, 0, ${textFade})`;
+    ctx.fillText("ALL DRAGON BALLS COLLECTED!", w / 2, h * 0.25);
+    ctx.restore();
+  }
+
+  // Subtitle
+  if (timer > 100) {
+    const subFade = Math.min(1, (timer - 100) / 40);
+    const subSize = Math.max(Math.round(w * 0.014), 14);
+    ctx.save();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#FF6B00";
+    ctx.font = `${subSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = `rgba(255, 200, 100, ${subFade})`;
+    ctx.fillText("Your wish has been granted...", w / 2, h * 0.72);
+    ctx.restore();
+  }
+
+  // "Press any key" after a while
+  if (timer > 180) {
+    const blink = Math.sin(now / 400) > 0 ? 1 : 0.3;
+    const hintSize = Math.max(Math.round(w * 0.01), 12);
+    ctx.font = `${hintSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.fillStyle = `rgba(200, 200, 200, ${blink})`;
+    ctx.fillText("Press any key to continue...", w / 2, h * 0.85);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 20. Controls hint
+// ---------------------------------------------------------------------------
+
+export function drawControlsHint(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+): void {
+  const fontSize = Math.max(Math.round(w * 0.007), 9);
+  ctx.font = `${fontSize}px monospace`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "bottom";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+  const pad = Math.round(w * 0.01);
+  const lineH = fontSize + 2;
+  const baseY = h - pad;
+  const lines = [
+    "Arrows: Move | Space: Jump/Fly | Shift: Sprint",
+    "X: Kamehameha | C: Teleport | Down: Crouch",
+  ];
+  for (let i = lines.length - 1; i >= 0; i--) {
+    ctx.fillText(lines[i], pad, baseY - (lines.length - 1 - i) * lineH);
+  }
 }

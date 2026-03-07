@@ -17,6 +17,15 @@ import {
 } from "./world-data";
 import { IDLE_FRAMES, WALK_RIGHT_FRAMES } from "./sprite-data";
 import * as renderer from "./renderer";
+import * as sound from "./sound";
+
+interface DustParticle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+}
 
 interface GameState {
   scrollX: number;
@@ -24,7 +33,7 @@ interface GameState {
   jumpVelocity: number;
   jumpY: number;
   isGrounded: boolean;
-  jumpCount: number; // 0 = grounded, 1 = first jump, 2 = double jump
+  jumpCount: number;
   facingLeft: boolean;
   isSprinting: boolean;
   isCrouching: boolean;
@@ -36,18 +45,47 @@ interface GameState {
   started: boolean;
   finished: boolean;
   // Collectibles
-  collectedDragonBalls: Set<number>; // star numbers collected
+  collectedDragonBalls: Set<number>;
   collectedSenzu: number;
   collectedKiOrbs: number;
-  collectedSet: Set<number>; // indices into DECORATIONS that are collected
-  pickupFlash: number; // flash intensity on pickup
-  pickupText: string; // text to show on pickup
+  collectedSet: Set<number>;
+  pickupFlash: number;
+  pickupText: string;
   pickupTextTimer: number;
+  // Kamehameha
+  blastActive: boolean;
+  blastTimer: number;
+  // Instant Transmission
+  teleportFlash: number;
+  teleportCooldown: number;
+  // Flying
+  isFlying: boolean;
+  // Super Saiyan
+  isSuperSaiyan: boolean;
+  transformTimer: number;
+  transformFlash: number;
+  transformTriggered: boolean;
+  // Landing impact
+  dustParticles: DustParticle[];
+  screenShake: number;
+  wasAirborne: boolean;
+  prevJumpY: number;
+  // Wish
+  wishActive: boolean;
+  wishTimer: number;
 }
+
+const TELEPORT_DISTANCE = 200;
+const TELEPORT_COOLDOWN = 90; // frames
+const BLAST_DURATION = 40; // frames
+const FLOAT_GRAVITY = 0.05; // reduced gravity when flying
 
 export function useGameLoop(
   canvasRef: RefObject<HTMLCanvasElement | null>,
-  keysRef: RefObject<{ left: boolean; right: boolean; jump: boolean; sprint: boolean; down: boolean }>,
+  keysRef: RefObject<{
+    left: boolean; right: boolean; jump: boolean; sprint: boolean;
+    down: boolean; blast: boolean; teleport: boolean;
+  }>,
   biomes: IStoryBiome[],
 ) {
   const stateRef = useRef<GameState>({
@@ -74,27 +112,59 @@ export function useGameLoop(
     pickupFlash: 0,
     pickupText: "",
     pickupTextTimer: 0,
+    blastActive: false,
+    blastTimer: 0,
+    teleportFlash: 0,
+    teleportCooldown: 0,
+    isFlying: false,
+    isSuperSaiyan: false,
+    transformTimer: 0,
+    transformFlash: 0,
+    transformTriggered: false,
+    dustParticles: [],
+    screenShake: 0,
+    wasAirborne: false,
+    prevJumpY: 0,
+    wishActive: false,
+    wishTimer: 0,
   });
 
-  // Track previous jump key state for edge detection
   const prevJumpRef = useRef(false);
+  const prevBlastRef = useRef(false);
+  const prevTeleportRef = useRef(false);
 
   const update = useCallback(() => {
     const s = stateRef.current;
     const keys = keysRef.current;
     if (!keys) return;
 
+    // Wish screen freezes gameplay — dismiss after delay with any key
+    if (s.wishActive) {
+      s.wishTimer++;
+      if (s.wishTimer > 180) {
+        const anyKey = keys.left || keys.right || keys.jump || keys.sprint ||
+          keys.down || keys.blast || keys.teleport;
+        if (anyKey) {
+          s.wishActive = false;
+          s.isSuperSaiyan = true;
+          s.transformFlash = 0.5;
+        }
+      }
+      return;
+    }
+
     // Sprint
     s.isSprinting = keys.sprint && (keys.left || keys.right) && !s.finished;
 
-    // Crouch (only when grounded and not moving)
+    // Crouch
     s.isCrouching = keys.down && s.isGrounded && Math.abs(s.velocity) < 0.5 && !s.finished;
 
-    const maxSpeed = s.isSprinting ? SPRINT_SPEED : PLAYER_SPEED;
-    const accel = s.isSprinting ? PLAYER_ACCEL * 1.5 : PLAYER_ACCEL;
+    const ssjSpeedMult = s.isSuperSaiyan ? 1.3 : 1;
+    const maxSpeed = (s.isSprinting ? SPRINT_SPEED : PLAYER_SPEED) * ssjSpeedMult;
+    const accel = (s.isSprinting ? PLAYER_ACCEL * 1.5 : PLAYER_ACCEL) * ssjSpeedMult;
 
-    // Acceleration / deceleration
-    if (!s.isCrouching) {
+    // Movement
+    if (!s.isCrouching && !s.blastActive) {
       if (keys.right && !s.finished) {
         s.velocity = Math.min(s.velocity + accel, maxSpeed);
         s.facingLeft = false;
@@ -104,51 +174,110 @@ export function useGameLoop(
         s.facingLeft = true;
         s.started = true;
       } else {
-        // Friction
         if (s.velocity > 0) s.velocity = Math.max(s.velocity - PLAYER_DECEL, 0);
         if (s.velocity < 0) s.velocity = Math.min(s.velocity + PLAYER_DECEL, 0);
       }
-    } else {
-      // Crouching — slow down quickly
+    } else if (s.isCrouching) {
       if (s.velocity > 0) s.velocity = Math.max(s.velocity - PLAYER_DECEL * 3, 0);
       if (s.velocity < 0) s.velocity = Math.min(s.velocity + PLAYER_DECEL * 3, 0);
     }
 
-    // Jump — edge detection (only trigger on press, not hold)
+    // Jump
     const jumpPressed = keys.jump && !prevJumpRef.current;
     prevJumpRef.current = keys.jump;
 
-    if (jumpPressed && !s.finished && !s.isCrouching) {
+    if (jumpPressed && !s.finished && !s.isCrouching && !s.blastActive) {
       if (s.isGrounded) {
-        // First jump
-        s.jumpVelocity = JUMP_FORCE;
+        s.jumpVelocity = JUMP_FORCE * (s.isSuperSaiyan ? 1.2 : 1);
         s.isGrounded = false;
         s.jumpCount = 1;
         s.started = true;
+        sound.playJump();
       } else if (s.jumpCount === 1) {
-        // Double jump — ki burst
-        s.jumpVelocity = JUMP_FORCE * 0.85;
+        s.jumpVelocity = JUMP_FORCE * 0.85 * (s.isSuperSaiyan ? 1.2 : 1);
         s.jumpCount = 2;
-        s.pickupFlash = 0.3; // small ki burst flash
+        s.pickupFlash = 0.3;
+        sound.playDoubleJump();
       }
     }
 
-    // Apply gravity
+    // Flying — hold space while airborne to glide
+    s.isFlying = keys.jump && !s.isGrounded && s.jumpCount >= 1 && !s.finished;
+
+    // Apply gravity (reduced when flying)
     if (!s.isGrounded) {
+      const grav = s.isFlying ? FLOAT_GRAVITY : GRAVITY;
       s.jumpY += s.jumpVelocity;
-      s.jumpVelocity += GRAVITY;
+      s.jumpVelocity += grav;
+      // Cap fall speed when flying
+      if (s.isFlying && s.jumpVelocity > 1) {
+        s.jumpVelocity = 1;
+      }
       if (s.jumpY >= 0) {
+        // Landing impact — check how far we fell
+        if (s.wasAirborne && s.prevJumpY < -30) {
+          s.screenShake = Math.min(8, Math.abs(s.prevJumpY) / 10);
+          sound.playLanding();
+          // Spawn dust particles
+          const canvasW = canvasRef.current?.width ?? 800;
+          const groundY = (canvasRef.current?.height ?? 600) * PLAYER_Y_OFFSET;
+          const playerScreenX = canvasW / 2;
+          for (let i = 0; i < 8; i++) {
+            s.dustParticles.push({
+              x: playerScreenX + (Math.random() - 0.5) * 30,
+              y: groundY,
+              vx: (Math.random() - 0.5) * 4,
+              vy: -Math.random() * 2 - 0.5,
+              life: 20 + Math.random() * 15,
+            });
+          }
+        }
         s.jumpY = 0;
         s.jumpVelocity = 0;
         s.isGrounded = true;
         s.jumpCount = 0;
+        s.isFlying = false;
       }
     }
 
-    // Move — clamp to world bounds
+    // Track airborne state for landing detection
+    s.wasAirborne = !s.isGrounded;
+    if (!s.isGrounded) s.prevJumpY = s.jumpY;
+
+    // Kamehameha blast — press X
+    const blastPressed = keys.blast && !prevBlastRef.current;
+    prevBlastRef.current = keys.blast;
+
+    if (blastPressed && !s.finished && !s.blastActive) {
+      s.blastActive = true;
+      s.blastTimer = BLAST_DURATION;
+      sound.playBlast();
+    }
+    if (s.blastActive) {
+      s.blastTimer--;
+      if (s.blastTimer <= 0) {
+        s.blastActive = false;
+      }
+    }
+
+    // Instant Transmission — press C
+    const teleportPressed = keys.teleport && !prevTeleportRef.current;
+    prevTeleportRef.current = keys.teleport;
+
+    if (teleportPressed && !s.finished && s.teleportCooldown <= 0) {
+      const dir = s.facingLeft ? -1 : 1;
+      s.scrollX = Math.max(0, Math.min(s.scrollX + TELEPORT_DISTANCE * dir, WORLD_WIDTH));
+      s.teleportFlash = 1.0;
+      s.teleportCooldown = TELEPORT_COOLDOWN;
+      s.started = true;
+      sound.playTeleport();
+    }
+    if (s.teleportCooldown > 0) s.teleportCooldown--;
+
+    // Move
     s.scrollX = Math.max(0, Math.min(s.scrollX + s.velocity, WORLD_WIDTH));
 
-    // Animation frame cycling
+    // Animation
     const isMoving = Math.abs(s.velocity) > 0.1;
     s.frameTick++;
     if (isMoving) {
@@ -162,9 +291,9 @@ export function useGameLoop(
       }
     }
 
-    // Collectible detection — check ground-layer decorations near player
+    // Collectible detection
     const canvasW = canvasRef.current?.width ?? 0;
-    const playerWorldX = s.scrollX + canvasW / 2; // player is drawn at screen center
+    const playerWorldX = s.scrollX + canvasW / 2;
     for (let i = 0; i < DECORATIONS.length; i++) {
       if (s.collectedSet.has(i)) continue;
       const dec = DECORATIONS[i];
@@ -177,24 +306,33 @@ export function useGameLoop(
         if (dec.type === "dragonball" && dec.star) {
           s.collectedDragonBalls.add(dec.star);
           s.pickupFlash = 0.6;
-          s.pickupText = `Dragon Ball ★${dec.star} collected! (${s.collectedDragonBalls.size}/7)`;
+          s.pickupText = `Dragon Ball ${dec.star} collected! (${s.collectedDragonBalls.size}/7)`;
           s.pickupTextTimer = 120;
+          sound.playCollectDragonBall();
+          // Check for wish
+          if (s.collectedDragonBalls.size === 7) {
+            s.wishActive = true;
+            s.wishTimer = 0;
+            sound.playWish();
+          }
         } else if (dec.type === "senzu") {
           s.collectedSenzu++;
           s.pickupFlash = 0.4;
           s.pickupText = "Senzu Bean! Power restored!";
           s.pickupTextTimer = 90;
           s.powerLevel = Math.min(9001, s.powerLevel + 500);
+          sound.playCollectSenzu();
         } else if (dec.type === "ki_orb") {
           s.collectedKiOrbs++;
           s.pickupFlash = 0.15;
           s.pickupText = "";
           s.powerLevel = Math.min(9001, s.powerLevel + 50);
+          sound.playCollectOrb();
         }
       }
     }
 
-    // Power level — scales with progress + collectible bonus
+    // Power level
     const progress = s.scrollX / WORLD_WIDTH;
     const basePower = Math.floor(progress * 8000);
     const orbBonus = s.collectedKiOrbs * 50;
@@ -202,7 +340,17 @@ export function useGameLoop(
     const dbBonus = s.collectedDragonBalls.size * 150;
     s.powerLevel = Math.min(9001, basePower + orbBonus + senzuBonus + dbBonus);
 
-    // Biome transition detection — trigger power-up flash
+    // Super Saiyan transformation
+    if (s.powerLevel >= 9001 && !s.transformTriggered) {
+      s.transformTriggered = true;
+      s.isSuperSaiyan = true;
+      s.transformTimer = 120; // 2 second transformation animation
+      s.transformFlash = 1.0;
+      s.screenShake = 10;
+      sound.playTransform();
+    }
+
+    // Biome transition
     const currentBiomeIndex = biomes.findIndex((b, i) => {
       const next = biomes[i + 1];
       return next
@@ -214,22 +362,29 @@ export function useGameLoop(
       s.lastBiomeIndex = currentBiomeIndex;
     }
 
-    // Decay flashes
-    if (s.powerUpFlash > 0) {
-      s.powerUpFlash = Math.max(0, s.powerUpFlash - 0.03);
-    }
-    if (s.pickupFlash > 0) {
-      s.pickupFlash = Math.max(0, s.pickupFlash - 0.02);
-    }
-    if (s.pickupTextTimer > 0) {
-      s.pickupTextTimer--;
-    }
+    // Decay flashes & timers
+    if (s.powerUpFlash > 0) s.powerUpFlash = Math.max(0, s.powerUpFlash - 0.03);
+    if (s.pickupFlash > 0) s.pickupFlash = Math.max(0, s.pickupFlash - 0.02);
+    if (s.pickupTextTimer > 0) s.pickupTextTimer--;
+    if (s.teleportFlash > 0) s.teleportFlash = Math.max(0, s.teleportFlash - 0.05);
+    if (s.transformTimer > 0) s.transformTimer--;
+    if (s.transformFlash > 0) s.transformFlash = Math.max(0, s.transformFlash - 0.015);
+    if (s.screenShake > 0) s.screenShake = Math.max(0, s.screenShake - 0.3);
+
+    // Update dust particles
+    s.dustParticles = s.dustParticles.filter((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1; // particle gravity
+      p.life--;
+      return p.life > 0;
+    });
 
     // End detection
     if (s.scrollX >= WORLD_WIDTH) {
       s.finished = true;
     }
-  }, [keysRef, biomes]);
+  }, [keysRef, biomes, canvasRef]);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -240,12 +395,27 @@ export function useGameLoop(
     const s = stateRef.current;
     const w = canvas.width;
     const h = canvas.height;
+
+    // Wish screen overlay
+    if (s.wishActive) {
+      renderer.drawWishScreen(ctx, w, h, s.wishTimer);
+      return;
+    }
+
     const isMoving = Math.abs(s.velocity) > 0.1;
     const frames = isMoving ? WALK_RIGHT_FRAMES : IDLE_FRAMES;
 
-    ctx.clearRect(0, 0, w, h);
+    // Screen shake offset
+    ctx.save();
+    if (s.screenShake > 0) {
+      const shakeX = (Math.random() - 0.5) * s.screenShake * 2;
+      const shakeY = (Math.random() - 0.5) * s.screenShake * 2;
+      ctx.translate(shakeX, shakeY);
+    }
 
-    // Draw layers back to front
+    ctx.clearRect(0, 0, w + 20, h + 20); // slightly larger to cover shake
+
+    // Draw layers
     renderer.drawSkyLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "sky", s.collectedSet);
     renderer.drawMountainLayer(ctx, w, h, s.scrollX, biomes);
@@ -272,7 +442,23 @@ export function useGameLoop(
       s.facingLeft,
       s.isSprinting,
       crouchSquish,
+      s.isSuperSaiyan,
+      s.isFlying,
+      s.transformTimer,
     );
+
+    // Kamehameha beam
+    if (s.blastActive) {
+      renderer.drawKamehameha(
+        ctx, w, h, playerX, playerY, playerScale, s.facingLeft,
+        s.blastTimer, BLAST_DURATION, s.isSuperSaiyan,
+      );
+    }
+
+    // Dust particles
+    if (s.dustParticles.length > 0) {
+      renderer.drawDustParticles(ctx, s.dustParticles);
+    }
 
     renderer.drawForegroundLayer(ctx, w, h, s.scrollX);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "foreground", s.collectedSet);
@@ -280,19 +466,33 @@ export function useGameLoop(
     // HUD
     renderer.drawScouter(ctx, w, s.powerLevel, s.collectedDragonBalls.size);
 
+    // Controls hint
+    renderer.drawControlsHint(ctx, w, h);
+
     // Pickup text
     if (s.pickupTextTimer > 0 && s.pickupText) {
       renderer.drawPickupText(ctx, w, h, s.pickupText, s.pickupTextTimer);
     }
 
-    // Power-up flash overlay
+    // Teleport flash
+    if (s.teleportFlash > 0) {
+      renderer.drawTeleportFlash(ctx, w, h, s.teleportFlash);
+    }
+
+    // Transform flash
+    if (s.transformFlash > 0) {
+      renderer.drawTransformFlash(ctx, w, h, s.transformFlash);
+    }
+
+    // Power-up flash
     if (s.powerUpFlash > 0) {
       renderer.drawPowerUpFlash(ctx, w, h, s.powerUpFlash);
     }
-    // Pickup flash (golden)
     if (s.pickupFlash > 0) {
       renderer.drawPickupFlash(ctx, w, h, s.pickupFlash);
     }
+
+    ctx.restore(); // end screen shake
   }, [canvasRef, biomes]);
 
   useEffect(() => {

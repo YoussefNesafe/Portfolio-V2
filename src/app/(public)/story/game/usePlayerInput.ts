@@ -8,10 +8,15 @@ interface InputState {
   jump: boolean;
   sprint: boolean;
   down: boolean;
+  blast: boolean;
+  teleport: boolean;
 }
 
 export function usePlayerInput() {
-  const keys = useRef<InputState>({ left: false, right: false, jump: false, sprint: false, down: false });
+  const keys = useRef<InputState>({
+    left: false, right: false, jump: false, sprint: false,
+    down: false, blast: false, teleport: false,
+  });
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "ArrowLeft") keys.current.left = true;
@@ -19,6 +24,8 @@ export function usePlayerInput() {
     if (e.key === "ArrowDown") keys.current.down = true;
     if (e.key === " ") { keys.current.jump = true; e.preventDefault(); }
     if (e.key === "Shift") keys.current.sprint = true;
+    if (e.key === "x" || e.key === "X") keys.current.blast = true;
+    if (e.key === "c" || e.key === "C") keys.current.teleport = true;
   }, []);
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
@@ -27,6 +34,8 @@ export function usePlayerInput() {
     if (e.key === "ArrowDown") keys.current.down = false;
     if (e.key === " ") keys.current.jump = false;
     if (e.key === "Shift") keys.current.sprint = false;
+    if (e.key === "x" || e.key === "X") keys.current.blast = false;
+    if (e.key === "c" || e.key === "C") keys.current.teleport = false;
   }, []);
 
   useEffect(() => {
