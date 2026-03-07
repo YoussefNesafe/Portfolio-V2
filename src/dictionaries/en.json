@@ -419,15 +419,14 @@
         "groundColor": "#3d2817",
         "mountainColor": "#2a1f14",
         "texts": [
-          { "text": "THE ORIGIN SAGA", "x": 0.02, "size": "large" },
+          { "text": "THE ORIGIN SAGA", "x": 0.01, "size": "large" },
           { "text": "Every warrior has a beginning...", "x": 0.04, "glow": true },
           { "text": "Mine started with a blinking cursor", "x": 0.07 },
-          { "text": "on a dark screen.", "x": 0.09 },
-          { "text": "Late nights. Endless documentation.", "x": 0.12 },
-          { "text": "Stack Overflow rabbit holes.", "x": 0.14 },
-          { "text": "Each bug fixed \u2014 a small victory.", "x": 0.17, "glow": true },
-          { "text": "Each project \u2014 a stepping stone.", "x": 0.19 },
-          { "text": "The passion became a profession.", "x": 0.22, "glow": true }
+          { "text": "on a dark screen.", "x": 0.10 },
+          { "text": "Late nights. Endless documentation.", "x": 0.13 },
+          { "text": "Stack Overflow rabbit holes.", "x": 0.16 },
+          { "text": "Each bug fixed \u2014 a small victory.", "x": 0.19, "glow": true },
+          { "text": "Each project \u2014 a stepping stone.", "x": 0.22 }
         ]
       },
       {
@@ -438,14 +437,13 @@
         "groundColor": "#1a2a3a",
         "mountainColor": "#0f1f2f",
         "texts": [
-          { "text": "THE ARSENAL SAGA", "x": 0.27, "size": "large" },
+          { "text": "THE ARSENAL SAGA", "x": 0.26, "size": "large" },
           { "text": "A warrior is only as sharp as their training.", "x": 0.29, "glow": true },
           { "text": "React. Next.js. TypeScript.", "x": 0.32 },
-          { "text": "The frontend trinity.", "x": 0.34 },
-          { "text": "Node.js. PostgreSQL. Prisma.", "x": 0.37 },
-          { "text": "The backend foundation.", "x": 0.39 },
-          { "text": "Tailwind. Framer Motion.", "x": 0.42 },
-          { "text": "The finishing techniques.", "x": 0.44 },
+          { "text": "The frontend trinity.", "x": 0.35 },
+          { "text": "Node.js. PostgreSQL. Prisma.", "x": 0.38 },
+          { "text": "The backend foundation.", "x": 0.41 },
+          { "text": "Tailwind. Framer Motion.", "x": 0.44 },
           { "text": "Skills are not just tools \u2014 they're power.", "x": 0.47, "glow": true }
         ]
       },
@@ -457,14 +455,14 @@
         "groundColor": "#1a3020",
         "mountainColor": "#0f2015",
         "texts": [
-          { "text": "THE TOURNAMENT SAGA", "x": 0.52, "size": "large" },
+          { "text": "THE TOURNAMENT SAGA", "x": 0.51, "size": "large" },
           { "text": "Ideas are nothing without execution.", "x": 0.54, "glow": true },
           { "text": "Every project \u2014 a battle won.", "x": 0.57 },
-          { "text": "Responsive portfolios.", "x": 0.59 },
-          { "text": "Complex admin dashboards.", "x": 0.61 },
-          { "text": "Each one pushed the limits", "x": 0.64 },
-          { "text": "of what I thought possible.", "x": 0.66 },
-          { "text": "The best code tells its own story.", "x": 0.69, "glow": true }
+          { "text": "Responsive portfolios.", "x": 0.60 },
+          { "text": "Complex admin dashboards.", "x": 0.63 },
+          { "text": "Each one pushed the limits", "x": 0.66 },
+          { "text": "of what I thought possible.", "x": 0.69 },
+          { "text": "The best code tells its own story.", "x": 0.72, "glow": true }
         ]
       },
       {
@@ -475,15 +473,14 @@
         "groundColor": "#12121a",
         "mountainColor": "#0d0d15",
         "texts": [
-          { "text": "THE FINAL SAGA", "x": 0.77, "size": "large" },
+          { "text": "THE FINAL SAGA", "x": 0.76, "size": "large" },
           { "text": "The strongest warriors never stop training.", "x": 0.79, "glow": true },
           { "text": "New frameworks emerge.", "x": 0.82 },
-          { "text": "AI reshapes the battlefield.", "x": 0.84 },
-          { "text": "And I adapt.", "x": 0.86, "glow": true },
-          { "text": "Build software that matters.", "x": 0.89 },
-          { "text": "Create experiences that resonate.", "x": 0.91 },
-          { "text": "Push the craft forward...", "x": 0.94 },
-          { "text": "one commit at a time.", "x": 0.96, "glow": true }
+          { "text": "AI reshapes the battlefield.", "x": 0.85 },
+          { "text": "And I adapt.", "x": 0.88, "glow": true },
+          { "text": "Build software that matters.", "x": 0.91 },
+          { "text": "Create experiences that resonate.", "x": 0.94 },
+          { "text": "one commit at a time.", "x": 0.97, "glow": true }
         ]
       }
     ]

@@ -29,7 +29,7 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
     return () => window.removeEventListener("resize", check);
   }, [router]);
 
-  // Canvas resize handler
+  // Canvas resize handler — depends on isDesktop so it runs after canvas mounts
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -40,7 +40,7 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
-  }, []);
+  }, [isDesktop]);
 
   if (!isDesktop) return null;
 

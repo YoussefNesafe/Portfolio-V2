@@ -125,11 +125,11 @@ export function useGameLoop(
     // Draw layers back to front
     renderer.drawSkyLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "sky");
-    renderer.drawFloatingText(ctx, w, h, s.scrollX, biomes, WORLD_WIDTH);
     renderer.drawMountainLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "mountains");
     renderer.drawMidgroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "midground");
+    renderer.drawFloatingText(ctx, w, h, s.scrollX, biomes, WORLD_WIDTH);
     renderer.drawGroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "ground");
     const playerScale = 3;

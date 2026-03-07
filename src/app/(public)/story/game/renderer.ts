@@ -362,50 +362,82 @@ export function drawFloatingText(
   biomes: IStoryBiome[],
   worldWidth: number,
 ): void {
-  const skyOffset = scrollX * PARALLAX_SPEEDS.sky;
+  const progress = scrollX / worldWidth;
 
+  // Collect all texts with their trigger positions
+  const allTexts: { text: string; x: number; glow?: boolean; size?: string }[] = [];
   for (const biome of biomes) {
     for (const item of biome.texts) {
-      const worldX = item.x * worldWidth;
-      const screenX = worldX - skyOffset;
-
-      // Visibility check with margin
-      if (screenX < -200 || screenX > w + 200) continue;
-
-      // Fade based on distance from screen center
-      const distFromCenter = Math.abs(screenX - w / 2);
-      let alpha: number;
-      if (distFromCenter <= 300) {
-        alpha = 1;
-      } else if (distFromCenter <= 600) {
-        alpha = 1 - (distFromCenter - 300) / 300;
-      } else {
-        alpha = 0;
-      }
-      if (alpha <= 0) continue;
-
-      const isLarge = item.size === "large";
-      const fontSize = isLarge ? 32 : 16;
-      const fontWeight = isLarge ? "bold " : "";
-
-      ctx.save();
-
-      if (item.glow) {
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "#FFD700";
-      }
-
-      ctx.font = `${fontWeight}${fontSize}px monospace`;
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      const textY = isLarge ? h * 0.35 : h * 0.45;
-      ctx.fillText(item.text, screenX, textY);
-
-      ctx.restore();
+      allTexts.push(item);
     }
   }
+
+  // Find the current text based on progress — show the most recent one we've passed
+  let currentIdx = -1;
+  for (let i = allTexts.length - 1; i >= 0; i--) {
+    if (progress >= allTexts[i].x) {
+      currentIdx = i;
+      break;
+    }
+  }
+
+  if (currentIdx < 0) return;
+
+  const current = allTexts[currentIdx];
+  const nextX = currentIdx < allTexts.length - 1 ? allTexts[currentIdx + 1].x : current.x + 0.05;
+
+  // Alpha: fade in at start, fade out near next text
+  const segmentLen = nextX - current.x;
+  const segmentProgress = (progress - current.x) / segmentLen;
+
+  let alpha: number;
+  if (segmentProgress < 0.15) {
+    alpha = segmentProgress / 0.15; // fade in over first 15%
+  } else if (segmentProgress > 0.85) {
+    alpha = (1 - segmentProgress) / 0.15; // fade out over last 15%
+  } else {
+    alpha = 1;
+  }
+  alpha = Math.max(0, Math.min(1, alpha));
+  if (alpha <= 0) return;
+
+  const isLarge = current.size === "large";
+  const fontSize = isLarge
+    ? Math.max(Math.round(w * 0.028), 26)
+    : Math.max(Math.round(w * 0.013), 15);
+  const fontWeight = isLarge ? "bold " : "";
+
+  ctx.save();
+
+  // Dark shadow behind all text for readability
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
+
+  if (current.glow) {
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = "#FFD700";
+  }
+
+  ctx.font = `${fontWeight}${fontSize}px monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  const textY = isLarge ? h * 0.22 : h * 0.32;
+  const centerX = w / 2;
+
+  // Draw dark outline for contrast
+  if (!current.glow) {
+    ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.8})`;
+    ctx.fillText(current.text, centerX + 2, textY + 2);
+  }
+
+  // Draw main text
+  ctx.fillStyle = current.glow
+    ? `rgba(255, 215, 0, ${alpha})`
+    : `rgba(255, 255, 255, ${alpha})`;
+  ctx.fillText(current.text, centerX, textY);
+
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -493,17 +525,16 @@ export function drawScouter(
   w: number,
   powerLevel: number,
 ): void {
-  const scale = Math.max(w / 1920, 0.5);
-  const boxW = Math.round(100 * scale);
-  const boxH = Math.round(40 * scale);
-  const boxX = w - boxW - Math.round(16 * scale);
-  const boxY = Math.round(16 * scale);
-  const radius = Math.round(4 * scale);
+  const boxW = Math.round(w * 0.12);
+  const boxH = Math.round(w * 0.06);
+  const boxX = w - boxW - Math.round(w * 0.015);
+  const boxY = Math.round(w * 0.015);
+  const radius = 6;
 
-  // Background
-  ctx.fillStyle = "#0a2a0a";
+  // Background with stronger opacity
+  ctx.fillStyle = "rgba(10, 42, 10, 0.9)";
   ctx.strokeStyle = "#22c55e";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 2.5;
 
   ctx.beginPath();
   ctx.moveTo(boxX + radius, boxY);
@@ -520,14 +551,14 @@ export function drawScouter(
   ctx.stroke();
 
   // "PWR" label
-  const smallFont = Math.round(9 * scale);
-  const largeFont = Math.round(14 * scale);
-  const pad = Math.round(8 * scale);
-  ctx.font = `${smallFont}px monospace`;
-  ctx.fillStyle = "#22c55e";
+  const labelSize = Math.max(Math.round(w * 0.008), 10);
+  const numSize = Math.max(Math.round(w * 0.014), 16);
+  const pad = Math.round(boxW * 0.1);
+  ctx.font = `${labelSize}px monospace`;
+  ctx.fillStyle = "#4ade80";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  ctx.fillText("PWR", boxX + pad, boxY + pad);
+  ctx.fillText("POWER LEVEL", boxX + pad, boxY + pad);
 
   // Power level number
   const isOver9000 = powerLevel >= 9001;
@@ -537,7 +568,7 @@ export function drawScouter(
   } else {
     ctx.fillStyle = "#22c55e";
   }
-  ctx.font = `bold ${largeFont}px monospace`;
+  ctx.font = `bold ${numSize}px monospace`;
   ctx.textAlign = "left";
   ctx.textBaseline = "bottom";
   ctx.fillText(String(powerLevel), boxX + pad, boxY + boxH - pad);
