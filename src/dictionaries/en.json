@@ -404,276 +404,88 @@
   },
   "story": {
     "title": "My Story",
-    "subtitle": "A developer's journey through code and creativity",
-    "chapters": [
+    "startPrompt": "Press \u2192 to begin your training",
+    "endMessage": [
+      "Power level: MAXIMUM",
+      "Thanks for walking my path.",
+      "Now, let's build something together."
+    ],
+    "biomes": [
       {
         "id": "origin",
-        "title": "The Origin",
-        "subtitle": "Where it all began",
-        "color": "cyan",
-        "panels": [
-          {
-            "layout": "full",
-            "background": "grid",
-            "narration": [
-              "Every developer has an origin story.",
-              "Mine started with a blinking cursor on a dark screen — and the realization that I could build anything."
-            ],
-            "highlight": "origin story",
-            "visual": "code-editor"
-          },
-          {
-            "layout": "split",
-            "background": "dots",
-            "narration": [
-              "Late nights fueled by curiosity. Endless documentation. Stack Overflow rabbit holes.",
-              "Each bug fixed was a small victory. Each project, a stepping stone."
-            ],
-            "visual": "browser-sketch",
-            "choice": {
-              "question": "What drew you to coding?",
-              "options": [
-                {
-                  "label": "The thrill of building something from nothing",
-                  "personality": "maverick",
-                  "followUp": [
-                    "That restless energy — the need to create, to ship, to see ideas come alive.",
-                    "It wasn't about perfection. It was about momentum."
-                  ]
-                },
-                {
-                  "label": "The puzzle of making things work",
-                  "personality": "architect",
-                  "followUp": [
-                    "The elegance of a well-designed system. The satisfaction of pieces clicking into place.",
-                    "Every problem was a blueprint waiting to be drawn."
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "layout": "full",
-            "background": "gradient",
-            "narration": [
-              "From simple HTML pages to full-stack applications — the transformation was gradual but relentless.",
-              "The passion became a profession."
-            ],
-            "highlight": "transformation",
-            "visual": "code-editor"
-          }
+        "title": "The Origin Saga",
+        "startX": 0,
+        "skyGradient": ["#1a0a2e", "#FF6B00"],
+        "groundColor": "#3d2817",
+        "mountainColor": "#2a1f14",
+        "texts": [
+          { "text": "THE ORIGIN SAGA", "x": 0.02, "size": "large" },
+          { "text": "Every warrior has a beginning...", "x": 0.04, "glow": true },
+          { "text": "Mine started with a blinking cursor", "x": 0.07 },
+          { "text": "on a dark screen.", "x": 0.09 },
+          { "text": "Late nights. Endless documentation.", "x": 0.12 },
+          { "text": "Stack Overflow rabbit holes.", "x": 0.14 },
+          { "text": "Each bug fixed \u2014 a small victory.", "x": 0.17, "glow": true },
+          { "text": "Each project \u2014 a stepping stone.", "x": 0.19 },
+          { "text": "The passion became a profession.", "x": 0.22, "glow": true }
         ]
       },
       {
-        "id": "skills",
-        "title": "The Arsenal",
-        "subtitle": "Tools of the trade",
-        "color": "purple",
-        "panels": [
-          {
-            "layout": "full",
-            "background": "dots",
-            "narration": [
-              "A developer is only as sharp as their toolkit.",
-              "Over the years, I've forged mine through practice, projects, and relentless iteration."
-            ],
-            "highlight": "toolkit",
-            "visual": "tech-orbit"
-          },
-          {
-            "layout": "triple",
-            "background": "none",
-            "narration": [
-              "React, Next.js, TypeScript — the frontend trinity that powers modern web experiences.",
-              "Node.js, PostgreSQL, Prisma — the backend foundation that keeps everything running.",
-              "Tailwind, Framer Motion, responsive design — the finishing touches that make it shine."
-            ],
-            "visual": "skill-cards",
-            "choice": {
-              "question": "How do you pick your tools?",
-              "options": [
-                {
-                  "label": "Whatever solves the problem fastest",
-                  "personality": "explorer",
-                  "followUp": [
-                    "New framework? Let's try it. Unfamiliar territory? Even better.",
-                    "The best tool is the one that gets you to the answer."
-                  ]
-                },
-                {
-                  "label": "Master a few, deeply",
-                  "personality": "craftsman",
-                  "followUp": [
-                    "Depth over breadth. Knowing every edge case, every optimization.",
-                    "True mastery means the tool disappears — only the craft remains."
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "layout": "split",
-            "background": "gradient",
-            "narration": [
-              "But skills are not just tools — they're a mindset.",
-              "Clean architecture. Test-driven development. Performance optimization. These principles guide every line of code."
-            ],
-            "highlight": "mindset",
-            "visual": "dashboard-sketch"
-          }
+        "id": "arsenal",
+        "title": "The Arsenal Saga",
+        "startX": 0.25,
+        "skyGradient": ["#0a1628", "#00BFFF"],
+        "groundColor": "#1a2a3a",
+        "mountainColor": "#0f1f2f",
+        "texts": [
+          { "text": "THE ARSENAL SAGA", "x": 0.27, "size": "large" },
+          { "text": "A warrior is only as sharp as their training.", "x": 0.29, "glow": true },
+          { "text": "React. Next.js. TypeScript.", "x": 0.32 },
+          { "text": "The frontend trinity.", "x": 0.34 },
+          { "text": "Node.js. PostgreSQL. Prisma.", "x": 0.37 },
+          { "text": "The backend foundation.", "x": 0.39 },
+          { "text": "Tailwind. Framer Motion.", "x": 0.42 },
+          { "text": "The finishing techniques.", "x": 0.44 },
+          { "text": "Skills are not just tools \u2014 they're power.", "x": 0.47, "glow": true }
         ]
       },
       {
-        "id": "projects",
-        "title": "The Works",
-        "subtitle": "Building what matters",
-        "color": "emerald",
-        "panels": [
-          {
-            "layout": "full",
-            "background": "grid",
-            "narration": [
-              "Ideas are worth nothing without execution.",
-              "Every project in my portfolio represents a problem solved, a challenge conquered."
-            ],
-            "highlight": "execution",
-            "visual": "project-montage"
-          },
-          {
-            "layout": "split",
-            "background": "dots",
-            "narration": [
-              "From responsive portfolios to complex admin dashboards — each project pushed the boundaries of what I thought possible.",
-              "The best code tells a story of its own."
-            ],
-            "visual": "browser-sketch",
-            "choice": {
-              "question": "What makes a project 'done'?",
-              "options": [
-                {
-                  "label": "When it ships and users love it",
-                  "personality": "maverick",
-                  "followUp": [
-                    "Done is better than perfect. Ship it, learn from it, iterate.",
-                    "The real test isn't the code review — it's the user's reaction."
-                  ]
-                },
-                {
-                  "label": "When every detail feels right",
-                  "personality": "craftsman",
-                  "followUp": [
-                    "That last 10% is what separates good from great.",
-                    "Every pixel, every transition, every interaction — all intentional."
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "layout": "full",
-            "background": "none",
-            "narration": [
-              "This very portfolio is a testament to that philosophy.",
-              "Every interaction, every transition, every pixel — intentionally crafted."
-            ],
-            "highlight": "intentionally crafted",
-            "visual": "dashboard-sketch"
-          }
+        "id": "works",
+        "title": "The Tournament Saga",
+        "startX": 0.50,
+        "skyGradient": ["#0a2010", "#10B981"],
+        "groundColor": "#1a3020",
+        "mountainColor": "#0f2015",
+        "texts": [
+          { "text": "THE TOURNAMENT SAGA", "x": 0.52, "size": "large" },
+          { "text": "Ideas are nothing without execution.", "x": 0.54, "glow": true },
+          { "text": "Every project \u2014 a battle won.", "x": 0.57 },
+          { "text": "Responsive portfolios.", "x": 0.59 },
+          { "text": "Complex admin dashboards.", "x": 0.61 },
+          { "text": "Each one pushed the limits", "x": 0.64 },
+          { "text": "of what I thought possible.", "x": 0.66 },
+          { "text": "The best code tells its own story.", "x": 0.69, "glow": true }
         ]
       },
       {
         "id": "vision",
-        "title": "The Vision",
-        "subtitle": "What comes next",
-        "color": "cyan",
-        "panels": [
-          {
-            "layout": "full",
-            "background": "gradient",
-            "narration": [
-              "The best developers never stop learning.",
-              "The landscape shifts. New frameworks emerge. AI reshapes our workflow. And I adapt."
-            ],
-            "highlight": "never stop learning",
-            "visual": "horizon"
-          },
-          {
-            "layout": "split",
-            "background": "dots",
-            "narration": [
-              "My vision? Build software that matters. Create experiences that resonate.",
-              "Push the craft forward, one commit at a time."
-            ],
-            "highlight": "one commit at a time",
-            "visual": "tech-orbit",
-            "choice": {
-              "question": "What excites you about the future?",
-              "options": [
-                {
-                  "label": "New frontiers — AI, spatial computing, the unknown",
-                  "personality": "explorer",
-                  "followUp": [
-                    "The next decade will redefine what developers can build.",
-                    "And I want to be at the frontier, building what doesn't exist yet."
-                  ]
-                },
-                {
-                  "label": "Building systems that outlast trends",
-                  "personality": "architect",
-                  "followUp": [
-                    "Trends come and go. Good architecture endures.",
-                    "The future belongs to those who build foundations, not facades."
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "layout": "full",
-            "background": "none",
-            "narration": [
-              "Thanks for reading my story.",
-              "Now, let's build something together."
-            ],
-            "visual": "cta"
-          }
+        "title": "The Final Saga",
+        "startX": 0.75,
+        "skyGradient": ["#0A0A0F", "#A855F7"],
+        "groundColor": "#12121a",
+        "mountainColor": "#0d0d15",
+        "texts": [
+          { "text": "THE FINAL SAGA", "x": 0.77, "size": "large" },
+          { "text": "The strongest warriors never stop training.", "x": 0.79, "glow": true },
+          { "text": "New frameworks emerge.", "x": 0.82 },
+          { "text": "AI reshapes the battlefield.", "x": 0.84 },
+          { "text": "And I adapt.", "x": 0.86, "glow": true },
+          { "text": "Build software that matters.", "x": 0.89 },
+          { "text": "Create experiences that resonate.", "x": 0.91 },
+          { "text": "Push the craft forward...", "x": 0.94 },
+          { "text": "one commit at a time.", "x": 0.96, "glow": true }
         ]
       }
-    ],
-    "nav": {
-      "back": "Back",
-      "next": "Next",
-      "finish": "Back to Portfolio",
-      "skipNarration": "Skip"
-    },
-    "personalities": [
-      {
-        "id": "architect",
-        "title": "The Architect",
-        "color": "#06B6D4",
-        "description": "You see the big picture. Systems thinking, clean structure, and elegant solutions define your approach. You don't just write code — you design foundations that others build upon."
-      },
-      {
-        "id": "explorer",
-        "title": "The Explorer",
-        "color": "#A855F7",
-        "description": "Curiosity is your compass. You're always learning, always experimenting, always pushing into new territory. For you, the journey of discovery is the destination."
-      },
-      {
-        "id": "craftsman",
-        "title": "The Craftsman",
-        "color": "#10B981",
-        "description": "Details matter. You obsess over quality, polish every edge, and won't ship until it feels right. Your code isn't just functional — it's a work of art."
-      },
-      {
-        "id": "maverick",
-        "title": "The Maverick",
-        "color": "gradient",
-        "description": "You move fast and build boldly. While others deliberate, you ship. Your bias for action and fearless experimentation turn ideas into reality at breakneck speed."
-      }
-    ],
-    "result": {
-      "title": "Your Developer DNA"
-    }
+    ]
   }
 }
