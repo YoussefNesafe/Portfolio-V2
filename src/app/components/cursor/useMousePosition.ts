@@ -18,20 +18,9 @@ export function getSectionColor(sectionId: string | null): string {
   return SECTION_COLORS[sectionId] ?? DEFAULT_COLOR;
 }
 
-function findSectionId(x: number, y: number): string | null {
-  const elements = document.elementsFromPoint(x, y);
-  for (const el of elements) {
-    if (el.tagName === "SECTION" && el.id) {
-      return el.id;
-    }
-  }
-  return null;
-}
-
 interface MouseState {
   x: number;
   y: number;
-  color: string;
   isVisible: boolean;
 }
 
@@ -40,7 +29,6 @@ export function useMousePosition(): MouseState {
   const stateRef = useRef<MouseState>({
     x: 0,
     y: 0,
-    color: DEFAULT_COLOR,
     isVisible: false,
   });
   const [state, setState] = useState<MouseState>(stateRef.current);
@@ -67,9 +55,6 @@ export function useMousePosition(): MouseState {
       stateRef.current.x = e.clientX;
       stateRef.current.y = e.clientY;
       stateRef.current.isVisible = true;
-
-      const sectionId = findSectionId(e.clientX, e.clientY);
-      stateRef.current.color = getSectionColor(sectionId);
 
       if (!rafRef.current) {
         rafRef.current = requestAnimationFrame(updateState);
@@ -98,7 +83,7 @@ export function useMousePosition(): MouseState {
   }, [isDesktop, updateState]);
 
   if (!isDesktop) {
-    return { x: 0, y: 0, color: DEFAULT_COLOR, isVisible: false };
+    return { x: 0, y: 0, isVisible: false };
   }
 
   return state;
