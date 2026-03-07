@@ -479,38 +479,78 @@ export function drawPlayer(
   y: number,
   scale: number,
   facingLeft: boolean,
+  isSprinting: boolean = false,
+  crouchSquish: number = 1,
 ): void {
   const frame = frames[frameIndex % frames.length];
-
-  // Draw aura particles around the player
   const spriteW = frame[0].length * scale;
   const spriteH = frame.length * scale;
   const centerX = x + spriteW / 2;
   const centerY = y + spriteH / 2;
 
-  const auraColors = ["#06B6D4", "#A855F7"];
-  const auraCount = 7;
+  // Sprint power glow — large glowing aura around character
+  if (isSprinting) {
+    const now = Date.now();
+    const pulse = 0.4 + Math.sin(now / 100) * 0.15;
+
+    // Outer glow
+    const grad = ctx.createRadialGradient(centerX, centerY, spriteW * 0.3, centerX, centerY, spriteW * 1.2);
+    grad.addColorStop(0, `rgba(255, 215, 0, ${pulse * 0.5})`);
+    grad.addColorStop(0.4, `rgba(255, 107, 0, ${pulse * 0.3})`);
+    grad.addColorStop(1, "rgba(255, 107, 0, 0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, spriteW * 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner ki flames — upward streaks
+    for (let i = 0; i < 12; i++) {
+      const flameX = centerX + (Math.sin(now / 80 + i * 1.7) * spriteW * 0.4);
+      const flameY = centerY - (((now / 40 + i * 50) % (spriteH * 1.2)));
+      const flameAlpha = 0.5 - (((now / 40 + i * 50) % (spriteH * 1.2)) / (spriteH * 1.2)) * 0.5;
+      if (flameAlpha <= 0) continue;
+      ctx.fillStyle = i % 2 === 0
+        ? `rgba(255, 215, 0, ${flameAlpha})`
+        : `rgba(255, 107, 0, ${flameAlpha})`;
+      ctx.beginPath();
+      ctx.arc(flameX, flameY, 2 + Math.sin(now / 60 + i) * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Normal aura particles
+  const auraColors = isSprinting ? ["#FFD700", "#FF6B00"] : ["#06B6D4", "#A855F7"];
+  const auraCount = isSprinting ? 14 : 7;
+  const auraScale = isSprinting ? 1.5 : 1;
 
   for (let i = 0; i < auraCount; i++) {
     const angle =
       (i / auraCount) * Math.PI * 2 +
       Math.sin(frameIndex * 0.3 + i) * 0.4;
-    const dist = spriteW * 0.5 + Math.sin(frameIndex * 0.5 + i * 1.3) * 6;
+    const dist = (spriteW * 0.5 + Math.sin(frameIndex * 0.5 + i * 1.3) * 6) * auraScale;
     const px = centerX + Math.cos(angle) * dist;
     const py = centerY + Math.sin(angle) * dist;
-    const alpha = 0.3 + Math.sin(frameIndex * 0.4 + i * 0.7) * 0.1;
-    const size = 3 + Math.sin(frameIndex * 0.6 + i * 1.1) * 1.5;
+    const alpha = (0.3 + Math.sin(frameIndex * 0.4 + i * 0.7) * 0.1) * (isSprinting ? 1.5 : 1);
+    const size = (3 + Math.sin(frameIndex * 0.6 + i * 1.1) * 1.5) * auraScale;
 
     const color = auraColors[i % 2];
     const [r, g, b] = parseHex(color);
 
-    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, alpha)})`;
     ctx.beginPath();
     ctx.arc(px, py, size, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Draw the sprite, flipping if facing left
+  // Draw the sprite with optional crouch squish
+  ctx.save();
+  if (crouchSquish < 1) {
+    const squishY = y + spriteH * (1 - crouchSquish);
+    ctx.translate(0, squishY - y);
+    ctx.scale(1, crouchSquish);
+    ctx.translate(0, y * (1 / crouchSquish - 1));
+  }
+
   if (facingLeft) {
     ctx.save();
     ctx.translate(x + spriteW, 0);
@@ -520,6 +560,8 @@ export function drawPlayer(
   } else {
     drawSprite(ctx, frame, x, y, scale);
   }
+
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -530,6 +572,7 @@ export function drawScouter(
   ctx: CanvasRenderingContext2D,
   w: number,
   powerLevel: number,
+  dragonBallCount: number = 0,
 ): void {
   const boxW = Math.round(w * 0.12);
   const boxH = Math.round(w * 0.06);
@@ -578,6 +621,15 @@ export function drawScouter(
   ctx.textAlign = "left";
   ctx.textBaseline = "bottom";
   ctx.fillText(String(powerLevel), boxX + pad, boxY + boxH - pad);
+
+  // Dragon Ball counter — right side of scouter
+  if (dragonBallCount > 0) {
+    ctx.font = `${labelSize}px monospace`;
+    ctx.fillStyle = "#FFD700";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(`★ ${dragonBallCount}/7`, boxX + boxW - pad, boxY + boxH - pad);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -591,12 +643,15 @@ export function drawDecorations(
   scrollX: number,
   decorations: Decoration[],
   targetLayer: keyof typeof PARALLAX_SPEEDS,
+  collectedSet: Set<number> = new Set(),
 ): void {
   const speed = PARALLAX_SPEEDS[targetLayer];
   const margin = 100;
 
-  for (const dec of decorations) {
+  for (let i = 0; i < decorations.length; i++) {
+    const dec = decorations[i];
     if (dec.layer !== targetLayer) continue;
+    if (collectedSet.has(i)) continue; // skip collected items
 
     const screenX = dec.x - scrollX * speed;
     if (screenX < -margin || screenX > w + margin) continue;
@@ -606,10 +661,27 @@ export function drawDecorations(
     switch (dec.type) {
       case "senzu":
         drawSprite(ctx, SENZU_SPRITE, screenX, screenY, 3);
+        // Glow effect around senzu
+        ctx.fillStyle = "rgba(34, 197, 94, 0.15)";
+        ctx.beginPath();
+        ctx.arc(screenX + 12, screenY + 12, 18, 0, Math.PI * 2);
+        ctx.fill();
         break;
 
       case "dragonball":
         drawSprite(ctx, DRAGON_BALL_SPRITE, screenX, screenY, 3);
+        // Pulsing glow around dragon ball
+        {
+          const pulse = 0.15 + Math.sin(Date.now() / 400) * 0.1;
+          ctx.fillStyle = `rgba(255, 140, 0, ${pulse})`;
+          ctx.beginPath();
+          ctx.arc(screenX + 18, screenY + 18, 24, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        break;
+
+      case "ki_orb":
+        drawKiOrb(ctx, screenX, screenY);
         break;
 
       case "nimbus":
@@ -841,7 +913,88 @@ function drawStar(
 }
 
 // ---------------------------------------------------------------------------
-// 11. Power-up flash
+// 11. Ki orb decoration
+// ---------------------------------------------------------------------------
+
+function drawKiOrb(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+): void {
+  const now = Date.now();
+  const pulse = 0.6 + Math.sin(now / 300) * 0.3;
+  const bobY = y + Math.sin(now / 500) * 3;
+
+  // Outer glow
+  const grad = ctx.createRadialGradient(x, bobY, 1, x, bobY, 12);
+  grad.addColorStop(0, `rgba(6, 182, 212, ${pulse * 0.6})`);
+  grad.addColorStop(0.5, `rgba(168, 85, 247, ${pulse * 0.3})`);
+  grad.addColorStop(1, "rgba(168, 85, 247, 0)");
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x, bobY, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.fillStyle = `rgba(255, 255, 255, ${pulse})`;
+  ctx.beginPath();
+  ctx.arc(x, bobY, 3, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// ---------------------------------------------------------------------------
+// 12. Pickup text notification
+// ---------------------------------------------------------------------------
+
+export function drawPickupText(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  text: string,
+  timer: number,
+): void {
+  if (!text || timer <= 0) return;
+
+  const alpha = Math.min(1, timer / 30); // fade out in last 30 frames
+  const fontSize = Math.max(Math.round(w * 0.012), 14);
+  const yOffset = h * 0.65 - (1 - Math.min(1, timer / 60)) * 20; // float upward
+
+  ctx.save();
+  ctx.font = `bold ${fontSize}px monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Shadow
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+
+  // Outline
+  ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.6})`;
+  ctx.fillText(text, w / 2 + 1, yOffset + 1);
+
+  // Main text (gold)
+  ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
+  ctx.fillText(text, w / 2, yOffset);
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------------------
+// 13. Pickup flash (golden)
+// ---------------------------------------------------------------------------
+
+export function drawPickupFlash(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  intensity: number,
+): void {
+  if (intensity <= 0) return;
+  ctx.fillStyle = `rgba(255, 215, 0, ${Math.min(0.4, intensity * 0.5)})`;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// ---------------------------------------------------------------------------
+// 14. Power-up flash (white)
 // ---------------------------------------------------------------------------
 
 export function drawPowerUpFlash(

@@ -6,21 +6,27 @@ interface InputState {
   left: boolean;
   right: boolean;
   jump: boolean;
+  sprint: boolean;
+  down: boolean;
 }
 
 export function usePlayerInput() {
-  const keys = useRef<InputState>({ left: false, right: false, jump: false });
+  const keys = useRef<InputState>({ left: false, right: false, jump: false, sprint: false, down: false });
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "ArrowLeft") keys.current.left = true;
     if (e.key === "ArrowRight") keys.current.right = true;
+    if (e.key === "ArrowDown") keys.current.down = true;
     if (e.key === " ") { keys.current.jump = true; e.preventDefault(); }
+    if (e.key === "Shift") keys.current.sprint = true;
   }, []);
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     if (e.key === "ArrowLeft") keys.current.left = false;
     if (e.key === "ArrowRight") keys.current.right = false;
+    if (e.key === "ArrowDown") keys.current.down = false;
     if (e.key === " ") keys.current.jump = false;
+    if (e.key === "Shift") keys.current.sprint = false;
   }, []);
 
   useEffect(() => {
