@@ -26,6 +26,42 @@ export interface Decoration {
   star?: number; // for dragonball: 1-7 star count
 }
 
+// ---------------------------------------------------------------------------
+// Enemies — patrol back and forth, Kamehameha destroys them
+// ---------------------------------------------------------------------------
+
+export interface EnemyDef {
+  x: number;       // world X center of patrol
+  range: number;   // patrol distance from center
+  speed: number;   // pixels per frame
+  type: "saibaman" | "frieza_soldier" | "cell_jr";
+}
+
+export const ENEMIES: EnemyDef[] = [
+  // Biome 1 — easy, slow
+  { x: 2200, range: 150, speed: 1.0, type: "saibaman" },
+  { x: 4000, range: 200, speed: 1.2, type: "saibaman" },
+  { x: 5800, range: 180, speed: 1.0, type: "saibaman" },
+
+  // Biome 2 — medium
+  { x: 8800, range: 200, speed: 1.5, type: "frieza_soldier" },
+  { x: 10800, range: 250, speed: 1.4, type: "frieza_soldier" },
+  { x: 12800, range: 180, speed: 1.6, type: "frieza_soldier" },
+  { x: 14000, range: 200, speed: 1.5, type: "saibaman" },
+
+  // Biome 3 — harder, faster
+  { x: 16500, range: 220, speed: 1.8, type: "cell_jr" },
+  { x: 18200, range: 250, speed: 1.7, type: "frieza_soldier" },
+  { x: 19500, range: 200, speed: 2.0, type: "cell_jr" },
+  { x: 21500, range: 180, speed: 1.8, type: "cell_jr" },
+
+  // Biome 4 — toughest
+  { x: 23500, range: 250, speed: 2.0, type: "cell_jr" },
+  { x: 25000, range: 200, speed: 2.2, type: "cell_jr" },
+  { x: 27000, range: 250, speed: 2.0, type: "frieza_soldier" },
+  { x: 28800, range: 200, speed: 2.2, type: "cell_jr" },
+];
+
 // Collectible Y heights:
 //   ground  = 0.68-0.72 (walk to collect)
 //   jump    = 0.58-0.64 (single jump)

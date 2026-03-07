@@ -111,6 +111,17 @@ export function playLanding() {
   playTone(80, 0.15, "triangle", 0.1, 40);
 }
 
+export function playEnemyDefeat() {
+  playTone(300, 0.08, "square", 0.08, 100);
+  setTimeout(() => playTone(150, 0.12, "square", 0.06, 60), 60);
+}
+
+export function playMilestone() {
+  playTone(523, 0.12, "sine", 0.1);
+  setTimeout(() => playTone(659, 0.12, "sine", 0.1), 80);
+  setTimeout(() => playTone(784, 0.2, "sine", 0.12), 160);
+}
+
 export function playWish() {
   const ctx = getCtx();
   if (!ctx) return;

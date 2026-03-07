@@ -14,6 +14,7 @@ import {
   GRAVITY,
   COLLECT_RADIUS,
   DECORATIONS,
+  ENEMIES,
 } from "./world-data";
 import { IDLE_FRAMES, WALK_RIGHT_FRAMES } from "./sprite-data";
 import * as renderer from "./renderer";
@@ -25,6 +26,13 @@ interface DustParticle {
   vx: number;
   vy: number;
   life: number;
+}
+
+interface EnemyState {
+  x: number;       // current world X
+  dir: number;     // 1 or -1
+  alive: boolean;
+  deathTimer: number; // countdown for death animation
 }
 
 interface GameState {
@@ -73,6 +81,13 @@ interface GameState {
   // Wish
   wishActive: boolean;
   wishTimer: number;
+  // Enemies
+  enemies: EnemyState[];
+  enemiesKilled: number;
+  // Milestones
+  milestoneShown: Set<number>;
+  milestoneText: string;
+  milestoneTimer: number;
 }
 
 const TELEPORT_DISTANCE = 200;
@@ -127,6 +142,11 @@ export function useGameLoop(
     prevJumpY: 0,
     wishActive: false,
     wishTimer: 0,
+    enemies: ENEMIES.map((e) => ({ x: e.x, dir: 1, alive: true, deathTimer: 0 })),
+    enemiesKilled: 0,
+    milestoneShown: new Set(),
+    milestoneText: "",
+    milestoneTimer: 0,
   });
 
   const prevJumpRef = useRef(false);
@@ -389,6 +409,81 @@ export function useGameLoop(
       return p.life > 0;
     });
 
+    // Footstep dust — spawn small particles when walking/sprinting on ground
+    if (s.isGrounded && isMoving && s.frameTick % (s.isSprinting ? 3 : 6) === 0) {
+      const groundY = canvasH * PLAYER_Y_OFFSET;
+      const playerScreenX = canvasW / 2;
+      const count = s.isSprinting ? 2 : 1;
+      for (let i = 0; i < count; i++) {
+        s.dustParticles.push({
+          x: playerScreenX + (Math.random() - 0.5) * 15,
+          y: groundY,
+          vx: -s.velocity * 0.3 + (Math.random() - 0.5) * 1.5,
+          vy: -Math.random() * 1.2 - 0.3,
+          life: 12 + Math.random() * 8,
+        });
+      }
+    }
+
+    // Enemy patrol + Kamehameha collision
+    for (let i = 0; i < s.enemies.length; i++) {
+      const es = s.enemies[i];
+      const def = ENEMIES[i];
+
+      // Death animation countdown
+      if (!es.alive) {
+        if (es.deathTimer > 0) es.deathTimer--;
+        continue;
+      }
+
+      // Patrol movement
+      es.x += def.speed * es.dir;
+      if (es.x > def.x + def.range) es.dir = -1;
+      if (es.x < def.x - def.range) es.dir = 1;
+
+      // Check Kamehameha collision
+      if (s.blastActive) {
+        const beamProgress = 1 - s.blastTimer / BLAST_DURATION;
+        const beamLen = beamProgress * canvasW * 0.8;
+        const beamStartWorldX = playerWorldX;
+        const beamDir = s.facingLeft ? -1 : 1;
+        const beamEndWorldX = beamStartWorldX + beamDir * beamLen;
+
+        const enemyMinX = Math.min(beamStartWorldX, beamEndWorldX);
+        const enemyMaxX = Math.max(beamStartWorldX, beamEndWorldX);
+
+        if (es.x >= enemyMinX - 30 && es.x <= enemyMaxX + 30) {
+          es.alive = false;
+          es.deathTimer = 30;
+          s.enemiesKilled++;
+          s.powerLevel = Math.min(9001, s.powerLevel + 100);
+          s.pickupText = `Enemy defeated! +100 power`;
+          s.pickupTextTimer = 60;
+          s.pickupFlash = 0.2;
+          sound.playEnemyDefeat();
+        }
+      }
+    }
+
+    // Power level milestones
+    const milestones: [number, string][] = [
+      [1000, "Kaioken!"],
+      [3000, "Kaioken x10!"],
+      [5000, "Kaioken x20!"],
+      [7000, "SSJ incoming...!"],
+    ];
+    for (const [threshold, text] of milestones) {
+      if (s.powerLevel >= threshold && !s.milestoneShown.has(threshold)) {
+        s.milestoneShown.add(threshold);
+        s.milestoneText = text;
+        s.milestoneTimer = 120;
+        s.pickupFlash = 0.3;
+        s.screenShake = 3;
+        sound.playMilestone();
+      }
+    }
+    if (s.milestoneTimer > 0) s.milestoneTimer--;
+
     // End detection
     if (s.scrollX >= WORLD_WIDTH) {
       s.finished = true;
@@ -435,6 +530,9 @@ export function useGameLoop(
     renderer.drawGroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "ground", s.collectedSet);
 
+    // Enemies
+    renderer.drawEnemies(ctx, w, h, s.scrollX, s.enemies, ENEMIES);
+
     const playerScale = 3;
     const spriteHeight = 32 * playerScale;
     const playerX = w / 2 - (32 * playerScale) / 2;
@@ -477,6 +575,11 @@ export function useGameLoop(
 
     // Controls hint
     renderer.drawControlsHint(ctx, w, h);
+
+    // Milestone text
+    if (s.milestoneTimer > 0 && s.milestoneText) {
+      renderer.drawMilestoneText(ctx, w, h, s.milestoneText, s.milestoneTimer);
+    }
 
     // Pickup text
     if (s.pickupTextTimer > 0 && s.pickupText) {

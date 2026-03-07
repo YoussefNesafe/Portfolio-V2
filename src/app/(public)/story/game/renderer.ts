@@ -11,7 +11,7 @@ import {
   NIMBUS_SPRITE,
 } from "./sprite-data";
 import { WORLD_WIDTH, PARALLAX_SPEEDS, PLAYER_Y_OFFSET } from "./world-data";
-import type { Decoration } from "./world-data";
+import type { Decoration, EnemyDef } from "./world-data";
 import type { IStoryBiome } from "@/app/models/IStoryDictionary";
 
 /** Vertical position of the ground surface as a fraction of canvas height. */
@@ -1333,4 +1333,166 @@ export function drawControlsHint(
   for (let i = lines.length - 1; i >= 0; i--) {
     ctx.fillText(lines[i], pad, baseY - (lines.length - 1 - i) * lineH);
   }
+}
+
+// ---------------------------------------------------------------------------
+// 21. Enemies
+// ---------------------------------------------------------------------------
+
+interface EnemyRuntimeState {
+  x: number;
+  dir: number;
+  alive: boolean;
+  deathTimer: number;
+}
+
+const ENEMY_COLORS: Record<string, { body: string; accent: string }> = {
+  saibaman: { body: "#4ADE80", accent: "#166534" },
+  frieza_soldier: { body: "#A78BFA", accent: "#4C1D95" },
+  cell_jr: { body: "#60A5FA", accent: "#1E3A5F" },
+};
+
+export function drawEnemies(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+  enemies: EnemyRuntimeState[],
+  defs: EnemyDef[],
+): void {
+  const groundY = h * GROUND_Y_RATIO;
+  const speed = PARALLAX_SPEEDS.ground;
+
+  for (let i = 0; i < enemies.length; i++) {
+    const es = enemies[i];
+    const def = defs[i];
+    if (!es.alive && es.deathTimer <= 0) continue;
+
+    const screenX = es.x - scrollX * speed;
+    if (screenX < -50 || screenX > w + 50) continue;
+
+    const colors = ENEMY_COLORS[def.type] ?? ENEMY_COLORS.saibaman;
+    const now = Date.now();
+
+    if (!es.alive) {
+      // Death animation — flash and shrink
+      const t = es.deathTimer / 30;
+      const alpha = t;
+      const scale = t;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(screenX, groundY);
+      ctx.scale(scale, scale);
+      ctx.translate(-screenX, -groundY);
+      drawEnemySprite(ctx, screenX, groundY, colors, es.dir, now);
+      ctx.restore();
+
+      // Death explosion particles
+      ctx.fillStyle = `rgba(255, 140, 0, ${t * 0.5})`;
+      for (let j = 0; j < 4; j++) {
+        const angle = (j / 4) * Math.PI * 2 + now / 200;
+        const dist = (1 - t) * 30;
+        ctx.beginPath();
+        ctx.arc(
+          screenX + Math.cos(angle) * dist,
+          groundY - 12 + Math.sin(angle) * dist,
+          3 * t,
+          0, Math.PI * 2,
+        );
+        ctx.fill();
+      }
+      continue;
+    }
+
+    drawEnemySprite(ctx, screenX, groundY, colors, es.dir, now);
+  }
+}
+
+function drawEnemySprite(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  groundY: number,
+  colors: { body: string; accent: string },
+  dir: number,
+  now: number,
+): void {
+  const bob = Math.sin(now / 200) * 2;
+  const bodyY = groundY - 24 + bob;
+
+  // Shadow
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.beginPath();
+  ctx.ellipse(x, groundY, 10, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Body (rectangle with rounded look)
+  ctx.fillStyle = colors.body;
+  ctx.fillRect(x - 6, bodyY, 12, 16);
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(x, bodyY - 2, 7, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes (looking in patrol direction)
+  ctx.fillStyle = "#FF0000";
+  const eyeOffX = dir * 2;
+  ctx.fillRect(x + eyeOffX - 3, bodyY - 4, 2, 2);
+  ctx.fillRect(x + eyeOffX + 1, bodyY - 4, 2, 2);
+
+  // Legs (animated)
+  const legPhase = Math.sin(now / 100) * 3;
+  ctx.fillStyle = colors.accent;
+  ctx.fillRect(x - 4, bodyY + 16, 3, 6 + legPhase);
+  ctx.fillRect(x + 1, bodyY + 16, 3, 6 - legPhase);
+
+  // Arms
+  const armAngle = Math.sin(now / 150) * 0.3;
+  ctx.strokeStyle = colors.body;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x - 6, bodyY + 4);
+  ctx.lineTo(x - 10, bodyY + 10 + Math.sin(armAngle) * 3);
+  ctx.moveTo(x + 6, bodyY + 4);
+  ctx.lineTo(x + 10, bodyY + 10 - Math.sin(armAngle) * 3);
+  ctx.stroke();
+}
+
+// ---------------------------------------------------------------------------
+// 22. Milestone text (power level milestones)
+// ---------------------------------------------------------------------------
+
+export function drawMilestoneText(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  text: string,
+  timer: number,
+): void {
+  if (!text || timer <= 0) return;
+
+  const alpha = Math.min(1, timer / 30);
+  const scale = 1 + (1 - Math.min(1, timer / 20)) * 0.3; // pop-in effect
+  const fontSize = Math.max(Math.round(w * 0.025), 20);
+  const now = Date.now();
+
+  ctx.save();
+  ctx.translate(w / 2, h * 0.4);
+  ctx.scale(scale, scale);
+
+  // Glow
+  ctx.shadowBlur = 25;
+  ctx.shadowColor = "#FF6B00";
+  ctx.font = `bold ${fontSize}px monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Pulsing color
+  const pulse = Math.sin(now / 80) > 0;
+  ctx.fillStyle = pulse
+    ? `rgba(255, 215, 0, ${alpha})`
+    : `rgba(255, 100, 0, ${alpha})`;
+  ctx.fillText(text, 0, 0);
+
+  ctx.restore();
 }
