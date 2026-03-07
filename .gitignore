@@ -24,6 +24,7 @@ nul
 
 # misc
 .DS_Store
+.playwright-mcp/
 *.pem
 
 # debug
