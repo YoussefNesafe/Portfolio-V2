@@ -9,6 +9,8 @@ import {
   PLAYER_ACCEL,
   PLAYER_DECEL,
   PLAYER_Y_OFFSET,
+  JUMP_FORCE,
+  GRAVITY,
   DECORATIONS,
 } from "./world-data";
 import { IDLE_FRAMES, WALK_RIGHT_FRAMES } from "./sprite-data";
@@ -17,6 +19,9 @@ import * as renderer from "./renderer";
 interface GameState {
   scrollX: number;
   velocity: number;
+  jumpVelocity: number;
+  jumpY: number;
+  isGrounded: boolean;
   facingLeft: boolean;
   frameIndex: number;
   frameTick: number;
@@ -29,12 +34,15 @@ interface GameState {
 
 export function useGameLoop(
   canvasRef: RefObject<HTMLCanvasElement | null>,
-  keysRef: RefObject<{ left: boolean; right: boolean }>,
+  keysRef: RefObject<{ left: boolean; right: boolean; jump: boolean }>,
   biomes: IStoryBiome[],
 ) {
   const stateRef = useRef<GameState>({
     scrollX: 0,
     velocity: 0,
+    jumpVelocity: 0,
+    jumpY: 0,
+    isGrounded: true,
     facingLeft: false,
     frameIndex: 0,
     frameTick: 0,
@@ -63,6 +71,24 @@ export function useGameLoop(
       // Friction
       if (s.velocity > 0) s.velocity = Math.max(s.velocity - PLAYER_DECEL, 0);
       if (s.velocity < 0) s.velocity = Math.min(s.velocity + PLAYER_DECEL, 0);
+    }
+
+    // Jump
+    if (keys.jump && s.isGrounded && !s.finished) {
+      s.jumpVelocity = JUMP_FORCE;
+      s.isGrounded = false;
+      s.started = true;
+    }
+
+    // Apply gravity
+    if (!s.isGrounded) {
+      s.jumpY += s.jumpVelocity;
+      s.jumpVelocity += GRAVITY;
+      if (s.jumpY >= 0) {
+        s.jumpY = 0;
+        s.jumpVelocity = 0;
+        s.isGrounded = true;
+      }
     }
 
     // Move — clamp to world bounds
@@ -139,7 +165,7 @@ export function useGameLoop(
       frames,
       s.frameIndex,
       w / 2 - (32 * playerScale) / 2,
-      h * PLAYER_Y_OFFSET - spriteHeight,
+      h * PLAYER_Y_OFFSET - spriteHeight + s.jumpY,
       playerScale,
       s.facingLeft,
     );

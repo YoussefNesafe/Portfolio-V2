@@ -2,7 +2,7 @@ export interface IStoryTextItem {
   text: string;
   x: number; // world x-position (0-1 normalized, where 0=start, 1=end)
   glow?: boolean; // ki energy glow effect on text
-  size?: "normal" | "large"; // large = chapter titles
+  size?: "normal" | "large" | "desc"; // large = chapter titles, desc = chapter descriptions
 }
 
 export interface IStoryBiome {

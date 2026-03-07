@@ -419,14 +419,16 @@
         "groundColor": "#3d2817",
         "mountainColor": "#2a1f14",
         "texts": [
-          { "text": "THE ORIGIN SAGA", "x": 0.01, "size": "large" },
+          { "text": "CHAPTER I", "x": 0.01, "size": "large" },
+          { "text": "The Origin Saga \u2014 Where It All Began", "x": 0.01, "size": "desc" },
           { "text": "Every warrior has a beginning...", "x": 0.04, "glow": true },
           { "text": "Mine started with a blinking cursor", "x": 0.07 },
           { "text": "on a dark screen.", "x": 0.10 },
-          { "text": "Late nights. Endless documentation.", "x": 0.13 },
-          { "text": "Stack Overflow rabbit holes.", "x": 0.16 },
-          { "text": "Each bug fixed \u2014 a small victory.", "x": 0.19, "glow": true },
-          { "text": "Each project \u2014 a stepping stone.", "x": 0.22 }
+          { "text": "I was curious. Restless.", "x": 0.12 },
+          { "text": "Late nights. Endless documentation.", "x": 0.15 },
+          { "text": "Stack Overflow rabbit holes.", "x": 0.18 },
+          { "text": "First website: pure HTML chaos.", "x": 0.20, "glow": true },
+          { "text": "Each bug fixed \u2014 a small victory.", "x": 0.23 }
         ]
       },
       {
@@ -437,14 +439,17 @@
         "groundColor": "#1a2a3a",
         "mountainColor": "#0f1f2f",
         "texts": [
-          { "text": "THE ARSENAL SAGA", "x": 0.26, "size": "large" },
-          { "text": "A warrior is only as sharp as their training.", "x": 0.29, "glow": true },
+          { "text": "CHAPTER II", "x": 0.26, "size": "large" },
+          { "text": "The Arsenal Saga \u2014 Forging the Weapons", "x": 0.26, "size": "desc" },
+          { "text": "A warrior is nothing without training.", "x": 0.29, "glow": true },
           { "text": "React. Next.js. TypeScript.", "x": 0.32 },
-          { "text": "The frontend trinity.", "x": 0.35 },
-          { "text": "Node.js. PostgreSQL. Prisma.", "x": 0.38 },
-          { "text": "The backend foundation.", "x": 0.41 },
-          { "text": "Tailwind. Framer Motion.", "x": 0.44 },
-          { "text": "Skills are not just tools \u2014 they're power.", "x": 0.47, "glow": true }
+          { "text": "The frontend trinity.", "x": 0.34 },
+          { "text": "Node.js. PostgreSQL. Prisma.", "x": 0.37 },
+          { "text": "The backend foundation.", "x": 0.39 },
+          { "text": "Tailwind CSS. Framer Motion.", "x": 0.42 },
+          { "text": "The finishing techniques.", "x": 0.44 },
+          { "text": "Docker. CI/CD. Cloud.", "x": 0.46 },
+          { "text": "Skills are not just tools \u2014", "x": 0.48, "glow": true }
         ]
       },
       {
@@ -455,14 +460,17 @@
         "groundColor": "#1a3020",
         "mountainColor": "#0f2015",
         "texts": [
-          { "text": "THE TOURNAMENT SAGA", "x": 0.51, "size": "large" },
+          { "text": "CHAPTER III", "x": 0.51, "size": "large" },
+          { "text": "The Tournament Saga \u2014 Battles Won", "x": 0.51, "size": "desc" },
           { "text": "Ideas are nothing without execution.", "x": 0.54, "glow": true },
-          { "text": "Every project \u2014 a battle won.", "x": 0.57 },
-          { "text": "Responsive portfolios.", "x": 0.60 },
-          { "text": "Complex admin dashboards.", "x": 0.63 },
-          { "text": "Each one pushed the limits", "x": 0.66 },
-          { "text": "of what I thought possible.", "x": 0.69 },
-          { "text": "The best code tells its own story.", "x": 0.72, "glow": true }
+          { "text": "Trading platforms.", "x": 0.57 },
+          { "text": "5,000+ concurrent users.", "x": 0.59 },
+          { "text": "99.9% uptime.", "x": 0.61, "glow": true },
+          { "text": "Complex admin dashboards.", "x": 0.64 },
+          { "text": "Real-time data visualizations.", "x": 0.66 },
+          { "text": "Every project pushed the limits", "x": 0.69 },
+          { "text": "of what I thought possible.", "x": 0.71 },
+          { "text": "The best code tells its own story.", "x": 0.73, "glow": true }
         ]
       },
       {
@@ -473,14 +481,16 @@
         "groundColor": "#12121a",
         "mountainColor": "#0d0d15",
         "texts": [
-          { "text": "THE FINAL SAGA", "x": 0.76, "size": "large" },
-          { "text": "The strongest warriors never stop training.", "x": 0.79, "glow": true },
+          { "text": "CHAPTER IV", "x": 0.76, "size": "large" },
+          { "text": "The Final Saga \u2014 What Lies Ahead", "x": 0.76, "size": "desc" },
+          { "text": "The strongest warriors never stop.", "x": 0.79, "glow": true },
           { "text": "New frameworks emerge.", "x": 0.82 },
-          { "text": "AI reshapes the battlefield.", "x": 0.85 },
-          { "text": "And I adapt.", "x": 0.88, "glow": true },
-          { "text": "Build software that matters.", "x": 0.91 },
-          { "text": "Create experiences that resonate.", "x": 0.94 },
-          { "text": "one commit at a time.", "x": 0.97, "glow": true }
+          { "text": "AI reshapes the battlefield.", "x": 0.84 },
+          { "text": "And I adapt. Always.", "x": 0.87, "glow": true },
+          { "text": "Build software that matters.", "x": 0.89 },
+          { "text": "Create experiences that resonate.", "x": 0.92 },
+          { "text": "Push the craft forward...", "x": 0.95 },
+          { "text": "one commit at a time.", "x": 0.98, "glow": true }
         ]
       }
     ]

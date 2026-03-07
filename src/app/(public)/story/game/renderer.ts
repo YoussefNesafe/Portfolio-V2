@@ -362,82 +362,88 @@ export function drawFloatingText(
   biomes: IStoryBiome[],
   worldWidth: number,
 ): void {
-  const progress = scrollX / worldWidth;
+  const textParallax = 0.45; // scrolls between mountains and midground
+  const textOffset = scrollX * textParallax;
 
-  // Collect all texts with their trigger positions
-  const allTexts: { text: string; x: number; glow?: boolean; size?: string }[] = [];
   for (const biome of biomes) {
     for (const item of biome.texts) {
-      allTexts.push(item);
+      const worldX = item.x * worldWidth;
+      const screenX = worldX - textOffset;
+
+      // Skip if off screen
+      if (screenX < -w * 0.5 || screenX > w * 1.5) continue;
+
+      // Fade based on distance from screen center
+      const distFromCenter = Math.abs(screenX - w / 2);
+      const fadeStart = w * 0.25;
+      const fadeEnd = w * 0.55;
+      let alpha: number;
+      if (distFromCenter <= fadeStart) {
+        alpha = 1;
+      } else if (distFromCenter <= fadeEnd) {
+        alpha = 1 - (distFromCenter - fadeStart) / (fadeEnd - fadeStart);
+      } else {
+        alpha = 0;
+      }
+      if (alpha <= 0) continue;
+
+      const isTitle = item.size === "large";
+      const isDesc = item.size === "desc";
+
+      let fontSize: number;
+      let fontWeight: string;
+      let textY: number;
+
+      if (isTitle) {
+        fontSize = Math.max(Math.round(w * 0.032), 30);
+        fontWeight = "bold ";
+        textY = h * 0.18;
+      } else if (isDesc) {
+        fontSize = Math.max(Math.round(w * 0.01), 12);
+        fontWeight = "";
+        textY = h * 0.24;
+      } else {
+        fontSize = Math.max(Math.round(w * 0.013), 15);
+        fontWeight = "";
+        textY = h * 0.32;
+      }
+
+      ctx.save();
+
+      // Shadow for readability
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
+
+      if (item.glow) {
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "#FFD700";
+      }
+
+      ctx.font = `${fontWeight}${fontSize}px monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Dark outline for non-glow text
+      if (!item.glow) {
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.8})`;
+        ctx.fillText(item.text, screenX + 2, textY + 2);
+      }
+
+      // Main text color
+      if (isTitle) {
+        ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`; // gold for titles
+      } else if (isDesc) {
+        ctx.fillStyle = `rgba(180, 180, 200, ${alpha * 0.8})`; // muted for descriptions
+      } else if (item.glow) {
+        ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
+      } else {
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      }
+
+      ctx.fillText(item.text, screenX, textY);
+      ctx.restore();
     }
   }
-
-  // Find the current text based on progress — show the most recent one we've passed
-  let currentIdx = -1;
-  for (let i = allTexts.length - 1; i >= 0; i--) {
-    if (progress >= allTexts[i].x) {
-      currentIdx = i;
-      break;
-    }
-  }
-
-  if (currentIdx < 0) return;
-
-  const current = allTexts[currentIdx];
-  const nextX = currentIdx < allTexts.length - 1 ? allTexts[currentIdx + 1].x : current.x + 0.05;
-
-  // Alpha: fade in at start, fade out near next text
-  const segmentLen = nextX - current.x;
-  const segmentProgress = (progress - current.x) / segmentLen;
-
-  let alpha: number;
-  if (segmentProgress < 0.15) {
-    alpha = segmentProgress / 0.15; // fade in over first 15%
-  } else if (segmentProgress > 0.85) {
-    alpha = (1 - segmentProgress) / 0.15; // fade out over last 15%
-  } else {
-    alpha = 1;
-  }
-  alpha = Math.max(0, Math.min(1, alpha));
-  if (alpha <= 0) return;
-
-  const isLarge = current.size === "large";
-  const fontSize = isLarge
-    ? Math.max(Math.round(w * 0.028), 26)
-    : Math.max(Math.round(w * 0.013), 15);
-  const fontWeight = isLarge ? "bold " : "";
-
-  ctx.save();
-
-  // Dark shadow behind all text for readability
-  ctx.shadowBlur = 10;
-  ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
-
-  if (current.glow) {
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = "#FFD700";
-  }
-
-  ctx.font = `${fontWeight}${fontSize}px monospace`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  const textY = isLarge ? h * 0.22 : h * 0.32;
-  const centerX = w / 2;
-
-  // Draw dark outline for contrast
-  if (!current.glow) {
-    ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.8})`;
-    ctx.fillText(current.text, centerX + 2, textY + 2);
-  }
-
-  // Draw main text
-  ctx.fillStyle = current.glow
-    ? `rgba(255, 215, 0, ${alpha})`
-    : `rgba(255, 255, 255, ${alpha})`;
-  ctx.fillText(current.text, centerX, textY);
-
-  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
