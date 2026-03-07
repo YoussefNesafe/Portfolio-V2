@@ -291,17 +291,26 @@ export function useGameLoop(
       }
     }
 
-    // Collectible detection
+    // Collectible detection — must overlap both X and Y (no collecting while jumping over)
     const canvasW = canvasRef.current?.width ?? 0;
+    const canvasH = canvasRef.current?.height ?? 0;
     const playerWorldX = s.scrollX + canvasW / 2;
+    const spriteH = 32 * 3; // playerScale = 3
+    const playerFeetY = canvasH * PLAYER_Y_OFFSET + s.jumpY;
+    const playerTopY = playerFeetY - spriteH;
+
     for (let i = 0; i < DECORATIONS.length; i++) {
       if (s.collectedSet.has(i)) continue;
       const dec = DECORATIONS[i];
       if (dec.layer !== "ground") continue;
       if (dec.type !== "dragonball" && dec.type !== "senzu" && dec.type !== "ki_orb") continue;
 
-      const dist = Math.abs(dec.x - playerWorldX);
-      if (dist < COLLECT_RADIUS) {
+      const distX = Math.abs(dec.x - playerWorldX);
+      const itemY = dec.y * canvasH;
+      // Item must be within player's vertical body range (with tolerance)
+      const yOverlap = itemY >= playerTopY - 10 && itemY <= playerFeetY + 10;
+
+      if (distX < COLLECT_RADIUS && yOverlap) {
         s.collectedSet.add(i);
         if (dec.type === "dragonball" && dec.star) {
           s.collectedDragonBalls.add(dec.star);
