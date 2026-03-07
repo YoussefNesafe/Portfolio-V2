@@ -45,7 +45,7 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
   if (!isDesktop) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#0A0A0F]">
+    <div className="fixed inset-0 z-[100] bg-[#0A0A0F]">
       <canvas ref={canvasRef} className="block w-full h-full" />
 
       {/* Start prompt overlay */}

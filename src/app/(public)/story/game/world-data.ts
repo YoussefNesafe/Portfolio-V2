@@ -2,7 +2,7 @@ export const WORLD_WIDTH = 12000; // total world width in pixels
 export const PLAYER_SPEED = 3; // pixels per frame at full velocity
 export const PLAYER_ACCEL = 0.15; // acceleration per frame
 export const PLAYER_DECEL = 0.08; // deceleration (friction) per frame
-export const PLAYER_Y_OFFSET = 0.72; // player vertical position (% of canvas height)
+export const PLAYER_Y_OFFSET = 0.80; // player vertical position (% of canvas height)
 
 export const PARALLAX_SPEEDS = {
   sky: 0.1,

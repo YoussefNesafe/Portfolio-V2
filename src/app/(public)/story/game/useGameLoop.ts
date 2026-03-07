@@ -132,13 +132,15 @@ export function useGameLoop(
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "midground");
     renderer.drawGroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "ground");
+    const playerScale = 3;
+    const spriteHeight = 32 * playerScale;
     renderer.drawPlayer(
       ctx,
       frames,
       s.frameIndex,
-      w / 2,
-      h * PLAYER_Y_OFFSET,
-      3,
+      w / 2 - (32 * playerScale) / 2,
+      h * PLAYER_Y_OFFSET - spriteHeight,
+      playerScale,
       s.facingLeft,
     );
     renderer.drawForegroundLayer(ctx, w, h, s.scrollX);

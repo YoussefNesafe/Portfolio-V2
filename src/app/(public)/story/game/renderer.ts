@@ -10,9 +10,12 @@ import {
   DRAGON_BALL_SPRITE,
   NIMBUS_SPRITE,
 } from "./sprite-data";
-import { WORLD_WIDTH, PARALLAX_SPEEDS } from "./world-data";
+import { WORLD_WIDTH, PARALLAX_SPEEDS, PLAYER_Y_OFFSET } from "./world-data";
 import type { Decoration } from "./world-data";
 import type { IStoryBiome } from "@/app/models/IStoryDictionary";
+
+/** Vertical position of the ground surface as a fraction of canvas height. */
+const GROUND_Y_RATIO = PLAYER_Y_OFFSET;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -266,7 +269,7 @@ export function drawGroundLayer(
   const progress = scrollX / WORLD_WIDTH;
   const { groundColor } = interpolateBiomeColors(biomes, progress);
 
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
 
   // Ground fill
   ctx.fillStyle = groundColor;
@@ -294,7 +297,7 @@ export function drawForegroundLayer(
   scrollX: number,
 ): void {
   const offset = scrollX * PARALLAX_SPEEDS.foreground;
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
   const now = Date.now();
 
   // Grass tufts at ground level
@@ -490,11 +493,12 @@ export function drawScouter(
   w: number,
   powerLevel: number,
 ): void {
-  const boxW = 120;
-  const boxH = 50;
-  const boxX = w - boxW - 20;
-  const boxY = 20;
-  const radius = 6;
+  const scale = Math.max(w / 1920, 0.5);
+  const boxW = Math.round(100 * scale);
+  const boxH = Math.round(40 * scale);
+  const boxX = w - boxW - Math.round(16 * scale);
+  const boxY = Math.round(16 * scale);
+  const radius = Math.round(4 * scale);
 
   // Background
   ctx.fillStyle = "#0a2a0a";
@@ -516,25 +520,27 @@ export function drawScouter(
   ctx.stroke();
 
   // "PWR" label
-  ctx.font = "10px monospace";
+  const smallFont = Math.round(9 * scale);
+  const largeFont = Math.round(14 * scale);
+  const pad = Math.round(8 * scale);
+  ctx.font = `${smallFont}px monospace`;
   ctx.fillStyle = "#22c55e";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  ctx.fillText("PWR", boxX + 10, boxY + 8);
+  ctx.fillText("PWR", boxX + pad, boxY + pad);
 
   // Power level number
   const isOver9000 = powerLevel >= 9001;
   if (isOver9000) {
-    // Flash between green and yellow
     const flash = Date.now() % 1000 < 500;
     ctx.fillStyle = flash ? "#22c55e" : "#FFD700";
   } else {
     ctx.fillStyle = "#22c55e";
   }
-  ctx.font = "bold 18px monospace";
+  ctx.font = `bold ${largeFont}px monospace`;
   ctx.textAlign = "left";
   ctx.textBaseline = "bottom";
-  ctx.fillText(String(powerLevel), boxX + 10, boxY + boxH - 6);
+  ctx.fillText(String(powerLevel), boxX + pad, boxY + boxH - pad);
 }
 
 // ---------------------------------------------------------------------------
@@ -608,7 +614,7 @@ function drawTree(
   y: number,
   h: number,
 ): void {
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
   const trunkW = 8;
   const trunkH = groundY - y - 20;
 
@@ -666,7 +672,7 @@ function drawWaterfall(
   y: number,
   h: number,
 ): void {
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
   const waterfallH = groundY - y;
   const waterfallW = 20;
   const now = Date.now();
@@ -701,7 +707,7 @@ function drawBuilding(
   y: number,
   h: number,
 ): void {
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
   const buildingW = 50;
   const buildingH = groundY - y;
 
@@ -744,7 +750,7 @@ function drawBanner(
   y: number,
   h: number,
 ): void {
-  const groundY = h * 0.72;
+  const groundY = h * GROUND_Y_RATIO;
   const poleH = groundY - y;
 
   // Pole
