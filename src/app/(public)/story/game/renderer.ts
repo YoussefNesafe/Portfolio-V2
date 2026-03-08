@@ -577,12 +577,13 @@ export function drawSprite(
   x: number,
   y: number,
   scale: number,
+  colorRemap?: Record<string, string>,
 ): void {
   for (let row = 0; row < sprite.length; row++) {
     for (let col = 0; col < sprite[row].length; col++) {
       const color = sprite[row][col];
       if (!color) continue;
-      ctx.fillStyle = color;
+      ctx.fillStyle = colorRemap?.[color] ?? color;
       ctx.fillRect(x + col * scale, y + row * scale, scale, scale);
     }
   }
@@ -728,14 +729,19 @@ export function drawPlayer(
     ctx.translate(0, y * (1 / crouchSquish - 1));
   }
 
+  // SSJ hair recolor
+  const ssjRemap: Record<string, string> | undefined = isSuperSaiyan
+    ? { "#1a1a2e": "#FFD700", "#1A1A2E": "#FFD700" }
+    : undefined;
+
   if (facingLeft) {
     ctx.save();
     ctx.translate(x + spriteW, 0);
     ctx.scale(-1, 1);
-    drawSprite(ctx, frame, 0, y, scale);
+    drawSprite(ctx, frame, 0, y, scale, ssjRemap);
     ctx.restore();
   } else {
-    drawSprite(ctx, frame, x, y, scale);
+    drawSprite(ctx, frame, x, y, scale, ssjRemap);
   }
 
   ctx.restore();
