@@ -5,6 +5,7 @@ import ExperienceSection from "@/app/_sections/portfolio/ExperienceSection";
 import ProjectsSection from "@/app/_sections/portfolio/ProjectsSection";
 import SkillsSection from "@/app/_sections/portfolio/SkillsSection";
 import ContactSection from "@/app/_sections/portfolio/ContactSection";
+import SectionDivider from "@/app/components/ui/SectionDivider";
 import HomeContent from "./HomeContent";
 
 export default async function Home() {
@@ -13,10 +14,15 @@ export default async function Home() {
   const designerContent = (
     <>
       <HeroSection {...dict.hero} />
+      <SectionDivider />
       <AboutSection {...dict.about} />
+      <SectionDivider />
       <ExperienceSection {...dict.experience} />
+      <SectionDivider />
       <ProjectsSection {...dict.projects} />
+      <SectionDivider />
       <SkillsSection {...dict.skills} />
+      <SectionDivider />
       <ContactSection {...dict.contact} />
     </>
   );

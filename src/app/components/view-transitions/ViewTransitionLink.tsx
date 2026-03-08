@@ -42,9 +42,9 @@ export default function ViewTransitionHandler() {
 
       e.preventDefault();
 
-      // Set iris reveal origin to center of viewport
-      const x = window.innerWidth / 2;
-      const y = window.innerHeight / 2;
+      // Set iris reveal origin to click position
+      const x = mouseEvent.clientX;
+      const y = mouseEvent.clientY;
       const maxRadius = Math.hypot(x, y);
       document.documentElement.style.setProperty("--iris-x", `${x}px`);
       document.documentElement.style.setProperty("--iris-y", `${y}px`);
