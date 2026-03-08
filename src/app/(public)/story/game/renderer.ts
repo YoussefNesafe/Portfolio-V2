@@ -164,6 +164,52 @@ export function drawSkyLayer(
 }
 
 // ---------------------------------------------------------------------------
+// Day/Night cycle tint
+// ---------------------------------------------------------------------------
+
+export function drawDayNightTint(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+): void {
+  const progress = scrollX / WORLD_WIDTH;
+
+  // Tint stages: dawn (warm), midday (clear), sunset (orange), night (dark blue)
+  let tintColor: string;
+  let tintAlpha: number;
+
+  if (progress < 0.2) {
+    // Dawn — warm orange tint fading out
+    tintColor = "255, 180, 100";
+    tintAlpha = 0.08 * (1 - progress / 0.2);
+  } else if (progress < 0.45) {
+    // Midday — no tint
+    tintColor = "0, 0, 0";
+    tintAlpha = 0;
+  } else if (progress < 0.65) {
+    // Sunset — orange/red tint fading in
+    const t = (progress - 0.45) / 0.2;
+    tintColor = "255, 100, 50";
+    tintAlpha = t * 0.12;
+  } else if (progress < 0.8) {
+    // Transition to night
+    const t = (progress - 0.65) / 0.15;
+    tintColor = `${Math.round(255 - t * 235)}, ${Math.round(100 - t * 80)}, ${Math.round(50 + t * 100)}`;
+    tintAlpha = 0.12 + t * 0.08;
+  } else {
+    // Night — dark blue tint
+    tintColor = "20, 20, 150";
+    tintAlpha = 0.2;
+  }
+
+  if (tintAlpha > 0) {
+    ctx.fillStyle = `rgba(${tintColor}, ${tintAlpha})`;
+    ctx.fillRect(0, 0, w, h);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 2. Mountain layer
 // ---------------------------------------------------------------------------
 

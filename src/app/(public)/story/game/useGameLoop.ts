@@ -521,6 +521,7 @@ export function useGameLoop(
 
     // Draw layers
     renderer.drawSkyLayer(ctx, w, h, s.scrollX, biomes);
+    renderer.drawDayNightTint(ctx, w, h, s.scrollX);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "sky", s.collectedSet);
     renderer.drawMountainLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "mountains", s.collectedSet);
