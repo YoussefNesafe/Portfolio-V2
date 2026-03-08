@@ -705,6 +705,9 @@ export function useGameLoop(
     // HUD
     renderer.drawScouter(ctx, w, s.powerLevel, s.collectedDragonBalls.size, s.enemiesKilled);
 
+    // Dragon Ball radar
+    renderer.drawDragonBallRadar(ctx, w, h, s.scrollX, s.collectedSet, DECORATIONS);
+
     // Controls hint
     renderer.drawControlsHint(ctx, w, h);
 

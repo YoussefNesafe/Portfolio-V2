@@ -1782,3 +1782,71 @@ export function drawParallaxFog(
   ctx.fillStyle = grad;
   ctx.fillRect(0, yStart, w, yEnd - yStart);
 }
+
+// ---------------------------------------------------------------------------
+// Dragon Ball radar arrow
+// ---------------------------------------------------------------------------
+
+export function drawDragonBallRadar(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+  collectedSet: Set<number>,
+  decorations: Decoration[],
+): void {
+  // Find nearest uncollected dragon ball
+  const playerWorldX = scrollX + w / 2;
+  let nearest: { x: number; dist: number; star: number } | null = null;
+
+  for (let i = 0; i < decorations.length; i++) {
+    const dec = decorations[i];
+    if (dec.type !== "dragonball" || collectedSet.has(i)) continue;
+    const dist = dec.x - playerWorldX;
+    if (nearest === null || Math.abs(dist) < Math.abs(nearest.dist)) {
+      nearest = { x: dec.x, dist, star: dec.star ?? 0 };
+    }
+  }
+
+  if (!nearest) return;
+
+  // Only show arrow if dragon ball is off-screen
+  const screenX = nearest.x - scrollX;
+  if (screenX > 30 && screenX < w - 30) return;
+
+  const isRight = nearest.dist > 0;
+  const arrowX = isRight ? w - 25 : 25;
+  const arrowY = h * 0.15;
+
+  const now = Date.now();
+  const pulse = 0.6 + Math.sin(now * 0.005) * 0.3;
+
+  // Arrow triangle
+  ctx.save();
+  ctx.translate(arrowX, arrowY);
+  if (!isRight) ctx.scale(-1, 1);
+
+  ctx.fillStyle = `rgba(255, 165, 0, ${pulse})`;
+  ctx.beginPath();
+  ctx.moveTo(12, 0);
+  ctx.lineTo(-4, -8);
+  ctx.lineTo(-4, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+
+  // Star count label below arrow
+  ctx.fillStyle = `rgba(255, 215, 0, ${pulse})`;
+  ctx.font = "bold 10px monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  ctx.fillText(`${nearest.star}★`, arrowX, arrowY + 12);
+
+  // Distance indicator
+  const distLabel = Math.abs(Math.round(nearest.dist / 100));
+  ctx.fillStyle = `rgba(255, 165, 0, ${pulse * 0.7})`;
+  ctx.font = "9px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(`${distLabel}m`, arrowX, arrowY + 26);
+}
