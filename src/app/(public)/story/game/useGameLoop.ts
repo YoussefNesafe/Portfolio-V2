@@ -606,6 +606,7 @@ export function useGameLoop(
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "midground", s.collectedSet);
     renderer.drawFloatingText(ctx, w, h, s.scrollX, biomes, WORLD_WIDTH);
     renderer.drawGroundLayer(ctx, w, h, s.scrollX, biomes);
+    renderer.drawGroundSurface(ctx, w, h, s.scrollX);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "ground", s.collectedSet);
 
     // Enemies

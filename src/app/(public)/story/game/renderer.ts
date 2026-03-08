@@ -408,6 +408,75 @@ export function drawGroundLayer(
 }
 
 // ---------------------------------------------------------------------------
+// Animated ground surface effects
+// ---------------------------------------------------------------------------
+
+export function drawGroundSurface(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+): void {
+  const progress = scrollX / WORLD_WIDTH;
+  const groundY = h * GROUND_Y_RATIO;
+  const now = Date.now();
+
+  if (progress < 0.25) {
+    // Biome 1: Water ripples — animated sine waves at ground surface
+    ctx.strokeStyle = "rgba(100, 180, 255, 0.15)";
+    ctx.lineWidth = 1;
+    for (let row = 0; row < 3; row++) {
+      ctx.beginPath();
+      const yOff = groundY + 4 + row * 6;
+      for (let x = 0; x < w; x += 4) {
+        const waveY = yOff + Math.sin((x + scrollX * 0.5 + now * 0.002 + row * 2) * 0.05) * 2;
+        if (x === 0) ctx.moveTo(x, waveY);
+        else ctx.lineTo(x, waveY);
+      }
+      ctx.stroke();
+    }
+  } else if (progress < 0.5) {
+    // Biome 2: Tech grid scan lines
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.08)";
+    ctx.lineWidth = 1;
+    const gridSpacing = 12;
+    const offset = (scrollX * 0.3 + now * 0.01) % gridSpacing;
+    for (let x = -offset; x < w; x += gridSpacing) {
+      ctx.beginPath();
+      ctx.moveTo(x, groundY);
+      ctx.lineTo(x, groundY + 20);
+      ctx.stroke();
+    }
+    // Horizontal scan line
+    const scanY = groundY + ((now * 0.02) % 20);
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.12)";
+    ctx.beginPath();
+    ctx.moveTo(0, scanY);
+    ctx.lineTo(w, scanY);
+    ctx.stroke();
+  } else if (progress < 0.75) {
+    // Biome 3: Lava/energy glow
+    ctx.strokeStyle = "rgba(255, 100, 30, 0.12)";
+    ctx.lineWidth = 2;
+    for (let row = 0; row < 2; row++) {
+      ctx.beginPath();
+      const yOff = groundY + 2 + row * 5;
+      for (let x = 0; x < w; x += 4) {
+        const waveY = yOff + Math.sin((x - scrollX * 0.4 + now * 0.003 + row * 3) * 0.08) * 1.5;
+        if (x === 0) ctx.moveTo(x, waveY);
+        else ctx.lineTo(x, waveY);
+      }
+      ctx.stroke();
+    }
+    // Occasional glow pulse
+    const pulseAlpha = Math.sin(now * 0.003) * 0.05 + 0.05;
+    ctx.fillStyle = `rgba(255, 80, 20, ${pulseAlpha})`;
+    ctx.fillRect(0, groundY, w, 15);
+  }
+  // Biome 4 (space): no ground surface effect
+}
+
+// ---------------------------------------------------------------------------
 // 5. Foreground layer
 // ---------------------------------------------------------------------------
 
