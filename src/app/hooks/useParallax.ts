@@ -1,16 +1,18 @@
 "use client";
 
 import { useScroll, useTransform, useSpring, useReducedMotion, type MotionValue } from "framer-motion";
-import { useRef } from "react";
+import { useRef, type RefObject } from "react";
 
 interface UseParallaxOptions {
   speed?: number;
   offset?: ["start end" | "end start", "start end" | "end start"];
   springConfig?: { stiffness?: number; damping?: number };
+  /** Pass an external ref to share scroll tracking with another useParallax instance */
+  targetRef?: RefObject<HTMLDivElement | null>;
 }
 
 interface UseParallaxReturn {
-  ref: React.RefObject<HTMLDivElement | null>;
+  ref: RefObject<HTMLDivElement | null>;
   y: MotionValue<number>;
 }
 
@@ -18,8 +20,10 @@ export function useParallax({
   speed = 0.5,
   offset = ["start end", "end start"],
   springConfig = { stiffness: 100, damping: 30 },
+  targetRef,
 }: UseParallaxOptions = {}): UseParallaxReturn {
-  const ref = useRef<HTMLDivElement>(null);
+  const internalRef = useRef<HTMLDivElement>(null);
+  const ref = targetRef ?? internalRef;
   const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({

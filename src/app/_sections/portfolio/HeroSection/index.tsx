@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { FiLinkedin, FiMail, FiChevronDown } from "react-icons/fi";
@@ -32,8 +32,9 @@ const wordVariants = {
 export default function HeroSection(props: IHeroSection) {
   const [typewriterDone, setTypewriterDone] = useState(false);
 
-  const blobSlow = useParallax({ speed: 0.3 });
-  const blobMedium = useParallax({ speed: 0.15 });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const blobSlow = useParallax({ speed: 0.3, targetRef: sectionRef });
+  const blobMedium = useParallax({ speed: 0.15, targetRef: sectionRef });
 
   const { scrollYProgress } = useScroll();
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
@@ -42,7 +43,7 @@ export default function HeroSection(props: IHeroSection) {
   return (
     <section
       id="hero"
-      ref={blobSlow.ref}
+      ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-x-clip"
     >
       <GridBackground />

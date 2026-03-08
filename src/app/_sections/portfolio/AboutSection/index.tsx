@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import {
   fadeUp,
@@ -15,15 +16,16 @@ import TypewriterText from "@/app/components/ui/TypewriterText";
 import { useParallax } from "@/app/hooks/useParallax";
 
 export default function AboutSection(props: IAboutSection) {
-  const terminalParallax = useParallax({ speed: 0.15 });
-  const statsParallax = useParallax({ speed: 0.25 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const terminalParallax = useParallax({ speed: 0.15, targetRef: containerRef });
+  const statsParallax = useParallax({ speed: 0.25, targetRef: containerRef });
 
   return (
     <Section id="about">
       <SectionHeading label={props.sectionLabel} title={props.title} />
 
       <div
-        ref={terminalParallax.ref}
+        ref={containerRef}
         className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center"
       >
         <motion.div
