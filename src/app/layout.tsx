@@ -42,6 +42,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <a href="#hero" className="skip-link">
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>
