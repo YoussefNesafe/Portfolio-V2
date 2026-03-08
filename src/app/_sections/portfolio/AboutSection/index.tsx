@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import {
-  fadeLeft,
   fadeUp,
   staggerContainer,
   defaultViewport,
@@ -12,43 +11,54 @@ import Section from "@/app/components/ui/Section";
 import SectionHeading from "@/app/components/ui/SectionHeading";
 import Terminal from "@/app/components/ui/Terminal";
 import AnimatedCounter from "./AnimatedCounter";
+import TypewriterText from "@/app/components/ui/TypewriterText";
+import { useParallax } from "@/app/hooks/useParallax";
 
 export default function AboutSection(props: IAboutSection) {
+  const terminalParallax = useParallax({ speed: 0.15 });
+  const statsParallax = useParallax({ speed: 0.25 });
+
   return (
     <Section id="about">
       <SectionHeading label={props.sectionLabel} title={props.title} />
 
-      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center">
-        {/* Terminal */}
+      <div
+        ref={terminalParallax.ref}
+        className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center"
+      >
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={defaultViewport}
-          variants={fadeLeft}
+          variants={{
+            hidden: { opacity: 0, x: -50 },
+            visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
+          }}
+          style={{ y: terminalParallax.y }}
           className="desktop:w-[55%]"
         >
           <Terminal title="about.txt">
             <p className="text-accent-emerald mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw]">
               {props.terminal.command}
             </p>
-            {props.terminal.lines.map((line, i) => (
-              <p
-                key={i}
-                className="text-foreground mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw] last:mb-0"
-              >
-                {line}
-              </p>
-            ))}
-            <span className="animate-blink-cursor text-accent-cyan">_</span>
+            <TypewriterText
+              lines={props.terminal.lines.map((line) => ({
+                text: line,
+                className:
+                  "text-foreground mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw] last:mb-0",
+              }))}
+              speed={15}
+              lineDelay={100}
+            />
           </Terminal>
         </motion.div>
 
-        {/* Stats */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={defaultViewport}
           variants={staggerContainer}
+          style={{ y: statsParallax.y }}
           className="desktop:w-[45%] grid grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw] h-fit"
         >
           {props.stats.map((stat) => (

@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 import GlowCard from "@/app/components/ui/GlowCard";
 
+function easeOutBack(t: number): number {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 export default function AnimatedCounter({
   value,
   suffix,
@@ -21,20 +27,23 @@ export default function AnimatedCounter({
     if (!isInView) return;
 
     const duration = 2000;
-    const steps = 60;
-    const increment = value / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutBack(progress);
+      const current = eased * value;
+
+      if (progress >= 1) {
         setCount(value);
-        clearInterval(timer);
       } else {
         setCount(Math.floor(current * 10) / 10);
+        requestAnimationFrame(tick);
       }
-    }, duration / steps);
+    };
 
-    return () => clearInterval(timer);
+    requestAnimationFrame(tick);
   }, [isInView, value]);
 
   const displayValue =
