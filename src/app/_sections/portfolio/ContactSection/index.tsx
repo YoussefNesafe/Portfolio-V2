@@ -21,6 +21,7 @@ import Section from "@/app/components/ui/Section";
 import SectionHeading from "@/app/components/ui/SectionHeading";
 import GlowCard from "@/app/components/ui/GlowCard";
 import Terminal from "@/app/components/ui/Terminal";
+import TypewriterText from "@/app/components/ui/TypewriterText";
 import type { IconType } from "react-icons";
 
 const iconMap: Record<string, IconType> = {
@@ -46,7 +47,6 @@ export default function ContactSection(props: IContactSection) {
       </motion.p>
 
       <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center">
-        {/* Contact cards */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -79,7 +79,11 @@ export default function ContactSection(props: IContactSection) {
             const className =
               "flex items-start gap-[3.2vw] tablet:gap-[1.5vw] desktop:gap-[0.625vw] group";
             return (
-              <motion.div key={item.type} variants={fadeLeft}>
+              <motion.div
+                key={item.type}
+                variants={fadeLeft}
+                whileHover={{ y: -4, transition: { type: "spring", stiffness: 400, damping: 25 } }}
+              >
                 <GlowCard>
                   {item.href.startsWith("http") ? (
                     <Link
@@ -101,7 +105,6 @@ export default function ContactSection(props: IContactSection) {
           })}
         </motion.div>
 
-        {/* Terminal CTA */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -110,12 +113,17 @@ export default function ContactSection(props: IContactSection) {
           className="desktop:w-[50%]"
         >
           <Terminal title="contact.ts">
-            <p className="text-accent-purple">{props.terminal.command}</p>
-            {props.terminal.lines.map((line, i) => (
-              <p key={i} className="text-foreground">
-                {line}
-              </p>
-            ))}
+            <TypewriterText
+              lines={[
+                { text: props.terminal.command, className: "text-accent-purple" },
+                ...props.terminal.lines.map((line) => ({
+                  text: line,
+                  className: "text-foreground",
+                })),
+              ]}
+              speed={20}
+              lineDelay={150}
+            />
           </Terminal>
         </motion.div>
       </div>
