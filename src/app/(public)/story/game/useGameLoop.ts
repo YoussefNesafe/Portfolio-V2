@@ -35,6 +35,16 @@ interface EnemyState {
   deathTimer: number; // countdown for death animation
 }
 
+interface WeatherParticle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  size: number;
+  type: "rain" | "leaf" | "snow";
+}
+
 interface GameState {
   scrollX: number;
   velocity: number;
@@ -88,6 +98,8 @@ interface GameState {
   milestoneShown: Set<number>;
   milestoneText: string;
   milestoneTimer: number;
+  // Weather
+  weatherParticles: WeatherParticle[];
 }
 
 const TELEPORT_DISTANCE = 200;
@@ -147,6 +159,7 @@ export function useGameLoop(
     milestoneShown: new Set(),
     milestoneText: "",
     milestoneTimer: 0,
+    weatherParticles: [],
   });
 
   const prevJumpRef = useRef(false);
@@ -484,6 +497,41 @@ export function useGameLoop(
     }
     if (s.milestoneTimer > 0) s.milestoneTimer--;
 
+    // Weather particles — biome-specific
+    const canvasWW = canvasRef.current?.width ?? 800;
+    const canvasHW = canvasRef.current?.height ?? 600;
+    const weatherBiome = progress < 0.25 ? 0 : progress < 0.5 ? 1 : progress < 0.75 ? 2 : 3;
+
+    if (weatherBiome >= 1 && s.frameTick % 2 === 0) {
+      const count = weatherBiome === 3 ? 3 : 2;
+      for (let i = 0; i < count; i++) {
+        const type: WeatherParticle["type"] = weatherBiome === 1 ? "rain" : weatherBiome === 2 ? "leaf" : "snow";
+        s.weatherParticles.push({
+          x: Math.random() * canvasWW,
+          y: -5,
+          vx: type === "leaf" ? (Math.random() - 0.5) * 2 : (Math.random() - 0.5) * 0.5,
+          vy: type === "rain" ? 6 + Math.random() * 3 : type === "snow" ? 1 + Math.random() : 1.5 + Math.random(),
+          life: type === "rain" ? 60 : 120,
+          size: type === "rain" ? 1 : type === "leaf" ? 3 : 2,
+          type,
+        });
+      }
+    }
+
+    // Update weather particles
+    s.weatherParticles = s.weatherParticles.filter((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.type === "leaf") {
+        p.vx += Math.sin(p.life * 0.1) * 0.1;
+      }
+      if (p.type === "snow") {
+        p.vx += Math.sin(p.life * 0.05) * 0.05;
+      }
+      p.life--;
+      return p.life > 0 && p.y < canvasHW;
+    });
+
     // End detection
     if (s.scrollX >= WORLD_WIDTH) {
       s.finished = true;
@@ -569,6 +617,12 @@ export function useGameLoop(
     }
 
     renderer.drawForegroundLayer(ctx, w, h, s.scrollX);
+
+    // Weather
+    if (s.weatherParticles.length > 0) {
+      renderer.drawWeatherParticles(ctx, s.weatherParticles);
+    }
+
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "foreground", s.collectedSet);
 
     // HUD

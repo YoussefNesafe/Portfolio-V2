@@ -210,6 +210,38 @@ export function drawDayNightTint(
 }
 
 // ---------------------------------------------------------------------------
+// Weather particles
+// ---------------------------------------------------------------------------
+
+export function drawWeatherParticles(
+  ctx: CanvasRenderingContext2D,
+  particles: { x: number; y: number; size: number; life: number; type: "rain" | "leaf" | "snow" }[],
+): void {
+  for (const p of particles) {
+    const alpha = Math.min(1, p.life / 20);
+    if (p.type === "rain") {
+      ctx.strokeStyle = `rgba(150, 200, 255, ${alpha * 0.4})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - 0.5, p.y + 6);
+      ctx.stroke();
+    } else if (p.type === "leaf") {
+      ctx.fillStyle = `rgba(34, 197, 94, ${alpha * 0.6})`;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.size, p.size * 0.5, Math.sin(p.life * 0.1) * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // snow/stardust
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.7})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 2. Mountain layer
 // ---------------------------------------------------------------------------
 
