@@ -1,7 +1,12 @@
 "use client";
 
 import { useViewMode } from "@/app/components/view-mode/ViewModeContext";
-import InteractiveTerminal from "@/app/components/view-mode/InteractiveTerminal";
+import dynamic from "next/dynamic";
+
+const InteractiveTerminal = dynamic(
+  () => import("@/app/components/view-mode/InteractiveTerminal"),
+  { ssr: false }
+);
 import { XRayProvider, XRayToggle, XRayInspector } from "@/app/components/xray";
 import CustomCursor from "@/app/components/cursor/CustomCursor";
 import type { IDictionary } from "@/app/models/IDictionary";
