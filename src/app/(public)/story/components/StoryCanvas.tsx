@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { IStoryDictionary } from "@/app/models/IStoryDictionary";
 import { usePlayerInput } from "../game/usePlayerInput";
 import { useGameLoop } from "../game/useGameLoop";
+import type { GameState } from "../game/game-state";
 
 interface StoryCanvasProps {
   story: IStoryDictionary;
@@ -15,6 +16,7 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const keysRef = usePlayerInput();
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  const [canvasError, setCanvasError] = useState(false);
   const gameState = useGameLoop(canvasRef, keysRef, story.biomes);
 
   // Desktop-only check
@@ -33,6 +35,16 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    try {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        setCanvasError(true);
+        return;
+      }
+    } catch {
+      setCanvasError(true);
+      return;
+    }
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -43,6 +55,27 @@ export default function StoryCanvas({ story }: StoryCanvasProps) {
   }, [isDesktop]);
 
   if (!isDesktop) return null;
+
+  if (canvasError) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-[#0A0A0F] flex items-center justify-center">
+        <div className="text-center">
+          <p
+            className="text-[1.25vw] text-[#FFD700] mb-[0.833vw]"
+            style={{ fontFamily: "monospace" }}
+          >
+            Canvas not supported
+          </p>
+          <button
+            onClick={() => router.push("/")}
+            className="btn-gradient text-[0.729vw] font-semibold text-white px-[1.667vw] py-[0.625vw] rounded-[0.521vw] cursor-pointer"
+          >
+            Back to Portfolio
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] bg-[#0A0A0F]">
@@ -69,7 +102,7 @@ function StartOverlay({
   gameState,
   startPrompt,
 }: {
-  gameState: React.RefObject<{ started: boolean }>;
+  gameState: React.RefObject<GameState>;
   startPrompt: string;
 }) {
   const [visible, setVisible] = useState(true);
@@ -77,7 +110,7 @@ function StartOverlay({
   useEffect(() => {
     let rafId: number;
     const check = () => {
-      if (gameState.current?.started) {
+      if (gameState.current?.world.started) {
         setVisible(false);
       } else {
         rafId = requestAnimationFrame(check);
@@ -106,7 +139,7 @@ function EndOverlay({
   endMessage,
   onBack,
 }: {
-  gameState: React.RefObject<{ finished: boolean }>;
+  gameState: React.RefObject<GameState>;
   endMessage: string[];
   onBack: () => void;
 }) {
@@ -115,7 +148,7 @@ function EndOverlay({
   useEffect(() => {
     let rafId: number;
     const check = () => {
-      if (gameState.current?.finished) {
+      if (gameState.current?.world.finished) {
         setVisible(true);
       } else {
         rafId = requestAnimationFrame(check);
