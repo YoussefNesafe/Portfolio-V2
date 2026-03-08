@@ -54,6 +54,16 @@ interface Afterimage {
   isSuperSaiyan: boolean;
 }
 
+interface ShootingStar {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  length: number;
+}
+
 interface GameState {
   scrollX: number;
   velocity: number;
@@ -111,6 +121,8 @@ interface GameState {
   weatherParticles: WeatherParticle[];
   // Afterimages
   afterimages: Afterimage[];
+  // Shooting stars
+  shootingStars: ShootingStar[];
 }
 
 const TELEPORT_DISTANCE = 200;
@@ -172,6 +184,7 @@ export function useGameLoop(
     milestoneTimer: 0,
     weatherParticles: [],
     afterimages: [],
+    shootingStars: [],
   });
 
   const prevJumpRef = useRef(false);
@@ -561,6 +574,26 @@ export function useGameLoop(
       return p.life > 0 && p.y < canvasHW;
     });
 
+    // Shooting stars — biome 4 only
+    if (progress >= 0.75 && Math.random() < 0.02) {
+      const life = 30 + Math.random() * 20;
+      s.shootingStars.push({
+        x: Math.random() * canvasWW,
+        y: Math.random() * canvasHW * 0.4,
+        vx: -(4 + Math.random() * 6),
+        vy: 3 + Math.random() * 4,
+        life,
+        maxLife: life,
+        length: 20 + Math.random() * 30,
+      });
+    }
+    s.shootingStars = s.shootingStars.filter((star) => {
+      star.x += star.vx;
+      star.y += star.vy;
+      star.life--;
+      return star.life > 0;
+    });
+
     // End detection
     if (s.scrollX >= WORLD_WIDTH) {
       s.finished = true;
@@ -600,6 +633,12 @@ export function useGameLoop(
     renderer.drawSkyLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDayNightTint(ctx, w, h, s.scrollX);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "sky", s.collectedSet);
+
+    // Shooting stars (biome 4)
+    if (s.shootingStars.length > 0) {
+      renderer.drawShootingStars(ctx, s.shootingStars);
+    }
+
     renderer.drawMountainLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "mountains", s.collectedSet);
     renderer.drawMidgroundLayer(ctx, w, h, s.scrollX, biomes);

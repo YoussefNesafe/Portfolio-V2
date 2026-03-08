@@ -1692,3 +1692,36 @@ export function drawMilestoneText(
 
   ctx.restore();
 }
+
+// ---------------------------------------------------------------------------
+// Shooting stars
+// ---------------------------------------------------------------------------
+
+export function drawShootingStars(
+  ctx: CanvasRenderingContext2D,
+  stars: { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; length: number }[],
+): void {
+  for (const star of stars) {
+    const alpha = star.life / star.maxLife;
+    const speed = Math.sqrt(star.vx * star.vx + star.vy * star.vy);
+    const tailX = star.x - (star.vx / speed) * star.length;
+    const tailY = star.y - (star.vy / speed) * star.length;
+
+    const grad = ctx.createLinearGradient(tailX, tailY, star.x, star.y);
+    grad.addColorStop(0, `rgba(255, 255, 255, 0)`);
+    grad.addColorStop(1, `rgba(255, 255, 255, ${alpha * 0.8})`);
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(star.x, star.y);
+    ctx.stroke();
+
+    // Bright head
+    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
