@@ -825,6 +825,7 @@ export function drawScouter(
   w: number,
   powerLevel: number,
   dragonBallCount: number = 0,
+  enemiesKilled: number = 0,
 ): void {
   const boxW = Math.round(w * 0.12);
   const boxH = Math.round(w * 0.06);
@@ -881,6 +882,15 @@ export function drawScouter(
     ctx.textAlign = "right";
     ctx.textBaseline = "bottom";
     ctx.fillText(`★ ${dragonBallCount}/7`, boxX + boxW - pad, boxY + boxH - pad);
+  }
+
+  // Kill counter — top-right of scouter box
+  if (enemiesKilled > 0) {
+    ctx.font = `${labelSize}px monospace`;
+    ctx.fillStyle = "#ef4444";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
+    ctx.fillText(`⚔ ${enemiesKilled}`, boxX + boxW - pad, boxY + pad);
   }
 }
 

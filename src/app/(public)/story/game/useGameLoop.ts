@@ -703,7 +703,7 @@ export function useGameLoop(
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "foreground", s.collectedSet);
 
     // HUD
-    renderer.drawScouter(ctx, w, s.powerLevel, s.collectedDragonBalls.size);
+    renderer.drawScouter(ctx, w, s.powerLevel, s.collectedDragonBalls.size, s.enemiesKilled);
 
     // Controls hint
     renderer.drawControlsHint(ctx, w, h);
