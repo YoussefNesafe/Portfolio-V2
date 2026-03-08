@@ -45,6 +45,15 @@ interface WeatherParticle {
   type: "rain" | "leaf" | "snow";
 }
 
+interface Afterimage {
+  x: number;       // scrollX at time of capture (world position reference)
+  y: number;       // jumpY at time of capture
+  frameIndex: number;
+  facingLeft: boolean;
+  alpha: number;
+  isSuperSaiyan: boolean;
+}
+
 interface GameState {
   scrollX: number;
   velocity: number;
@@ -100,6 +109,8 @@ interface GameState {
   milestoneTimer: number;
   // Weather
   weatherParticles: WeatherParticle[];
+  // Afterimages
+  afterimages: Afterimage[];
 }
 
 const TELEPORT_DISTANCE = 200;
@@ -160,6 +171,7 @@ export function useGameLoop(
     milestoneText: "",
     milestoneTimer: 0,
     weatherParticles: [],
+    afterimages: [],
   });
 
   const prevJumpRef = useRef(false);
@@ -438,6 +450,23 @@ export function useGameLoop(
       }
     }
 
+    // Sprint afterimages — spawn ghost copy every 4 frames
+    if (s.isSprinting && isMoving && s.frameTick % 4 === 0) {
+      s.afterimages.push({
+        x: s.scrollX,
+        y: s.jumpY,
+        frameIndex: s.frameIndex,
+        facingLeft: s.facingLeft,
+        alpha: 0.5,
+        isSuperSaiyan: s.isSuperSaiyan,
+      });
+    }
+    // Decay afterimages
+    s.afterimages = s.afterimages.filter((a) => {
+      a.alpha -= 0.04;
+      return a.alpha > 0;
+    });
+
     // Enemy patrol + Kamehameha collision
     for (let i = 0; i < s.enemies.length; i++) {
       const es = s.enemies[i];
@@ -587,6 +616,11 @@ export function useGameLoop(
     const playerX = w / 2 - (32 * playerScale) / 2;
     const playerY = h * PLAYER_Y_OFFSET - spriteHeight + s.jumpY;
     const crouchSquish = s.isCrouching ? 0.6 : 1;
+
+    // Sprint afterimages
+    if (s.afterimages.length > 0) {
+      renderer.drawAfterimages(ctx, w, h, s.scrollX, s.afterimages, frames, playerScale);
+    }
 
     renderer.drawPlayer(
       ctx,

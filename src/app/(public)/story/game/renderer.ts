@@ -242,6 +242,49 @@ export function drawWeatherParticles(
 }
 
 // ---------------------------------------------------------------------------
+// Sprint afterimages
+// ---------------------------------------------------------------------------
+
+export function drawAfterimages(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+  afterimages: { x: number; y: number; frameIndex: number; facingLeft: boolean; alpha: number; isSuperSaiyan: boolean }[],
+  frames: string[][][],
+  scale: number,
+): void {
+  const spriteW = 32 * scale;
+  const spriteH = 32 * scale;
+
+  for (const img of afterimages) {
+    // Convert world position to screen position
+    const screenX = w / 2 - spriteW / 2 - (scrollX - img.x);
+    const screenY = h * PLAYER_Y_OFFSET - spriteH + img.y;
+
+    // Skip if off screen
+    if (screenX < -spriteW || screenX > w + spriteW) continue;
+
+    ctx.save();
+    ctx.globalAlpha = img.alpha;
+
+    const frame = frames[img.frameIndex % frames.length];
+
+    if (img.facingLeft) {
+      ctx.save();
+      ctx.translate(screenX + spriteW, 0);
+      ctx.scale(-1, 1);
+      drawSprite(ctx, frame, 0, screenY, scale);
+      ctx.restore();
+    } else {
+      drawSprite(ctx, frame, screenX, screenY, scale);
+    }
+
+    ctx.restore();
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 2. Mountain layer
 // ---------------------------------------------------------------------------
 
