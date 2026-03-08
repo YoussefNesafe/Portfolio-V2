@@ -34,7 +34,13 @@ export default function SectionHeading({
         {title}
         <span className="gradient-text">.</span>
       </h2>
-      <div className="mt-[2.667vw] tablet:mt-[1.25vw] desktop:mt-[0.521vw] h-[0.533vw] tablet:h-[0.25vw] desktop:h-[0.104vw] w-[16vw] tablet:w-[7.5vw] desktop:w-[3.125vw] bg-gradient-to-r from-accent-cyan to-accent-purple rounded-full" />
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.3, ease: [0.33, 1, 0.68, 1] }}
+        className="mt-[2.667vw] tablet:mt-[1.25vw] desktop:mt-[0.521vw] h-[0.533vw] tablet:h-[0.25vw] desktop:h-[0.104vw] w-[16vw] tablet:w-[7.5vw] desktop:w-[3.125vw] bg-gradient-to-r from-accent-cyan to-accent-purple rounded-full origin-left"
+      />
     </motion.div>
   );
 }
