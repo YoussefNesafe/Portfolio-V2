@@ -641,9 +641,12 @@ export function useGameLoop(
 
     renderer.drawMountainLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "mountains", s.collectedSet);
+    renderer.drawParallaxFog(ctx, w, h, s.scrollX, biomes, "far");
     renderer.drawMidgroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "midground", s.collectedSet);
+    renderer.drawParallaxFog(ctx, w, h, s.scrollX, biomes, "mid");
     renderer.drawFloatingText(ctx, w, h, s.scrollX, biomes, WORLD_WIDTH);
+    renderer.drawParallaxFog(ctx, w, h, s.scrollX, biomes, "near");
     renderer.drawGroundLayer(ctx, w, h, s.scrollX, biomes);
     renderer.drawGroundSurface(ctx, w, h, s.scrollX);
     renderer.drawDecorations(ctx, w, h, s.scrollX, DECORATIONS, "ground", s.collectedSet);

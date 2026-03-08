@@ -1725,3 +1725,50 @@ export function drawShootingStars(
     ctx.fill();
   }
 }
+
+// ---------------------------------------------------------------------------
+// Parallax fog layers
+// ---------------------------------------------------------------------------
+
+export function drawParallaxFog(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  scrollX: number,
+  biomes: IStoryBiome[],
+  layer: "far" | "mid" | "near",
+): void {
+  const progress = scrollX / WORLD_WIDTH;
+  const { groundColor } = interpolateBiomeColors(biomes, progress);
+  const [r, g, b] = parseHex(groundColor);
+
+  let alpha: number;
+  let yStart: number;
+  let yEnd: number;
+
+  switch (layer) {
+    case "far":
+      alpha = 0.06;
+      yStart = h * 0.45;
+      yEnd = h * 0.65;
+      break;
+    case "mid":
+      alpha = 0.08;
+      yStart = h * 0.55;
+      yEnd = h * 0.72;
+      break;
+    case "near":
+      alpha = 0.04;
+      yStart = h * 0.65;
+      yEnd = h * 0.78;
+      break;
+  }
+
+  const grad = ctx.createLinearGradient(0, yStart, 0, yEnd);
+  grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
+  grad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+  grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, yStart, w, yEnd - yStart);
+}
