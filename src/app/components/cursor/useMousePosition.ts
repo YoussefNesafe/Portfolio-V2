@@ -18,11 +18,16 @@ export function getSectionColor(sectionId: string | null): string {
   return SECTION_COLORS[sectionId] ?? DEFAULT_COLOR;
 }
 
+type CursorVariant = "default" | "pointer" | "text";
+
 interface MouseState {
   x: number;
   y: number;
   isVisible: boolean;
+  variant: CursorVariant;
 }
+
+const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, select, [data-cursor="pointer"]';
 
 export function useMousePosition(): MouseState {
   const [isDesktop, setIsDesktop] = useState(false);
@@ -30,6 +35,7 @@ export function useMousePosition(): MouseState {
     x: 0,
     y: 0,
     isVisible: false,
+    variant: "default",
   });
   const [state, setState] = useState<MouseState>(stateRef.current);
   const rafRef = useRef<number>(0);
@@ -55,6 +61,13 @@ export function useMousePosition(): MouseState {
       stateRef.current.x = e.clientX;
       stateRef.current.y = e.clientY;
       stateRef.current.isVisible = true;
+
+      const target = e.target as Element;
+      if (target?.closest(INTERACTIVE_SELECTOR)) {
+        stateRef.current.variant = "pointer";
+      } else {
+        stateRef.current.variant = "default";
+      }
 
       if (!rafRef.current) {
         rafRef.current = requestAnimationFrame(updateState);
@@ -83,7 +96,7 @@ export function useMousePosition(): MouseState {
   }, [isDesktop, updateState]);
 
   if (!isDesktop) {
-    return { x: 0, y: 0, isVisible: false };
+    return { x: 0, y: 0, isVisible: false, variant: "default" };
   }
 
   return state;
