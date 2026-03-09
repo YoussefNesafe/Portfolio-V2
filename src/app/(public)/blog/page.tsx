@@ -23,8 +23,12 @@ interface SearchParams {
 }
 
 export const metadata = {
-  title: "Blog",
-  description: "Read my latest articles and insights",
+  title: "Blog | Youssef Nesafe",
+  description:
+    "Read my latest articles and insights on frontend engineering, React, TypeScript, and modern web development.",
+  alternates: {
+    canonical: "/blog",
+  },
 };
 
 export default async function BlogPage({

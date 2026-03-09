@@ -7,9 +7,12 @@ import BragDashboard from "./components/BragDashboard";
 import type { IBragStats } from "@/app/models/Brag";
 
 export const metadata: Metadata = {
-  title: "Work Log",
+  title: "Work Log | Youssef Nesafe",
   description:
     "A running log of my daily accomplishments, learnings, and highlights.",
+  alternates: {
+    canonical: "/brag",
+  },
 };
 
 async function getBragStats(): Promise<IBragStats> {

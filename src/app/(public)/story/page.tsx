@@ -5,6 +5,9 @@ export const metadata = {
   title: "My Story | Youssef Nesafe",
   description:
     "A Dragon Ball-inspired journey through my career as a developer",
+  alternates: {
+    canonical: "/story",
+  },
 };
 
 export default async function StoryRoute() {

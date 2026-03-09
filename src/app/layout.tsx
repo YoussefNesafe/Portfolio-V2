@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getWebSiteSchema, getPersonSchema } from "@/app/lib/structured-data";
 import "./styles/tailwind.css";
 
 const geistSans = Geist({
@@ -31,6 +32,17 @@ export const metadata: Metadata = {
     description:
       "Crafting scalable, high-performance applications with 6+ years of experience in full-stack development and modern web solutions.",
     type: "website",
+    siteName: "Youssef Nesafe",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Youssef Nesafe | Senior Frontend Engineer",
+    description:
+      "Crafting scalable, high-performance applications with 6+ years of experience in full-stack development and modern web solutions.",
+    creator: "@youssefnesafe",
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
@@ -42,6 +54,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([getWebSiteSchema(), getPersonSchema()]),
+          }}
+        />
         <a href="#hero" className="skip-link">
           Skip to main content
         </a>

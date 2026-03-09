@@ -14,6 +14,13 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Prevent search engines from indexing API routes
+  if (pathname.startsWith("/api/")) {
+    const response = NextResponse.next();
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return addSecurityHeaders(response);
+  }
+
   // Check if this is an admin route (except login)
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     // Get session token from cookies
@@ -43,5 +50,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/:path*"],
 };

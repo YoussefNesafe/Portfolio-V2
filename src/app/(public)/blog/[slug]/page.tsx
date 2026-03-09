@@ -13,6 +13,10 @@ import { getRelatedPosts } from "./related-posts";
 import RelatedPosts from "./RelatedPosts";
 import { getDictionary } from "@/get-dictionary";
 import ViewTracker from "./ViewTracker";
+import {
+  getBlogPostingSchema,
+  getBreadcrumbSchema,
+} from "@/app/lib/structured-data";
 
 export async function generateStaticParams() {
   try {
@@ -50,14 +54,26 @@ export async function generateMetadata({
   }
 
   return {
-    title: post.title,
+    title: `${post.title} | Youssef Nesafe`,
     description: post.description,
     keywords: post.tags?.map((t) => t.name).join(", ") || "",
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
-      description: post.description,
+      description: post.description ?? undefined,
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      authors: [post.author?.name ?? "Youssef Nesafe"],
+      tags: post.tags?.map((t) => t.name),
+      section: post.categories?.[0]?.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description ?? undefined,
     },
   };
 }
@@ -90,6 +106,22 @@ export default async function BlogPostPage({
 
   return (
     <div className="mx-auto desktop:mx-0 desktop:px-[6.24vw] max-w-[90vw] tablet:max-w-[70vw]  py-[10.667vw] tablet:py-[5.333vw] desktop:py-[2.222vw] desktop:flex desktop:gap-[3.333vw] desktop:items-start desktop:justify-between desktop:max-w-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            getBlogPostingSchema(post),
+            getBreadcrumbSchema([
+              { name: "Home", url: "https://youssefnesafe.com" },
+              { name: "Blog", url: "https://youssefnesafe.com/blog" },
+              {
+                name: post.title,
+                url: `https://youssefnesafe.com/blog/${slug}`,
+              },
+            ]),
+          ]),
+        }}
+      />
       <ViewTracker slug={slug} />
       {/* Main Article */}
       <article className="desktop:flex-1 desktop:min-w-0">
