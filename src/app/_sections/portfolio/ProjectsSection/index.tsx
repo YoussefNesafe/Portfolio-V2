@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import type { IProjectsSection } from "@/app/models/Projects";
 import Section from "@/app/components/ui/Section";
@@ -9,127 +9,64 @@ import { fadeUp, defaultViewport } from "@/app/lib/animations";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectsSection(props: IProjectsSection) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const touchStartX = useRef(0);
-  const touchDeltaX = useRef(0);
-  const containerRef = useRef<HTMLDivElement>(null);
   const count = props.items.length;
 
-  const goTo = useCallback(
-    (index: number) => {
-      setActiveIndex(Math.max(0, Math.min(count - 1, index)));
-    },
-    [count]
-  );
-
-  const goNext = useCallback(() => {
-    setActiveIndex((prev) => (prev < count - 1 ? prev + 1 : prev));
+  // Track which card is snapped to via scroll position
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollLeft = el.scrollLeft;
+    const cardWidth = el.scrollWidth / count;
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.max(0, Math.min(count - 1, index)));
   }, [count]);
 
-  const goPrev = useCallback(() => {
-    setActiveIndex((prev) => (prev > 0 ? prev - 1 : prev));
-  }, []);
-
-  // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const inView =
-        rect.top < window.innerHeight && rect.bottom > 0;
-      if (!inView) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
-      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-        e.preventDefault();
-        goNext();
-      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-        e.preventDefault();
-        goPrev();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goNext, goPrev]);
-
-  // Touch handlers for mobile swipe
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      touchStartX.current = e.touches[0].clientX;
-      touchDeltaX.current = 0;
-    },
-    []
-  );
-
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
-    },
-    []
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    const threshold = 50;
-    if (touchDeltaX.current < -threshold) {
-      goNext();
-    } else if (touchDeltaX.current > threshold) {
-      goPrev();
-    }
-  }, [goNext, goPrev]);
+  const goTo = useCallback((index: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const cardWidth = el.scrollWidth / count;
+    el.scrollTo({ left: cardWidth * index, behavior: "smooth" });
+  }, [count]);
 
   return (
     <Section id="projects">
       <SectionHeading label={props.sectionLabel} title={props.title} />
 
       <motion.div
-        ref={containerRef}
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
         viewport={defaultViewport}
-        className="relative"
       >
-        {/* Carousel container */}
+        {/* Horizontal scroll-snap carousel */}
         <div
-          className="relative w-full overflow-hidden"
-          style={{ height: "clamp(480px, 55vw, 700px)" }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          ref={scrollRef}
+          className="flex gap-[5.333vw] tablet:gap-[2.5vw] desktop:gap-[1.042vw] overflow-x-auto snap-x snap-mandatory scroll-smooth pb-[4vw] tablet:pb-[2vw] desktop:pb-[0.833vw] -mx-[4.267vw] tablet:-mx-[5vw] desktop:-mx-[0.521vw] px-[4.267vw] tablet:px-[5vw] desktop:px-[0.521vw] no-scrollbar"
         >
-          {/* Prev / Next click zones — desktop only */}
-          <button
-            type="button"
-            onClick={goPrev}
-            disabled={activeIndex === 0}
-            aria-label="Previous project"
-            className="hidden tablet:block absolute left-0 top-0 w-[20%] h-full z-20 cursor-pointer disabled:cursor-default"
-          />
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={activeIndex === count - 1}
-            aria-label="Next project"
-            className="hidden tablet:block absolute right-0 top-0 w-[20%] h-full z-20 cursor-pointer disabled:cursor-default"
-          />
-
-          {/* Cards */}
-          {props.items.map((item, index) => {
-            const position = index - activeIndex;
-            // Only render cards within visible range
-            if (Math.abs(position) > 2) return null;
-            return (
+          {props.items.map((item, index) => (
+            <div
+              key={item.id}
+              className="snap-center shrink-0 w-[85vw] tablet:w-[60vw] desktop:w-[30vw]"
+            >
               <ProjectCard
-                key={item.id}
                 item={item}
-                isFocused={position === 0}
-                position={position}
+                isFocused={index === activeIndex}
               />
-            );
-          })}
+            </div>
+          ))}
         </div>
 
-        {/* Navigation dots — glowing orbs connected by line */}
-        <div className="flex items-center justify-center mt-[6.667vw] tablet:mt-[3.125vw] desktop:mt-[1.302vw]">
+        {/* Navigation dots */}
+        <div className="flex items-center justify-center mt-[4vw] tablet:mt-[2vw] desktop:mt-[0.833vw]">
           <div className="relative flex items-center gap-[4vw] tablet:gap-[1.875vw] desktop:gap-[0.781vw]">
             {/* Connecting line */}
             <div className="absolute top-1/2 left-[2vw] right-[2vw] tablet:left-[0.938vw] tablet:right-[0.938vw] desktop:left-[0.391vw] desktop:right-[0.391vw] h-[0.267vw] tablet:h-[0.125vw] desktop:h-[0.052vw] -translate-y-1/2 bg-gradient-to-r from-accent-cyan/20 via-accent-purple/30 to-accent-cyan/20 rounded-full" />

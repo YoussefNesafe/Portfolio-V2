@@ -30,7 +30,7 @@
     }
   },
   "hero": {
-    "greeting": "> const developer = \"Youssef Nesafe\";",
+    "greeting": "Hi, my name is",
     "name": "Youssef Nesafe",
     "titlePrefix": "Senior",
     "titleHighlight": "Frontend",

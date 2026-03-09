@@ -357,6 +357,13 @@ export default function SkillConstellation({ categories }: Props) {
         ctx.arc(node.x, node.y, node.radius * 0.35, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${0.7 * nodeAlpha})`;
         ctx.fill();
+
+        // Skill name label next to node
+        const labelAlphaNode = isHovered ? 1 : 0.7;
+        ctx.font = `${isHovered ? "600" : "400"} ${isHovered ? 11 : 9}px ui-sans-serif, system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${labelAlphaNode * nodeAlpha})`;
+        ctx.fillText(node.name, node.x, node.y + node.radius + 14);
       }
 
       // Draw category labels after nodes have settled

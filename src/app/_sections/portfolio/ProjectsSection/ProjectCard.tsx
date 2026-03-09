@@ -9,46 +9,28 @@ import type { ProjectItem } from "@/app/models/common";
 interface ProjectCardProps {
   item: ProjectItem;
   isFocused: boolean;
-  position: number; // -2, -1, 0 (focused), 1, 2
 }
 
-export default function ProjectCard({
-  item,
-  isFocused,
-  position,
-}: ProjectCardProps) {
+export default function ProjectCard({ item, isFocused }: ProjectCardProps) {
   const { ref: tiltRef, style: tiltStyle, handlers } = useTilt({
     maxTilt: 6,
     scale: 1.01,
   });
 
-  const absPos = Math.abs(position);
-
   return (
     <motion.div
-      ref={isFocused ? tiltRef : undefined}
+      ref={tiltRef}
       data-xray="ProjectCard"
-      layout
       animate={{
-        scale: isFocused ? 1 : Math.max(0.7, 1 - absPos * 0.12),
-        opacity: isFocused ? 1 : Math.max(0.3, 1 - absPos * 0.35),
-        x: `${position * 60}%`,
-        zIndex: 10 - absPos,
-        filter: isFocused ? "blur(0px)" : `blur(${absPos * 4}px)`,
-        rotateY: position * -3,
+        opacity: isFocused ? 1 : 0.6,
+        filter: isFocused ? "blur(0px)" : "blur(1px)",
       }}
-      transition={{
-        type: "spring",
-        stiffness: 260,
-        damping: 26,
-        mass: 0.8,
-        duration: 0.6,
-      }}
-      className="absolute top-0 left-1/2 w-[85vw] tablet:w-[55vw] desktop:w-[28vw] -translate-x-1/2 will-change-transform"
-      style={isFocused ? tiltStyle : undefined}
-      {...(isFocused ? handlers : {})}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="h-full will-change-transform"
+      style={tiltStyle}
+      {...handlers}
     >
-      <div className="rounded-[3.2vw] tablet:rounded-[1.5vw] desktop:rounded-[0.625vw] border border-white/10 backdrop-blur-[16px] bg-white/5 overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.06)]">
+      <div className="h-full rounded-[3.2vw] tablet:rounded-[1.5vw] desktop:rounded-[0.625vw] border border-white/10 backdrop-blur-[16px] bg-white/5 overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.06)] transition-all duration-300 hover:border-accent-cyan/30 hover:shadow-[0_0_30px_rgba(6,182,212,0.12)]">
         {/* Image with Ken Burns */}
         <div className="relative aspect-video overflow-hidden">
           <motion.div
@@ -78,7 +60,7 @@ export default function ProjectCard({
               alt={item.title}
               fill
               className="object-cover"
-              sizes="(max-width: 480px) 85vw, (max-width: 1023px) 55vw, 28vw"
+              sizes="(max-width: 480px) 85vw, (max-width: 1023px) 60vw, 30vw"
               placeholder="blur"
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7ljmRAAAADklEQVQI12P4z8BQDwAEgAF/QualIQAAAABJRU5ErkJggg=="
             />
@@ -118,7 +100,7 @@ export default function ProjectCard({
             ))}
           </ul>
 
-          {/* Tech tags — stagger in from bottom when focused */}
+          {/* Tech tags */}
           <div className="flex flex-wrap gap-[1.6vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw] mt-[1.067vw] tablet:mt-[0.5vw] desktop:mt-[0.208vw]">
             <AnimatePresence mode="popLayout">
               {item.tech.map((tech, i) => (
@@ -151,7 +133,6 @@ export default function ProjectCard({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-[1.6vw] tablet:gap-[0.75vw] desktop:gap-[0.313vw] text-accent-emerald text-[3.467vw] tablet:text-[1.625vw] desktop:text-[0.677vw] font-medium mt-[1.067vw] tablet:mt-[0.5vw] desktop:mt-[0.208vw] group/link"
-            tabIndex={isFocused ? 0 : -1}
           >
             <span className="relative">
               Visit Site
