@@ -19,6 +19,8 @@
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "@react-pdf/renderer": "^4.3.2",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.33.0",
     "next": "16.1.6",
@@ -27,7 +29,9 @@
     "react-icons": "^5.5.0",
     "recharts": "^3.7.0",
     "sanitize-html": "^2.17.0",
+    "simplex-noise": "^4.0.3",
     "tailwind-merge": "^3.4.0",
+    "three": "^0.183.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -36,6 +40,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.0",
+    "@types/three": "^0.183.1",
     "@vitest/coverage-v8": "^4.0.18",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
