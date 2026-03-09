@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import { getDictionary } from "@/get-dictionary";
 import StoryCanvas from "./components/StoryCanvas";
 

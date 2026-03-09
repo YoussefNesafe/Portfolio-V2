@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import { getDictionary } from "@/get-dictionary";
 import HeroSection from "@/app/_sections/portfolio/HeroSection";
 import AboutSection from "@/app/_sections/portfolio/AboutSection";
