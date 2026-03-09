@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import GlowCard from "@/app/components/ui/GlowCard";
 
 function easeOutBack(t: number): number {
   const c1 = 1.70158;
@@ -50,8 +49,14 @@ export default function AnimatedCounter({
     value % 1 !== 0 ? count.toFixed(1) : Math.floor(count).toLocaleString();
 
   return (
-    <GlowCard>
-      <div ref={ref} className="text-center">
+    <div className="relative group">
+      {/* Gradient orb behind card */}
+      <div className="absolute -inset-[2.667vw] tablet:-inset-[1.25vw] desktop:-inset-[0.521vw] bg-accent-cyan/10 rounded-full blur-[5.333vw] tablet:blur-[2.5vw] desktop:blur-[1.042vw] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div
+        ref={ref}
+        className="relative rounded-[2.667vw] tablet:rounded-[1.25vw] desktop:rounded-[0.521vw] border border-white/10 bg-white/5 backdrop-blur-[16px] p-[5.333vw] tablet:p-[2.5vw] desktop:p-[1.042vw] text-center transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
+      >
         <span className="text-[8.533vw] tablet:text-[4vw] desktop:text-[1.667vw] font-bold gradient-text">
           {displayValue}
           {suffix}
@@ -60,6 +65,6 @@ export default function AnimatedCounter({
           {label}
         </p>
       </div>
-    </GlowCard>
+    </div>
   );
 }

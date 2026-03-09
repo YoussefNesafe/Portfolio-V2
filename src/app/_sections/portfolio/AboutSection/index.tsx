@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   fadeUp,
   staggerContainer,
@@ -10,57 +10,57 @@ import {
 import type { IAboutSection } from "@/app/models/About";
 import Section from "@/app/components/ui/Section";
 import SectionHeading from "@/app/components/ui/SectionHeading";
-import Terminal from "@/app/components/ui/Terminal";
 import AnimatedCounter from "./AnimatedCounter";
-import TypewriterText from "@/app/components/ui/TypewriterText";
-import { useParallax } from "@/app/hooks/useParallax";
 
 export default function AboutSection(props: IAboutSection) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const terminalParallax = useParallax({ speed: 0.15, targetRef: containerRef });
-  const statsParallax = useParallax({ speed: 0.25, targetRef: containerRef });
+  const textRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: textRef,
+    offset: ["start end", "center center"],
+  });
+
+  // Overlay slides down to reveal text underneath
+  const overlayY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <Section id="about">
       <SectionHeading label={props.sectionLabel} title={props.title} />
 
-      <div
-        ref={containerRef}
-        className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-center"
-      >
+      <div className="flex flex-col desktop:flex-row gap-[8.533vw] tablet:gap-[4vw] desktop:gap-[1.667vw] items-start">
+        {/* Bio text with scroll-linked mask reveal */}
         <motion.div
+          ref={textRef}
           initial="hidden"
           whileInView="visible"
           viewport={defaultViewport}
-          variants={{
-            hidden: { opacity: 0, x: -50 },
-            visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
-          }}
-          style={{ y: terminalParallax.y }}
+          variants={fadeUp}
           className="desktop:w-[55%]"
         >
-          <Terminal title="about.txt">
-            <p className="text-accent-emerald mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw]">
-              {props.terminal.command}
-            </p>
-            <TypewriterText
-              lines={props.terminal.lines.map((line) => ({
-                text: line,
-                className:
-                  "text-foreground mb-[2.667vw] tablet:mb-[1.25vw] desktop:mb-[0.521vw] last:mb-0",
-              }))}
-              speed={15}
-              lineDelay={100}
+          <div className="relative overflow-hidden">
+            <div>
+              {props.terminal.lines.map((line, i) => (
+                <p
+                  key={i}
+                  className="text-[4.267vw] tablet:text-[2vw] desktop:text-[0.833vw] text-foreground/90 mb-[4.267vw] tablet:mb-[2vw] desktop:mb-[0.833vw] last:mb-0 leading-[1.8]"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+            {/* Overlay that slides down to reveal text */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-b from-transparent via-background to-background pointer-events-none"
+              style={{ y: overlayY }}
             />
-          </Terminal>
+          </div>
         </motion.div>
 
+        {/* Stats with glassmorphism */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={defaultViewport}
           variants={staggerContainer}
-          style={{ y: statsParallax.y }}
           className="desktop:w-[45%] grid grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] desktop:gap-[0.833vw] h-fit"
         >
           {props.stats.map((stat) => (
