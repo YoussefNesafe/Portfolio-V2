@@ -31,7 +31,7 @@ export default function Header({ logo, nav }: IHeader) {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-background/80 border-b border-border-subtle">
+    <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-xl bg-background/40 border-b border-white/[0.06]">
       <div className="section-container !flex-row items-center justify-between py-[3.2vw] tablet:py-[1.5vw] desktop:py-[0.625vw]">
         {/* Logo */}
         <Link

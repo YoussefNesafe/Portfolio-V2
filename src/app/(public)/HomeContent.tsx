@@ -7,7 +7,6 @@ const InteractiveTerminal = dynamic(
   () => import("@/app/components/view-mode/InteractiveTerminal"),
   { ssr: false }
 );
-import { XRayProvider, XRayToggle, XRayInspector } from "@/app/components/xray";
 import CustomCursor from "@/app/components/cursor/CustomCursor";
 import type { IDictionary } from "@/app/models/IDictionary";
 
@@ -29,11 +28,9 @@ export default function HomeContent({
   }
 
   return (
-    <XRayProvider>
+    <>
       {designerContent}
-      <XRayToggle />
-      <XRayInspector />
       <CustomCursor />
-    </XRayProvider>
+    </>
   );
 }

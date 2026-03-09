@@ -1,12 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useViewMode } from "./ViewModeContext";
 import { FiPenTool, FiTerminal } from "react-icons/fi";
 
 export default function ViewModeToggle() {
   const { mode, toggleMode } = useViewMode();
+  const pathname = usePathname();
   const isDev = mode === "dev";
+
+  // Only show on home page
+  if (pathname !== "/") return null;
 
   return (
     <div className="fixed bottom-[4.267vw] tablet:bottom-[2vw] desktop:bottom-[0.833vw] left-1/2 -translate-x-1/2 z-40">
