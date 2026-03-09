@@ -12,15 +12,53 @@ export default function ProjectsSection(props: IProjectsSection) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const count = props.items.length;
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragScrollLeft = useRef(0);
 
-  // Track which card is snapped to via scroll position
-  const handleScroll = useCallback(() => {
+  // Triple the items for infinite scroll illusion
+  const tripled = [...props.items, ...props.items, ...props.items];
+
+  // Center the scroll on the middle set on mount
+  useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const scrollLeft = el.scrollLeft;
-    const cardWidth = el.scrollWidth / count;
-    const index = Math.round(scrollLeft / cardWidth);
-    setActiveIndex(Math.max(0, Math.min(count - 1, index)));
+    // Wait for layout
+    requestAnimationFrame(() => {
+      const cardEls = el.children;
+      if (cardEls.length === 0) return;
+      const card = cardEls[0] as HTMLElement;
+      const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+      const cardW = card.offsetWidth + gap;
+      // Scroll to the start of the middle set
+      el.scrollLeft = cardW * count;
+    });
+  }, [count]);
+
+  // Track active index + infinite loop reset
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || isDragging.current) return;
+
+    const cardEls = el.children;
+    if (cardEls.length === 0) return;
+    const card = cardEls[0] as HTMLElement;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    const cardW = card.offsetWidth + gap;
+    const containerCenter = el.scrollLeft + el.offsetWidth / 2;
+    const rawIndex = Math.round((containerCenter - card.offsetWidth / 2) / cardW);
+    const realIndex = ((rawIndex % count) + count) % count;
+    setActiveIndex(realIndex);
+
+    // Reset to middle set when reaching edges
+    const firstSetEnd = cardW * count;
+    const thirdSetStart = cardW * count * 2;
+
+    if (el.scrollLeft < firstSetEnd - cardW) {
+      el.scrollLeft += cardW * count;
+    } else if (el.scrollLeft > thirdSetStart) {
+      el.scrollLeft -= cardW * count;
+    }
   }, [count]);
 
   useEffect(() => {
@@ -30,11 +68,67 @@ export default function ProjectsSection(props: IProjectsSection) {
     return () => el.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  // Mouse drag handlers
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    isDragging.current = true;
+    dragStartX.current = e.pageX - el.offsetLeft;
+    dragScrollLeft.current = el.scrollLeft;
+    el.style.cursor = "grabbing";
+    el.style.scrollSnapType = "none";
+    el.style.scrollBehavior = "auto";
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - dragStartX.current) * 1.5;
+    el.scrollLeft = dragScrollLeft.current - walk;
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const el = scrollRef.current;
+    if (!el) return;
+    el.style.cursor = "grab";
+    el.style.scrollSnapType = "x mandatory";
+    el.style.scrollBehavior = "smooth";
+    // Trigger snap to nearest
+    handleScroll();
+  }, [handleScroll]);
+
+  useEffect(() => {
+    const handleGlobalUp = () => {
+      if (isDragging.current) {
+        isDragging.current = false;
+        const el = scrollRef.current;
+        if (el) {
+          el.style.cursor = "grab";
+          el.style.scrollSnapType = "x mandatory";
+          el.style.scrollBehavior = "smooth";
+        }
+      }
+    };
+    window.addEventListener("mouseup", handleGlobalUp);
+    return () => window.removeEventListener("mouseup", handleGlobalUp);
+  }, []);
+
   const goTo = useCallback((index: number) => {
     const el = scrollRef.current;
     if (!el) return;
-    const cardWidth = el.scrollWidth / count;
-    el.scrollTo({ left: cardWidth * index, behavior: "smooth" });
+    const cardEls = el.children;
+    if (cardEls.length === 0) return;
+    const card = cardEls[0] as HTMLElement;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    const cardW = card.offsetWidth + gap;
+    // Scroll to the middle set's version of this index
+    const target = cardW * (count + index) - (el.offsetWidth - card.offsetWidth) / 2;
+    el.scrollTo({ left: target, behavior: "smooth" });
   }, [count]);
 
   return (
@@ -47,22 +141,30 @@ export default function ProjectsSection(props: IProjectsSection) {
         whileInView="visible"
         viewport={defaultViewport}
       >
-        {/* Horizontal scroll-snap carousel */}
+        {/* Drag-to-scroll carousel with centered snap */}
         <div
           ref={scrollRef}
-          className="flex gap-[5.333vw] tablet:gap-[2.5vw] desktop:gap-[1.042vw] overflow-x-auto snap-x snap-mandatory scroll-smooth pb-[4vw] tablet:pb-[2vw] desktop:pb-[0.833vw] -mx-[4.267vw] tablet:-mx-[5vw] desktop:-mx-[0.521vw] px-[4.267vw] tablet:px-[5vw] desktop:px-[0.521vw] no-scrollbar"
+          className="flex gap-[5.333vw] tablet:gap-[2.5vw] desktop:gap-[1.042vw] overflow-x-auto snap-x snap-mandatory scroll-smooth pb-[4vw] tablet:pb-[2vw] desktop:pb-[0.833vw] no-scrollbar select-none"
+          style={{ cursor: "grab" }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
-          {props.items.map((item, index) => (
-            <div
-              key={item.id}
-              className="snap-center shrink-0 w-[85vw] tablet:w-[60vw] desktop:w-[30vw]"
-            >
-              <ProjectCard
-                item={item}
-                isFocused={index === activeIndex}
-              />
-            </div>
-          ))}
+          {tripled.map((item, index) => {
+            const realIndex = index % count;
+            return (
+              <div
+                key={`${item.id}-${index}`}
+                className="snap-center shrink-0 w-[85vw] tablet:w-[60vw] desktop:w-[30vw]"
+              >
+                <ProjectCard
+                  item={item}
+                  isFocused={realIndex === activeIndex}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Navigation dots */}

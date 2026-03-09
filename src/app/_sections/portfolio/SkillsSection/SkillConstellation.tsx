@@ -68,7 +68,7 @@ export default function SkillConstellation({ categories }: Props) {
       const categoryCount = categories.length;
       const centerX = width / 2;
       const centerY = height / 2;
-      const clusterRadius = Math.min(width, height) * 0.3;
+      const clusterRadius = Math.min(width, height) * 0.35;
 
       categories.forEach((cat, catIdx) => {
         const angle =
@@ -79,7 +79,7 @@ export default function SkillConstellation({ categories }: Props) {
         cat.skills.forEach((skill: Skill, skillIdx: number) => {
           const skillAngle =
             (skillIdx / cat.skills.length) * Math.PI * 2;
-          const skillRadius = 30 + Math.random() * 40;
+          const skillRadius = 40 + Math.random() * 50;
           const targetX =
             clusterCX + Math.cos(skillAngle) * skillRadius;
           const targetY =
@@ -98,7 +98,7 @@ export default function SkillConstellation({ categories }: Props) {
             vy: 0,
             targetX,
             targetY,
-            radius: 6 + Math.random() * 4,
+            radius: 9 + Math.random() * 5,
             settled: false,
           });
         });
@@ -293,7 +293,7 @@ export default function SkillConstellation({ categories }: Props) {
             const dist = Math.sqrt(
               (a.x - b.x) ** 2 + (a.y - b.y) ** 2
             );
-            const maxDist = 120;
+            const maxDist = 160;
             if (dist < maxDist) {
               const isHoveredLine =
                 hoveredRef.current &&
@@ -360,10 +360,10 @@ export default function SkillConstellation({ categories }: Props) {
 
         // Skill name label next to node
         const labelAlphaNode = isHovered ? 1 : 0.7;
-        ctx.font = `${isHovered ? "600" : "400"} ${isHovered ? 11 : 9}px ui-sans-serif, system-ui, sans-serif`;
+        ctx.font = `${isHovered ? "600" : "400"} ${isHovered ? 13 : 11}px ui-sans-serif, system-ui, sans-serif`;
         ctx.textAlign = "center";
         ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${labelAlphaNode * nodeAlpha})`;
-        ctx.fillText(node.name, node.x, node.y + node.radius + 14);
+        ctx.fillText(node.name, node.x, node.y + node.radius + 18);
       }
 
       // Draw category labels after nodes have settled
@@ -389,7 +389,7 @@ export default function SkillConstellation({ categories }: Props) {
             if (n.y < minY) minY = n.y;
           }
 
-          ctx.font = "600 11px ui-monospace, monospace";
+          ctx.font = "600 13px ui-monospace, monospace";
           ctx.textAlign = "center";
           ctx.fillStyle = catColor.replace(
             ")",
@@ -424,7 +424,7 @@ export default function SkillConstellation({ categories }: Props) {
     <div
       ref={containerRef}
       className="relative w-full"
-      style={{ height: "min(60vh, 600px)" }}
+      style={{ height: "min(70vh, 750px)" }}
     >
       <canvas
         ref={canvasRef}

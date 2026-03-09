@@ -10,11 +10,7 @@ import {
   FiLinkedin,
   FiExternalLink,
 } from "react-icons/fi";
-import {
-  fadeUp,
-  staggerContainer,
-  defaultViewport,
-} from "@/app/lib/animations";
+import { fadeUp, defaultViewport } from "@/app/lib/animations";
 import type { IContactSection } from "@/app/models/Contact";
 import Section from "@/app/components/ui/Section";
 import SectionHeading from "@/app/components/ui/SectionHeading";
@@ -160,19 +156,16 @@ function FloatingCard({
     y,
   ]);
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const rippleX = e.clientX - rect.left;
-      const rippleY = e.clientY - rect.top;
-      const id = ++rippleIdRef.current;
-      setRipples((prev) => [...prev, { x: rippleX, y: rippleY, id }]);
-      setTimeout(() => {
-        setRipples((prev) => prev.filter((r) => r.id !== id));
-      }, 600);
-    },
-    []
-  );
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const rippleX = e.clientX - rect.left;
+    const rippleY = e.clientY - rect.top;
+    const id = ++rippleIdRef.current;
+    setRipples((prev) => [...prev, { x: rippleX, y: rippleY, id }]);
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== id));
+    }, 600);
+  }, []);
 
   const cardContent = (
     <>
@@ -229,7 +222,7 @@ function FloatingCard({
     <motion.div
       ref={cardRef}
       style={{ x: springX, y: springY }}
-      className="absolute top-0 left-0 w-[40vw] tablet:w-[22vw] desktop:w-[12.5vw] cursor-pointer"
+      className="absolute top-0 left-0 w-[40vw] tablet:min-w-[22vw] tablet:w-fit desktop:min-w-[12.5vw] desktop:w-fit cursor-pointer "
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -265,8 +258,10 @@ function FloatingCard({
 
 function MobileCard({
   item,
+  index,
 }: {
   item: IContactSection["items"][number];
+  index: number;
 }) {
   const Icon = iconMap[item.icon];
   const [ripples, setRipples] = useState<RippleState[]>([]);
@@ -290,11 +285,11 @@ function MobileCard({
           <Icon className="w-[5.333vw] h-[5.333vw] tablet:w-[2.5vw] tablet:h-[2.5vw]" />
         )}
       </div>
-      <div>
+      <div className="w-full">
         <p className="text-[3.2vw] tablet:text-[1.5vw] text-text-muted mb-[0.533vw] tablet:mb-[0.25vw]">
           {item.type}
         </p>
-        <p className="text-[3.733vw] tablet:text-[1.75vw] text-foreground group-hover:text-accent-cyan transition-colors flex items-center gap-[1.067vw] tablet:gap-[0.5vw]">
+        <p className="text-[3.733vw] justify-between w-full  tablet:text-[1.75vw] text-foreground group-hover:text-accent-cyan transition-colors flex items-center gap-[1.067vw] tablet:gap-[0.5vw]">
           {item.value}
           {item.href !== "#" && (
             <FiExternalLink className="w-[2.667vw] h-[2.667vw] tablet:w-[1.25vw] tablet:h-[1.25vw] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -304,11 +299,15 @@ function MobileCard({
     </>
   );
 
-  const linkClassName =
-    "flex items-start gap-[3.2vw] tablet:gap-[1.5vw] group";
+  const linkClassName = "flex items-start gap-[3.2vw] tablet:gap-[1.5vw] group";
 
   return (
-    <motion.div variants={fadeUp} onClick={handleClick}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      onClick={handleClick}
+    >
       <div className="relative overflow-hidden rounded-[2.667vw] tablet:rounded-[1.25vw] border border-white/10 bg-white/5 backdrop-blur-[16px] p-[5.333vw] tablet:p-[2.5vw] transition-all duration-300 hover:border-accent-cyan/30 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">
         {item.href.startsWith("http") ? (
           <Link
@@ -358,7 +357,7 @@ export default function ContactSection(props: IContactSection) {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
     },
-    [cursorX, cursorY]
+    [cursorX, cursorY],
   );
 
   return (
@@ -402,17 +401,11 @@ export default function ContactSection(props: IContactSection) {
           </motion.div>
         ) : (
           /* Mobile: 2x2 grid */
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={defaultViewport}
-            variants={staggerContainer}
-            className="grid grid-cols-2 gap-[4.267vw] tablet:gap-[2vw] mb-[8.533vw] tablet:mb-[4vw]"
-          >
-            {props.items.map((item) => (
-              <MobileCard key={item.type} item={item} />
+          <div className="grid grid-cols-1 gap-[4.267vw] tablet:gap-[2vw] mb-[8.533vw] tablet:mb-[4vw]">
+            {props.items.map((item, index) => (
+              <MobileCard key={item.type} item={item} index={index} />
             ))}
-          </motion.div>
+          </div>
         )}
 
         {/* CTA */}
@@ -435,7 +428,6 @@ export default function ContactSection(props: IContactSection) {
           </a>
         </motion.div>
       </div>
-
     </Section>
   );
 }
