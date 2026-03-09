@@ -238,6 +238,20 @@
     }
   }
 
+  /* Contact card ripple */
+  @keyframes contact-ripple {
+    0% {
+      width: 0;
+      height: 0;
+      opacity: 0.6;
+    }
+    100% {
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+    }
+  }
+
   /* Halftone dot overlay */
   .halftone-overlay {
     pointer-events: none;
