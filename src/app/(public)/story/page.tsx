@@ -4,7 +4,7 @@ import { getDictionary } from "@/get-dictionary";
 import StoryCanvas from "./components/StoryCanvas";
 
 export const metadata = {
-  title: "My Story | Youssef Nesafe",
+  title: "My Story",
   description:
     "A Dragon Ball-inspired journey through my career as a developer",
   alternates: {

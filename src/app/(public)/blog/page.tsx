@@ -23,7 +23,7 @@ interface SearchParams {
 }
 
 export const metadata = {
-  title: "Blog | Youssef Nesafe",
+  title: "Blog",
   description:
     "Read my latest articles and insights on frontend engineering, React, TypeScript, and modern web development.",
   alternates: {

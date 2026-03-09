@@ -1,4 +1,6 @@
 // src/app/(public)/blog/[slug]/opengraph-image.tsx
+export const revalidate = 86400
+
 import { ImageResponse } from 'next/og'
 import { cache } from 'react'
 import { db } from '@/app/lib/db'

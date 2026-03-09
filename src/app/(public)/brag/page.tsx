@@ -7,7 +7,7 @@ import BragDashboard from "./components/BragDashboard";
 import type { IBragStats } from "@/app/models/Brag";
 
 export const metadata: Metadata = {
-  title: "Work Log | Youssef Nesafe",
+  title: "Work Log",
   description:
     "A running log of my daily accomplishments, learnings, and highlights.",
   alternates: {

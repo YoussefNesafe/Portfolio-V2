@@ -54,7 +54,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${post.title} | Youssef Nesafe`,
+    title: post.title,
     description: post.description,
     keywords: post.tags?.map((t) => t.name).join(", ") || "",
     alternates: {
