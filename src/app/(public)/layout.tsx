@@ -7,6 +7,7 @@ import ViewModeToggle from "@/app/components/view-mode/ViewModeToggle";
 import ViewTransitionHandler from "@/app/components/view-transitions/ViewTransitionLink";
 import StoryButton from "@/app/components/story/StoryButton";
 import CanvasLayers from "@/app/components/canvas/CanvasLayers";
+import VoidPortal from "@/app/components/VoidPortal";
 
 export default async function PublicLayout({
   children,
@@ -17,6 +18,7 @@ export default async function PublicLayout({
 
   return (
     <ViewModeProvider>
+      <VoidPortal />
       <CanvasLayers />
       <main className="overflow-x-clip relative z-[2]">
         <ViewTransitionHandler />
