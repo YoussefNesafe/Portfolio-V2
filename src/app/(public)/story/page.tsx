@@ -6,7 +6,7 @@ import StoryCanvas from "./components/StoryCanvas";
 export const metadata = {
   title: "My Story",
   description:
-    "A Dragon Ball-inspired journey through my career as a developer",
+    "Follow my Dragon Ball-inspired career journey as a developer — from early coding adventures to becoming a Senior Frontend Engineer building trading platforms in Dubai.",
   alternates: {
     canonical: "/story",
   },

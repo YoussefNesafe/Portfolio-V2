@@ -9,7 +9,7 @@ import type { IBragStats } from "@/app/models/Brag";
 export const metadata: Metadata = {
   title: "Work Log",
   description:
-    "A running log of my daily accomplishments, learnings, and highlights.",
+    "A running log of daily accomplishments, technical learnings, and career highlights — tracking progress as a Senior Frontend Engineer working on trading platforms and web applications.",
   alternates: {
     canonical: "/brag",
   },

@@ -14,6 +14,7 @@ import {
 } from "@/app/api/blog/helpers/prisma-includes";
 import { buildQueryString } from "./build-query-string";
 import { getDictionary } from "@/get-dictionary";
+import { getBreadcrumbSchema } from "@/app/lib/structured-data";
 
 interface SearchParams {
   page?: string;
@@ -74,6 +75,35 @@ export default async function BlogPage({
 
   return (
     <section className="space-y-[8vw] tablet:space-y-[4vw] desktop:space-y-[1.667vw] pb-[10.68vw] tablet:pb-[10vw] desktop:pb-[6.24vw]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: "Blog",
+              description:
+                "Read my latest articles and insights on frontend engineering, React, TypeScript, and modern web development.",
+              url: "https://youssefnesafe.com/blog",
+              mainEntity: {
+                "@type": "ItemList",
+                numberOfItems: total,
+                itemListElement: posts.map((post, i) => ({
+                  "@type": "ListItem",
+                  position: skip + i + 1,
+                  url: `https://youssefnesafe.com/blog/${post.slug}`,
+                  name: post.title,
+                })),
+              },
+            },
+            getBreadcrumbSchema([
+              { name: "Home", url: "https://youssefnesafe.com" },
+              { name: "Blog", url: "https://youssefnesafe.com/blog" },
+            ]),
+          ]),
+        }}
+      />
       <Suspense fallback={null}>
         <BlogFilters
           categories={categories.map((c) => ({

@@ -155,12 +155,13 @@ export default async function BlogPostPage({
           {post.categories.length > 0 && (
             <div className="flex flex-wrap gap-[2.667vw] tablet:gap-[1.333vw] desktop:gap-[0.556vw] mb-[6.667vw] tablet:mb-[3.333vw] desktop:mb-[1.389vw]">
               {post.categories.map((category) => (
-                <span
+                <Link
                   key={category.id}
-                  className="inline-block px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] bg-accent-cyan/10 text-accent-cyan rounded text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]"
+                  href={`/blog?category=${category.id}`}
+                  className="inline-block px-[3vw] tablet:px-[1.5vw] desktop:px-[0.625vw] py-[1.5vw] tablet:py-[0.75vw] desktop:py-[0.313vw] bg-accent-cyan/10 text-accent-cyan rounded hover:bg-accent-cyan/20 transition-colors text-[2.667vw] tablet:text-[1.2vw] desktop:text-[0.5vw]"
                 >
                   {category.name}
-                </span>
+                </Link>
               ))}
             </div>
           )}
